@@ -49,7 +49,7 @@
                         <select name="templateId" class="flex-1 sm:flex-none px-3 py-2 border border-gray-300 rounded-lg text-sm">
                             <option th:each="t : ${templates}"
                                     th:value="${t.templateId}"
-                                    th:selected="${t.templateId == bioData.selectedTemplateId}"
+                                    th:selected="${t.templ`:wqateId == bioData.selectedTemplateId}"
                                     th:text="${t.displayName}">Template</option>
                         </select>
                         <button type="submit" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm hover:bg-gray-200">
