@@ -41,15 +41,12 @@
                     <div>
                         <span class="text-sm font-medium text-gray-700">Current Template: </span>
                         <span class="text-sm font-bold text-purple-600" th:text="${template.displayName}">Template Name</span>
-                        <span class="text-xs text-gray-400 ml-2">(Template ID: <span th:text="${template.templateId}">id</span>)</span>
-                        <br/>
-                        <span class="text-xs text-red-500">DEBUG - BioData.selectedTemplateId: <span th:text="${bioData.selectedTemplateId}">stored</span></span>
                     </div>
                     <form th:action="@{/biodata/{id}/template(id=${bioData.id})}" method="post" class="flex items-center gap-3">
                         <select name="templateId" class="flex-1 sm:flex-none px-3 py-2 border border-gray-300 rounded-lg text-sm">
                             <option th:each="t : ${templates}"
                                     th:value="${t.templateId}"
-                                    th:selected="${t.templ`:wqateId == bioData.selectedTemplateId}"
+                                    th:selected="${t.templateId.equals(bioData.selectedTemplateId)}"
                                     th:text="${t.displayName}">Template</option>
                         </select>
                         <button type="submit" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm hover:bg-gray-200">
