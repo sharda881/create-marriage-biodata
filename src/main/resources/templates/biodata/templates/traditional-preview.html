@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!-- TRADITIONAL TEMPLATE - Cream background with brown accents, Om header, decorative corners -->
+<div th:fragment="content" class="w-full">
+    
+    <!-- Page with cream background -->
+    <div class="relative p-3 sm:p-4" style="background: #F5EBD8;">
+        
+        <!-- Border Container -->
+        <div class="relative border-2 p-4 sm:p-6 md:p-8" style="border-color: #8B4513; background: #F5EBD8;">
+            
+            <!-- Corner Decorations - Hidden on very small screens -->
+            <div class="hidden sm:block absolute top-2 left-2 w-16 sm:w-20 md:w-24 h-16 sm:h-20 md:h-24">
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+                    <path d="M 5 95 Q 5 5, 95 5" fill="none" stroke="#8B4513" stroke-width="2"/>
+                    <path d="M 15 85 Q 15 15, 85 15" fill="none" stroke="#8B4513" stroke-width="1.5"/>
+                    <path d="M 8 70 Q 20 60, 15 45 Q 10 55, 8 70" fill="#8B4513"/>
+                    <path d="M 70 8 Q 60 20, 45 15 Q 55 10, 70 8" fill="#8B4513"/>
+                    <circle cx="10" cy="10" r="4" fill="#8B4513"/>
+                    <circle cx="10" cy="10" r="2" fill="#CD853F"/>
+                </svg>
+            </div>
+
+            <div class="hidden sm:block absolute top-2 right-2 w-16 sm:w-20 md:w-24 h-16 sm:h-20 md:h-24" style="transform: scaleX(-1);">
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+                    <path d="M 5 95 Q 5 5, 95 5" fill="none" stroke="#8B4513" stroke-width="2"/>
+                    <path d="M 15 85 Q 15 15, 85 15" fill="none" stroke="#8B4513" stroke-width="1.5"/>
+                    <path d="M 8 70 Q 20 60, 15 45 Q 10 55, 8 70" fill="#8B4513"/>
+                    <path d="M 70 8 Q 60 20, 45 15 Q 55 10, 70 8" fill="#8B4513"/>
+                    <circle cx="10" cy="10" r="4" fill="#8B4513"/>
+                    <circle cx="10" cy="10" r="2" fill="#CD853F"/>
+                </svg>
+            </div>
+
+            <div class="hidden sm:block absolute bottom-2 left-2 w-16 sm:w-20 md:w-24 h-16 sm:h-20 md:h-24" style="transform: scaleY(-1);">
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+                    <path d="M 5 95 Q 5 5, 95 5" fill="none" stroke="#8B4513" stroke-width="2"/>
+                    <path d="M 15 85 Q 15 15, 85 15" fill="none" stroke="#8B4513" stroke-width="1.5"/>
+                    <path d="M 8 70 Q 20 60, 15 45 Q 10 55, 8 70" fill="#8B4513"/>
+                    <circle cx="10" cy="10" r="4" fill="#8B4513"/>
+                </svg>
+            </div>
+
+            <div class="hidden sm:block absolute bottom-2 right-2 w-16 sm:w-20 md:w-24 h-16 sm:h-20 md:h-24" style="transform: scale(-1, -1);">
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+                    <path d="M 5 95 Q 5 5, 95 5" fill="none" stroke="#8B4513" stroke-width="2"/>
+                    <path d="M 15 85 Q 15 15, 85 15" fill="none" stroke="#8B4513" stroke-width="1.5"/>
+                    <path d="M 8 70 Q 20 60, 15 45 Q 10 55, 8 70" fill="#8B4513"/>
+                    <circle cx="10" cy="10" r="4" fill="#8B4513"/>
+                </svg>
+            </div>
+
+            <!-- Content Area -->
+            <div class="relative z-10">
+                
+                <!-- Om Header -->
+                <div class="text-center mb-4 sm:mb-6 pb-3 border-b" style="border-color: #8B451340;">
+                    <div class="text-3xl sm:text-4xl mb-2" style="color: #8B0000;">ॐ</div>
+                    <div class="text-xs sm:text-sm font-bold tracking-widest" style="color: #8B0000;">|| SHREE GANESHAYA NAMAH ||</div>
+                </div>
+
+                <!-- Profile Details Section Header -->
+                <div class="mb-4">
+                    <div class="inline-block px-3 sm:px-4 py-1.5 sm:py-2 text-white text-xs sm:text-sm font-bold uppercase tracking-wide" style="background: #8B0000;">
+                        Profile Details
+                    </div>
+                </div>
+
+                <!-- Personal Details with Photo - Responsive -->
+                <div class="flex flex-col sm:flex-row gap-4 sm:gap-6 mb-6">
+                    <!-- Photo Column - Centered on mobile, right on desktop -->
+                    <div class="flex-shrink-0 order-first sm:order-last flex justify-center sm:justify-end">
+                        <div class="w-28 h-36 sm:w-32 sm:h-40 md:w-36 md:h-44 border-2 overflow-hidden" style="border-color: #8B4513; background: #E8E0D0;">
+                            <img th:if="${bioData.photoPath != null}" th:src="${bioData.photoPath}"
+                                 class="w-full h-full object-cover" alt="Profile Photo">
+                            <div th:unless="${bioData.photoPath != null}"
+                                 class="w-full h-full flex items-center justify-center text-gray-400 text-4xl">
+                                👤
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Info Column -->
+                    <div class="flex-1">
+                        <div th:if="${bioData.fullName != null}" class="flex py-1 border-b border-dotted text-sm" style="border-color: #D4C4A8;">
+                            <span class="text-gray-600 w-28 sm:w-32 md:w-36 flex-shrink-0">Name</span>
+                            <span class="text-gray-600 w-4">:</span>
+                            <span class="font-medium text-gray-800" th:text="${bioData.fullName}">Name</span>
+                        </div>
+                        <div th:if="${bioData.dateOfBirth != null}" class="flex py-1 border-b border-dotted text-sm" style="border-color: #D4C4A8;">
+                            <span class="text-gray-600 w-28 sm:w-32 md:w-36 flex-shrink-0">Date of Birth</span>
+                            <span class="text-gray-600 w-4">:</span>
+                            <span class="font-medium text-gray-800" th:text="${#temporals.format(bioData.dateOfBirth, 'dd MMMM yyyy')}">DOB</span>
+                        </div>
+                        <div th:if="${bioData.birthTime != null}" class="flex py-1 border-b border-dotted text-sm" style="border-color: #D4C4A8;">
+                            <span class="text-gray-600 w-28 sm:w-32 md:w-36 flex-shrink-0">Time of Birth</span>
+                            <span class="text-gray-600 w-4">:</span>
+                            <span class="font-medium text-gray-800" th:text="${bioData.birthTime}">Time</span>
+                        </div>
+                        <div th:if="${bioData.birthPlace != null}" class="flex py-1 border-b border-dotted text-sm" style="border-color: #D4C4A8;">
+                            <span class="text-gray-600 w-28 sm:w-32 md:w-36 flex-shrink-0">Place of Birth</span>
+                            <span class="text-gray-600 w-4">:</span>
+                            <span class="font-medium text-gray-800" th:text="${bioData.birthPlace}">Place</span>
+                        </div>
+                        <div th:if="${bioData.rashi != null}" class="flex py-1 border-b border-dotted text-sm" style="border-color: #D4C4A8;">
+                            <span class="text-gray-600 w-28 sm:w-32 md:w-36 flex-shrink-0">Rashi</span>
+                            <span class="text-gray-600 w-4">:</span>
+                            <span class="font-medium text-gray-800" th:text="${bioData.rashi}">Rashi</span>
+                        </div>
+                        <div th:if="${bioData.nakshatra != null}" class="flex py-1 border-b border-dotted text-sm" style="border-color: #D4C4A8;">
+                            <span class="text-gray-600 w-28 sm:w-32 md:w-36 flex-shrink-0">Nakshatra</span>
+                            <span class="text-gray-600 w-4">:</span>
+                            <span class="font-medium text-gray-800" th:text="${bioData.nakshatra}">Nakshatra</span>
+                        </div>
+                        <div th:if="${bioData.gotra != null}" class="flex py-1 border-b border-dotted text-sm" style="border-color: #D4C4A8;">
+                            <span class="text-gray-600 w-28 sm:w-32 md:w-36 flex-shrink-0">Gotra</span>
+                            <span class="text-gray-600 w-4">:</span>
+                            <span class="font-medium text-gray-800" th:text="${bioData.gotra}">Gotra</span>
+                        </div>
+                        <div th:if="${bioData.manglikStatus != null}" class="flex py-1 border-b border-dotted text-sm" style="border-color: #D4C4A8;">
+                            <span class="text-gray-600 w-28 sm:w-32 md:w-36 flex-shrink-0">Manglik</span>
+                            <span class="text-gray-600 w-4">:</span>
+                            <span class="font-medium text-gray-800" th:text="${bioData.manglikStatus}">Status</span>
+                        </div>
+                        <div th:if="${bioData.height != null}" class="flex py-1 border-b border-dotted text-sm" style="border-color: #D4C4A8;">
+                            <span class="text-gray-600 w-28 sm:w-32 md:w-36 flex-shrink-0">Height</span>
+                            <span class="text-gray-600 w-4">:</span>
+                            <span class="font-medium text-gray-800" th:text="${bioData.height}">Height</span>
+                        </div>
+                        <div th:if="${bioData.highestQualification != null}" class="flex py-1 border-b border-dotted text-sm" style="border-color: #D4C4A8;">
+                            <span class="text-gray-600 w-28 sm:w-32 md:w-36 flex-shrink-0">Education</span>
+                            <span class="text-gray-600 w-4">:</span>
+                            <span class="font-medium text-gray-800" th:text="${bioData.highestQualification}">Education</span>
+                        </div>
+                        <div th:if="${bioData.occupation != null}" class="flex py-1 border-b border-dotted text-sm" style="border-color: #D4C4A8;">
+                            <span class="text-gray-600 w-28 sm:w-32 md:w-36 flex-shrink-0">Occupation</span>
+                            <span class="text-gray-600 w-4">:</span>
+                            <span class="font-medium text-gray-800" th:text="${bioData.occupation}">Occupation</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Family Details Section -->
+                <div th:if="${bioData.fatherName != null or bioData.motherName != null}" class="mb-6">
+                    <div class="mb-4">
+                        <div class="inline-block px-3 sm:px-4 py-1.5 sm:py-2 text-white text-xs sm:text-sm font-bold uppercase tracking-wide" style="background: #8B0000;">
+                            Family Details
+                        </div>
+                    </div>
+                    <div th:if="${bioData.fatherName != null}" class="flex py-1 border-b border-dotted text-sm" style="border-color: #D4C4A8;">
+                        <span class="text-gray-600 w-28 sm:w-32 md:w-36 flex-shrink-0">Father's Name</span>
+                        <span class="text-gray-600 w-4">:</span>
+                        <span class="font-medium text-gray-800" th:text="${bioData.fatherName}">Father</span>
+                    </div>
+                    <div th:if="${bioData.fatherOccupation != null}" class="flex py-1 border-b border-dotted text-sm" style="border-color: #D4C4A8;">
+                        <span class="text-gray-600 w-28 sm:w-32 md:w-36 flex-shrink-0">Father's Occupation</span>
+                        <span class="text-gray-600 w-4">:</span>
+                        <span class="font-medium text-gray-800" th:text="${bioData.fatherOccupation}">Occupation</span>
+                    </div>
+                    <div th:if="${bioData.motherName != null}" class="flex py-1 border-b border-dotted text-sm" style="border-color: #D4C4A8;">
+                        <span class="text-gray-600 w-28 sm:w-32 md:w-36 flex-shrink-0">Mother's Name</span>
+                        <span class="text-gray-600 w-4">:</span>
+                        <span class="font-medium text-gray-800" th:text="${bioData.motherName}">Mother</span>
+                    </div>
+                    <div th:if="${bioData.numberOfBrothers != null or bioData.numberOfSisters != null}" class="flex py-1 border-b border-dotted text-sm" style="border-color: #D4C4A8;">
+                        <span class="text-gray-600 w-28 sm:w-32 md:w-36 flex-shrink-0">Siblings</span>
+                        <span class="text-gray-600 w-4">:</span>
+                        <span class="font-medium text-gray-800">
+                            <span th:if="${bioData.numberOfBrothers != null and bioData.numberOfBrothers > 0}" th:text="${bioData.numberOfBrothers + ' Brother(s)'}"></span>
+                            <span th:if="${bioData.numberOfBrothers != null and bioData.numberOfBrothers > 0 and bioData.numberOfSisters != null and bioData.numberOfSisters > 0}">, </span>
+                            <span th:if="${bioData.numberOfSisters != null and bioData.numberOfSisters > 0}" th:text="${bioData.numberOfSisters + ' Sister(s)'}"></span>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Contact Details Section -->
+                <div th:if="${bioData.contactNumber != null or bioData.emailAddress != null}" class="mb-6">
+                    <div class="mb-4">
+                        <div class="inline-block px-3 sm:px-4 py-1.5 sm:py-2 text-white text-xs sm:text-sm font-bold uppercase tracking-wide" style="background: #8B0000;">
+                            Contact Information
+                        </div>
+                    </div>
+                    <div th:if="${bioData.contactNumber != null}" class="flex py-1 border-b border-dotted text-sm" style="border-color: #D4C4A8;">
+                        <span class="text-gray-600 w-28 sm:w-32 md:w-36 flex-shrink-0">Phone Number</span>
+                        <span class="text-gray-600 w-4">:</span>
+                        <span class="font-medium text-gray-800" th:text="${'+91 ' + bioData.contactNumber}">Phone</span>
+                    </div>
+                    <div th:if="${bioData.emailAddress != null}" class="flex py-1 border-b border-dotted text-sm" style="border-color: #D4C4A8;">
+                        <span class="text-gray-600 w-28 sm:w-32 md:w-36 flex-shrink-0">Email ID</span>
+                        <span class="text-gray-600 w-4">:</span>
+                        <span class="font-medium text-gray-800 break-all" th:text="${bioData.emailAddress}">Email</span>
+                    </div>
+                    <div th:if="${bioData.currentAddress != null or bioData.city != null}" class="flex py-1 border-b border-dotted text-sm" style="border-color: #D4C4A8;">
+                        <span class="text-gray-600 w-28 sm:w-32 md:w-36 flex-shrink-0">Address</span>
+                        <span class="text-gray-600 w-4">:</span>
+                        <span class="font-medium text-gray-800" th:text="${(bioData.currentAddress != null ? bioData.currentAddress + ', ' : '') + (bioData.city != null ? bioData.city : '')}">Address</span>
+                    </div>
+                </div>
+
+                <!-- About Me Section -->
+                <div th:if="${bioData.aboutMe != null}" class="mb-6">
+                    <div class="mb-4">
+                        <div class="inline-block px-3 sm:px-4 py-1.5 sm:py-2 text-white text-xs sm:text-sm font-bold uppercase tracking-wide" style="background: #8B0000;">
+                            About Me
+                        </div>
+                    </div>
+                    <div class="p-3 sm:p-4 border-l-4 text-sm" style="background: #EDE7D9; border-left-color: #8B0000;">
+                        <p class="text-gray-700 leading-relaxed" th:text="${bioData.aboutMe}">About me text...</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+</html>

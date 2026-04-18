@@ -51,7 +51,7 @@ public class BioDataService {
 
         // Set default template if not specified
         if (bioData.getSelectedTemplateId() == null || bioData.getSelectedTemplateId().isBlank()) {
-            bioData.setSelectedTemplateId("modern");
+            bioData.setSelectedTemplateId("traditional");
         }
 
         BioData saved = bioDataRepository.save(bioData);
@@ -373,7 +373,11 @@ public class BioDataService {
      * Get template for bio-data
      */
     public BioDataTemplate getTemplateForBioData(BioData bioData) {
-        return templateFactory.getTemplateOrDefault(bioData.getSelectedTemplateId());
+        String selectedId = bioData.getSelectedTemplateId();
+        BioDataTemplate template = templateFactory.getTemplateOrDefault(selectedId);
+        log.info("getTemplateForBioData - BioData ID: {}, selectedTemplateId: '{}', returned template ID: '{}'",
+                bioData.getId(), selectedId, template.getTemplateId());
+        return template;
     }
 
     // Helper method to update bio-data fields from DTO
@@ -459,7 +463,10 @@ public class BioDataService {
         // Custom Fields
         if (dto.getCustomFields() != null) bioData.setCustomFields(dto.getCustomFields());
 
-        // Template
-        if (dto.getSelectedTemplateId() != null) bioData.setSelectedTemplateId(dto.getSelectedTemplateId());
+        // Template - only update if a valid template ID is provided
+        if (dto.getSelectedTemplateId() != null && !dto.getSelectedTemplateId().isBlank()) {
+            log.debug("Updating template ID from '{}' to '{}'", bioData.getSelectedTemplateId(), dto.getSelectedTemplateId());
+            bioData.setSelectedTemplateId(dto.getSelectedTemplateId());
+        }
     }
 }

@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <style>
+        @page {
+            size: A4;
+            margin: 0;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Georgia', serif;
+            font-size: 10pt;
+            line-height: 1.4;
+            color: #333;
+            background: linear-gradient(180deg, #FFF5F7 0%, #FFF0F3 100%);
+        }
+        .page {
+            width: 210mm;
+            min-height: 297mm;
+            position: relative;
+            background: linear-gradient(180deg, #FFF5F7 0%, #FFF0F3 100%);
+        }
+        .header {
+            text-align: center;
+            padding: 8mm 0;
+            background: linear-gradient(135deg, #F472B6 0%, #EC4899 50%, #DB2777 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        .floral {
+            position: absolute;
+            font-size: 14pt;
+            opacity: 0.4;
+        }
+        .floral-1 { top: 2mm; left: 3mm; }
+        .floral-2 { top: 6mm; left: 15mm; }
+        .floral-3 { bottom: 2mm; left: 8mm; }
+        .floral-4 { top: 3mm; right: 5mm; }
+        .floral-5 { top: 8mm; right: 18mm; }
+        .floral-6 { bottom: 3mm; right: 10mm; }
+        .om-text {
+            font-size: 20pt;
+            color: #fff;
+            display: block;
+            margin-bottom: 2mm;
+        }
+        .header-title {
+            font-size: 12pt;
+            color: #fff;
+            font-weight: bold;
+        }
+        .header-subtitle {
+            font-size: 9pt;
+            color: rgba(255,255,255,0.9);
+            margin-top: 2mm;
+        }
+        .content {
+            padding: 8mm 12mm;
+        }
+        .profile-card {
+            background: #fff;
+            border-radius: 6mm;
+            padding: 8mm;
+            margin-bottom: 5mm;
+            border: 2px solid #FBCFE8;
+            position: relative;
+        }
+        .corner-flower {
+            position: absolute;
+            font-size: 16pt;
+        }
+        .flower-tl { top: 2mm; left: 2mm; }
+        .flower-tr { top: 2mm; right: 2mm; }
+        .flower-bl { bottom: 2mm; left: 2mm; }
+        .flower-br { bottom: 2mm; right: 2mm; }
+        .photo-frame {
+            text-align: center;
+            margin-bottom: 5mm;
+            position: relative;
+        }
+        .photo-roses {
+            position: absolute;
+            font-size: 14pt;
+        }
+        .rose-tl { top: -3mm; left: calc(50% - 28mm); }
+        .rose-tr { top: -3mm; right: calc(50% - 28mm); }
+        .rose-bl { bottom: -3mm; left: calc(50% - 28mm); }
+        .rose-br { bottom: -3mm; right: calc(50% - 28mm); }
+        .photo-box {
+            width: 40mm;
+            height: 50mm;
+            border: 3px solid #EC4899;
+            border-radius: 4mm;
+            overflow: hidden;
+            display: inline-block;
+            background: #FFF5F7;
+        }
+        .photo-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .name-text {
+            font-size: 18pt;
+            font-weight: bold;
+            color: #DB2777;
+            margin-top: 4mm;
+            text-align: center;
+        }
+        .occupation-text {
+            font-size: 10pt;
+            color: #EC4899;
+            text-align: center;
+        }
+        .info-grid {
+            display: table;
+            width: 100%;
+            margin-top: 5mm;
+        }
+        .info-row {
+            display: table-row;
+        }
+        .info-cell {
+            display: table-cell;
+            width: 50%;
+            padding: 2mm;
+            vertical-align: top;
+        }
+        .info-box {
+            background: #FDF2F8;
+            padding: 3mm;
+            border-radius: 3mm;
+            display: table;
+            width: 100%;
+        }
+        .info-box.alt {
+            background: #FFF1F2;
+        }
+        .info-icon {
+            display: table-cell;
+            width: 8mm;
+            font-size: 12pt;
+            vertical-align: middle;
+        }
+        .info-content {
+            display: table-cell;
+            vertical-align: middle;
+        }
+        .info-label {
+            font-size: 7pt;
+            color: #EC4899;
+        }
+        .info-value {
+            font-size: 9pt;
+            color: #BE185D;
+            font-weight: 500;
+        }
+        .section-card {
+            background: #fff;
+            border-radius: 6mm;
+            margin-bottom: 5mm;
+            overflow: hidden;
+            border: 2px solid #FBCFE8;
+        }
+        .section-header {
+            background: linear-gradient(90deg, #F472B6, #EC4899);
+            color: #fff;
+            padding: 3mm 5mm;
+            font-size: 10pt;
+            font-weight: bold;
+        }
+        .section-content {
+            padding: 4mm 5mm;
+        }
+        .detail-row {
+            display: table;
+            width: 100%;
+            padding: 2mm 0;
+            border-bottom: 1px solid #FCE7F3;
+        }
+        .detail-icon {
+            display: table-cell;
+            width: 8mm;
+            color: #EC4899;
+            font-size: 10pt;
+        }
+        .detail-label {
+            display: table-cell;
+            width: 30%;
+            color: #EC4899;
+            font-size: 9pt;
+        }
+        .detail-value {
+            display: table-cell;
+            color: #BE185D;
+            font-size: 9pt;
+            font-weight: 500;
+        }
+        .about-text {
+            font-size: 9pt;
+            color: #9D174D;
+            line-height: 1.6;
+        }
+        .footer {
+            text-align: center;
+            padding: 3mm;
+            background: linear-gradient(90deg, #F472B6, #EC4899);
+            color: #fff;
+            font-size: 10pt;
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <!-- Header -->
+        <div class="header">
+            <span class="floral floral-1">🌸</span>
+            <span class="floral floral-2">🌷</span>
+            <span class="floral floral-3">🌺</span>
+            <span class="floral floral-4">🌸</span>
+            <span class="floral floral-5">🌷</span>
+            <span class="floral floral-6">🌺</span>
+            <span class="om-text">🕉️</span>
+            <span class="header-title">|| श्री गणेशाय नमः ||</span>
+            <div class="header-subtitle">✿ Marriage Biodata ✿</div>
+        </div>
+
+        <div class="content">
+            <!-- Profile Card -->
+            <div class="profile-card">
+                <span class="corner-flower flower-tl">🌸</span>
+                <span class="corner-flower flower-tr">🌸</span>
+                <span class="corner-flower flower-bl">🌷</span>
+                <span class="corner-flower flower-br">🌷</span>
+
+                <div class="photo-frame">
+                    <span class="photo-roses rose-tl">🌹</span>
+                    <span class="photo-roses rose-tr">🌹</span>
+                    <span class="photo-roses rose-bl">🌹</span>
+                    <span class="photo-roses rose-br">🌹</span>
+                    <div class="photo-box">
+                        <img th:if="${hasPhoto}" th:src="'file:.' + ${bioData.photoPath}" alt="Photo"/>
+                        <div th:unless="${hasPhoto}" style="width:100%;height:100%;display:table-cell;vertical-align:middle;text-align:center;color:#EC4899;">Photo</div>
+                    </div>
+                </div>
+                <div class="name-text" th:text="${bioData.fullName}">Full Name</div>
+                <div th:if="${bioData.occupation}" class="occupation-text" th:text="${bioData.occupation}">Occupation</div>
+
+                <!-- Info Grid -->
+                <div class="info-grid">
+                    <div class="info-row">
+                        <div th:if="${bioData.dateOfBirth}" class="info-cell">
+                            <div class="info-box">
+                                <span class="info-icon">🎂</span>
+                                <div class="info-content">
+                                    <div class="info-label">Date of Birth</div>
+                                    <div class="info-value" th:text="${formattedDob}">DOB</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div th:if="${bioData.height}" class="info-cell">
+                            <div class="info-box alt">
+                                <span class="info-icon">📏</span>
+                                <div class="info-content">
+                                    <div class="info-label">Height</div>
+                                    <div class="info-value" th:text="${bioData.height}">Height</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="info-row">
+                        <div th:if="${bioData.rashi}" class="info-cell">
+                            <div class="info-box alt">
+                                <span class="info-icon">⭐</span>
+                                <div class="info-content">
+                                    <div class="info-label">Rashi</div>
+                                    <div class="info-value" th:text="${bioData.rashi}">Rashi</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div th:if="${bioData.nakshatra}" class="info-cell">
+                            <div class="info-box">
+                                <span class="info-icon">🌟</span>
+                                <div class="info-content">
+                                    <div class="info-label">Nakshatra</div>
+                                    <div class="info-value" th:text="${bioData.nakshatra}">Nakshatra</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="info-row">
+                        <div th:if="${bioData.gotra}" class="info-cell">
+                            <div class="info-box">
+                                <span class="info-icon">🏛️</span>
+                                <div class="info-content">
+                                    <div class="info-label">Gotra</div>
+                                    <div class="info-value" th:text="${bioData.gotra}">Gotra</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div th:if="${bioData.highestQualification}" class="info-cell">
+                            <div class="info-box alt">
+                                <span class="info-icon">🎓</span>
+                                <div class="info-content">
+                                    <div class="info-label">Education</div>
+                                    <div class="info-value" th:text="${bioData.highestQualification}">Education</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Family Details -->
+            <div th:if="${hasFamily}" class="section-card">
+                <div class="section-header">🌸 Family Details 🌸</div>
+                <div class="section-content">
+                    <div th:if="${bioData.fatherName}" class="detail-row">
+                        <span class="detail-icon">👨</span>
+                        <span class="detail-label">Father's Name</span>
+                        <span class="detail-value" th:text="${bioData.fatherName}">Father</span>
+                    </div>
+                    <div th:if="${bioData.fatherOccupation}" class="detail-row">
+                        <span class="detail-icon">💼</span>
+                        <span class="detail-label">Father's Work</span>
+                        <span class="detail-value" th:text="${bioData.fatherOccupation}">Occupation</span>
+                    </div>
+                    <div th:if="${bioData.motherName}" class="detail-row">
+                        <span class="detail-icon">👩</span>
+                        <span class="detail-label">Mother's Name</span>
+                        <span class="detail-value" th:text="${bioData.motherName}">Mother</span>
+                    </div>
+                    <div th:if="${bioData.numberOfBrothers != null or bioData.numberOfSisters != null}" class="detail-row">
+                        <span class="detail-icon">👨‍👩‍👧</span>
+                        <span class="detail-label">Siblings</span>
+                        <span class="detail-value">
+                            <span th:if="${bioData.numberOfBrothers != null}" th:text="${bioData.numberOfBrothers + ' Brother(s)'}"></span>
+                            <span th:if="${bioData.numberOfBrothers != null and bioData.numberOfSisters != null}">, </span>
+                            <span th:if="${bioData.numberOfSisters != null}" th:text="${bioData.numberOfSisters + ' Sister(s)'}"></span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Details -->
+            <div th:if="${hasContact}" class="section-card">
+                <div class="section-header">💌 Contact Information 💌</div>
+                <div class="section-content">
+                    <div th:if="${bioData.contactNumber}" class="detail-row">
+                        <span class="detail-icon">📱</span>
+                        <span class="detail-label">Phone</span>
+                        <span class="detail-value" th:text="${'+91 ' + bioData.contactNumber}">Phone</span>
+                    </div>
+                    <div th:if="${bioData.emailAddress}" class="detail-row">
+                        <span class="detail-icon">📧</span>
+                        <span class="detail-label">Email</span>
+                        <span class="detail-value" th:text="${bioData.emailAddress}">Email</span>
+                    </div>
+                    <div th:if="${bioData.currentAddress}" class="detail-row">
+                        <span class="detail-icon">🏠</span>
+                        <span class="detail-label">Address</span>
+                        <span class="detail-value" th:text="${bioData.currentAddress}">Address</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- About Me -->
+            <div th:if="${bioData.aboutMe}" class="section-card">
+                <div class="section-header">🌺 About Me 🌺</div>
+                <div class="section-content">
+                    <p class="about-text" th:text="${bioData.aboutMe}">About me...</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">🌸 🌷 🌹 🌺 🌸</div>
+    </div>
+</body>
+</html>

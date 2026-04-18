@@ -112,8 +112,12 @@ public class PdfService {
         Map<String, String> customFieldsMap = parseCustomFields(bioData.getCustomFields());
         context.setVariable("customFieldsMap", customFieldsMap);
 
-        // Use the PDF template (different from preview)
-        String templatePath = "biodata/pdf-template";
+        // Use template-specific PDF file based on selected template
+        String templateId = template.getTemplateId();
+        String templatePath = getTemplateSpecificPdfPath(templateId);
+
+        log.info("PDF Generation - BioData ID: {}, Selected Template ID: {}, Template Object ID: {}, PDF Path: {}",
+                bioData.getId(), bioData.getSelectedTemplateId(), templateId, templatePath);
 
         return templateEngine.process(templatePath, context);
     }
@@ -190,5 +194,21 @@ public class PdfService {
 
     private boolean hasPartnerPreferences(BioData b) {
         return b.getPreferredAgeRange() != null || b.getPreferredEducation() != null;
+    }
+
+    /**
+     * Get template-specific PDF file path based on template ID.
+     * Each template has its own unique PDF design.
+     */
+    private String getTemplateSpecificPdfPath(String templateId) {
+        return switch (templateId.toLowerCase()) {
+            case "traditional" -> "biodata/pdf/traditional-pdf";
+            case "royal" -> "biodata/pdf/royal-pdf";
+            case "modern" -> "biodata/pdf/modern-pdf";
+            case "elegant" -> "biodata/pdf/elegant-pdf";
+            case "floral" -> "biodata/pdf/floral-pdf";
+            case "simple" -> "biodata/pdf/simple-pdf";
+            default -> "biodata/pdf/traditional-pdf"; // fallback to traditional
+        };
     }
 }

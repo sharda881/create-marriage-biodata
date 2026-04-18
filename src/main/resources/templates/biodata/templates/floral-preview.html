@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!-- FLORAL TEMPLATE - Pink theme with floral decorations -->
+<div th:fragment="content" class="w-full">
+
+    <div style="background: linear-gradient(180deg, #FFF5F7 0%, #FFF0F3 100%);">
+
+        <!-- Floral Header -->
+        <div class="relative py-6 sm:py-8 text-center overflow-hidden" style="background: linear-gradient(135deg, #F472B6 0%, #EC4899 50%, #DB2777 100%);">
+            <!-- Floral decorations -->
+            <div class="absolute top-2 left-2 text-2xl opacity-40">🌸</div>
+            <div class="absolute top-6 left-16 text-xl opacity-30">🌷</div>
+            <div class="absolute bottom-2 left-8 text-lg opacity-40">🌺</div>
+            <div class="absolute top-4 right-4 text-2xl opacity-40">🌸</div>
+            <div class="absolute top-8 right-20 text-lg opacity-30">🌷</div>
+            <div class="absolute bottom-4 right-12 text-xl opacity-40">🌺</div>
+
+            <div class="text-2xl sm:text-3xl mb-2">🕉️</div>
+            <h1 class="text-xl sm:text-2xl font-bold text-white">|| श्री गणेशाय नमः ||</h1>
+            <p class="text-pink-200 text-sm mt-2">✿ Marriage Biodata ✿</p>
+        </div>
+
+        <!-- Main Content -->
+        <div class="p-4 sm:p-6 md:p-8">
+
+            <!-- Profile Section with Floral Frame -->
+            <div class="bg-white rounded-3xl shadow-lg overflow-hidden mb-6 border-2 border-pink-200 relative">
+                <!-- Corner flowers -->
+                <div class="absolute top-2 left-2 text-xl">🌸</div>
+                <div class="absolute top-2 right-2 text-xl">🌸</div>
+                <div class="absolute bottom-2 left-2 text-xl">🌷</div>
+                <div class="absolute bottom-2 right-2 text-xl">🌷</div>
+
+                <div class="p-6 sm:p-8 pt-8">
+                    <!-- Photo centered with floral frame -->
+                    <div class="flex flex-col items-center mb-6">
+                        <div class="relative">
+                            <div class="absolute -top-3 -left-3 text-2xl">🌹</div>
+                            <div class="absolute -top-3 -right-3 text-2xl">🌹</div>
+                            <div class="absolute -bottom-3 -left-3 text-2xl">🌹</div>
+                            <div class="absolute -bottom-3 -right-3 text-2xl">🌹</div>
+                            <div class="w-32 h-40 sm:w-36 sm:h-44 rounded-2xl overflow-hidden shadow-xl border-4 border-pink-300 relative z-10">
+                                <img th:if="${bioData.photoPath != null}" th:src="${bioData.photoPath}"
+                                     class="w-full h-full object-cover" alt="Profile Photo">
+                                <div th:unless="${bioData.photoPath != null}"
+                                     class="w-full h-full flex items-center justify-center text-pink-300 text-4xl bg-pink-50">
+                                    👤
+                                </div>
+                            </div>
+                        </div>
+                        <h2 class="text-xl sm:text-2xl font-bold text-pink-700 mt-4" th:text="${bioData.fullName}">Full Name</h2>
+                        <p th:if="${bioData.occupation != null}" class="text-pink-500 text-sm" th:text="${bioData.occupation}">Occupation</p>
+                    </div>
+
+                    <!-- Details in floral style -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div th:if="${bioData.dateOfBirth != null}" class="flex items-center p-3 bg-pink-50 rounded-xl">
+                            <span class="text-pink-400 mr-2">🎂</span>
+                            <div>
+                                <p class="text-xs text-pink-400">Date of Birth</p>
+                                <p class="text-sm font-medium text-pink-700" th:text="${#temporals.format(bioData.dateOfBirth, 'dd MMM yyyy')}">DOB</p>
+                            </div>
+                        </div>
+                        <div th:if="${bioData.birthTime != null}" class="flex items-center p-3 bg-rose-50 rounded-xl">
+                            <span class="text-rose-400 mr-2">⏰</span>
+                            <div>
+                                <p class="text-xs text-rose-400">Birth Time</p>
+                                <p class="text-sm font-medium text-rose-700" th:text="${bioData.birthTime}">Time</p>
+                            </div>
+                        </div>
+                        <div th:if="${bioData.height != null}" class="flex items-center p-3 bg-pink-50 rounded-xl">
+                            <span class="text-pink-400 mr-2">📏</span>
+                            <div>
+                                <p class="text-xs text-pink-400">Height</p>
+                                <p class="text-sm font-medium text-pink-700" th:text="${bioData.height}">Height</p>
+                            </div>
+                        </div>
+                        <div th:if="${bioData.rashi != null}" class="flex items-center p-3 bg-rose-50 rounded-xl">
+                            <span class="text-rose-400 mr-2">⭐</span>
+                            <div>
+                                <p class="text-xs text-rose-400">Rashi</p>
+                                <p class="text-sm font-medium text-rose-700" th:text="${bioData.rashi}">Rashi</p>
+                            </div>
+                        </div>
+                        <div th:if="${bioData.nakshatra != null}" class="flex items-center p-3 bg-pink-50 rounded-xl">
+                            <span class="text-pink-400 mr-2">🌟</span>
+                            <div>
+                                <p class="text-xs text-pink-400">Nakshatra</p>
+                                <p class="text-sm font-medium text-pink-700" th:text="${bioData.nakshatra}">Nakshatra</p>
+                            </div>
+                        </div>
+                        <div th:if="${bioData.gotra != null}" class="flex items-center p-3 bg-rose-50 rounded-xl">
+                            <span class="text-rose-400 mr-2">🏛️</span>
+                            <div>
+                                <p class="text-xs text-rose-400">Gotra</p>
+                                <p class="text-sm font-medium text-rose-700" th:text="${bioData.gotra}">Gotra</p>
+                            </div>
+                        </div>
+                        <div th:if="${bioData.highestQualification != null}" class="flex items-center p-3 bg-pink-50 rounded-xl">
+                            <span class="text-pink-400 mr-2">🎓</span>
+                            <div>
+                                <p class="text-xs text-pink-400">Education</p>
+                                <p class="text-sm font-medium text-pink-700" th:text="${bioData.highestQualification}">Education</p>
+                            </div>
+                        </div>
+                        <div th:if="${bioData.city != null}" class="flex items-center p-3 bg-rose-50 rounded-xl">
+                            <span class="text-rose-400 mr-2">📍</span>
+                            <div>
+                                <p class="text-xs text-rose-400">Location</p>
+                                <p class="text-sm font-medium text-rose-700" th:text="${bioData.city}">City</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Family Details -->
+            <div th:if="${bioData.fatherName != null or bioData.motherName != null}" class="bg-white rounded-3xl shadow-lg overflow-hidden mb-6 border-2 border-pink-200">
+                <div class="px-4 py-3 sm:px-6 sm:py-4" style="background: linear-gradient(90deg, #F472B6, #EC4899);">
+                    <h3 class="text-white font-bold text-sm sm:text-base">🌸 Family Details 🌸</h3>
+                </div>
+                <div class="p-4 sm:p-6 space-y-3">
+                    <div th:if="${bioData.fatherName != null}" class="flex py-2 border-b border-pink-100">
+                        <span class="text-pink-400 w-32 text-sm">👨 Father's Name</span>
+                        <span class="text-pink-700 font-medium text-sm" th:text="${bioData.fatherName}">Father</span>
+                    </div>
+                    <div th:if="${bioData.fatherOccupation != null}" class="flex py-2 border-b border-pink-100">
+                        <span class="text-pink-400 w-32 text-sm">💼 Father's Work</span>
+                        <span class="text-pink-700 font-medium text-sm" th:text="${bioData.fatherOccupation}">Occupation</span>
+                    </div>
+                    <div th:if="${bioData.motherName != null}" class="flex py-2 border-b border-pink-100">
+                        <span class="text-pink-400 w-32 text-sm">👩 Mother's Name</span>
+                        <span class="text-pink-700 font-medium text-sm" th:text="${bioData.motherName}">Mother</span>
+                    </div>
+                    <div th:if="${bioData.numberOfBrothers != null or bioData.numberOfSisters != null}" class="flex py-2">
+                        <span class="text-pink-400 w-32 text-sm">👨‍👩‍👧 Siblings</span>
+                        <span class="text-pink-700 font-medium text-sm">
+                            <span th:if="${bioData.numberOfBrothers != null}" th:text="${bioData.numberOfBrothers + ' Brother(s)'}"></span>
+                            <span th:if="${bioData.numberOfBrothers != null and bioData.numberOfSisters != null}">, </span>
+                            <span th:if="${bioData.numberOfSisters != null}" th:text="${bioData.numberOfSisters + ' Sister(s)'}"></span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Details -->
+            <div th:if="${bioData.contactNumber != null or bioData.emailAddress != null}" class="bg-white rounded-3xl shadow-lg overflow-hidden mb-6 border-2 border-pink-200">
+                <div class="px-4 py-3 sm:px-6 sm:py-4" style="background: linear-gradient(90deg, #F472B6, #EC4899);">
+                    <h3 class="text-white font-bold text-sm sm:text-base">💌 Contact Information 💌</h3>
+                </div>
+                <div class="p-4 sm:p-6 space-y-3">
+                    <div th:if="${bioData.contactNumber != null}" class="flex py-2 border-b border-pink-100">
+                        <span class="text-pink-400 w-32 text-sm">📱 Phone</span>
+                        <span class="text-pink-700 font-medium text-sm" th:text="${'+91 ' + bioData.contactNumber}">Phone</span>
+                    </div>
+                    <div th:if="${bioData.emailAddress != null}" class="flex py-2 border-b border-pink-100">
+                        <span class="text-pink-400 w-32 text-sm">📧 Email</span>
+                        <span class="text-pink-700 font-medium text-sm break-all" th:text="${bioData.emailAddress}">Email</span>
+                    </div>
+                    <div th:if="${bioData.currentAddress != null}" class="flex py-2">
+                        <span class="text-pink-400 w-32 text-sm flex-shrink-0">🏠 Address</span>
+                        <span class="text-pink-700 font-medium text-sm" th:text="${bioData.currentAddress}">Address</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- About Me -->
+            <div th:if="${bioData.aboutMe != null}" class="bg-white rounded-3xl shadow-lg overflow-hidden border-2 border-pink-200">
+                <div class="px-4 py-3 sm:px-6 sm:py-4" style="background: linear-gradient(90deg, #F472B6, #EC4899);">
+                    <h3 class="text-white font-bold text-sm sm:text-base">🌺 About Me 🌺</h3>
+                </div>
+                <div class="p-4 sm:p-6">
+                    <p class="text-pink-600 text-sm leading-relaxed" th:text="${bioData.aboutMe}">About me...</p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Floral Footer -->
+        <div class="py-3 text-center" style="background: linear-gradient(90deg, #F472B6, #EC4899);">
+            <span class="text-white text-sm">🌸 🌷 🌹 🌺 🌸</span>
+        </div>
+    </div>
+</div>
+
+</html>

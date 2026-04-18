@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <style>
+        @page {
+            size: A4;
+            margin: 0;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            font-size: 10pt;
+            line-height: 1.4;
+            color: #333;
+            background: #F5EBD8;
+        }
+        .page {
+            width: 210mm;
+            min-height: 297mm;
+            padding: 8mm;
+            position: relative;
+            background: #F5EBD8;
+        }
+        .border-container {
+            position: relative;
+            border: 2px solid #8B4513;
+            padding: 12mm 15mm;
+            min-height: 281mm;
+            background: #F5EBD8;
+        }
+        .corner-decoration {
+            position: absolute;
+            width: 30mm;
+            height: 30mm;
+        }
+        .corner-tl { top: 2mm; left: 2mm; }
+        .corner-tr { top: 2mm; right: 2mm; transform: scaleX(-1); }
+        .corner-bl { bottom: 2mm; left: 2mm; transform: scaleY(-1); }
+        .corner-br { bottom: 2mm; right: 2mm; transform: scale(-1, -1); }
+        .corner-svg { width: 100%; height: 100%; }
+        .content { position: relative; z-index: 5; }
+        .om-header {
+            text-align: center;
+            margin-bottom: 6mm;
+            padding-bottom: 3mm;
+        }
+        .om-symbol {
+            font-size: 24pt;
+            color: #8B0000;
+            display: block;
+            margin-bottom: 2mm;
+        }
+        .om-text {
+            font-size: 11pt;
+            color: #8B0000;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+        .section-header {
+            background: #8B0000;
+            color: #fff;
+            padding: 2mm 4mm;
+            font-size: 10pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4mm;
+            margin-top: 5mm;
+            display: inline-block;
+        }
+        .personal-section {
+            display: table;
+            width: 100%;
+            margin-bottom: 2mm;
+        }
+        .personal-info {
+            display: table-cell;
+            vertical-align: top;
+            width: 65%;
+            padding-right: 5mm;
+        }
+        .photo-container {
+            display: table-cell;
+            vertical-align: top;
+            width: 35%;
+            text-align: right;
+        }
+        .photo-box {
+            width: 38mm;
+            height: 48mm;
+            border: 2px solid #8B4513;
+            background: #E8E0D0;
+            overflow: hidden;
+            display: inline-block;
+        }
+        .photo-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .photo-placeholder {
+            width: 100%;
+            height: 100%;
+            display: table-cell;
+            vertical-align: middle;
+            text-align: center;
+            color: #999;
+            font-size: 9pt;
+        }
+        .info-row {
+            display: table;
+            width: 100%;
+            padding: 1mm 0;
+            border-bottom: 1px dotted #D4C4A8;
+        }
+        .info-label {
+            display: table-cell;
+            width: 38%;
+            color: #555;
+            font-size: 9pt;
+            vertical-align: top;
+            padding: 1mm 0;
+        }
+        .info-colon {
+            display: table-cell;
+            width: 4%;
+            color: #555;
+            font-size: 9pt;
+            text-align: center;
+            vertical-align: top;
+            padding: 1mm 0;
+        }
+        .info-value {
+            display: table-cell;
+            width: 58%;
+            color: #222;
+            font-size: 9pt;
+            font-weight: 500;
+            vertical-align: top;
+            padding: 1mm 0;
+        }
+        .info-row-full {
+            display: table;
+            width: 100%;
+            padding: 1mm 0;
+            border-bottom: 1px dotted #D4C4A8;
+        }
+        .info-row-full .info-label { width: 30%; }
+        .info-row-full .info-colon { width: 3%; }
+        .info-row-full .info-value { width: 67%; }
+        .about-content {
+            padding: 3mm;
+            background: #EDE7D9;
+            border-left: 3px solid #8B0000;
+            font-size: 9pt;
+            line-height: 1.5;
+            color: #444;
+            margin-top: 2mm;
+        }
+    </style>
+</head>
+<body>
+<div class="page">
+    <div class="border-container">
+        <!-- Corner Decorations -->
+        <div class="corner-decoration corner-tl">
+            <svg class="corner-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <path d="M 5 95 Q 5 5, 95 5" fill="none" stroke="#8B4513" stroke-width="2"/>
+                <path d="M 15 85 Q 15 15, 85 15" fill="none" stroke="#8B4513" stroke-width="1.5"/>
+                <path d="M 8 70 Q 20 60, 15 45 Q 10 55, 8 70" fill="#8B4513"/>
+                <path d="M 70 8 Q 60 20, 45 15 Q 55 10, 70 8" fill="#8B4513"/>
+                <circle cx="10" cy="10" r="4" fill="#8B4513"/>
+                <circle cx="10" cy="10" r="2" fill="#CD853F"/>
+            </svg>
+        </div>
+        <div class="corner-decoration corner-tr">
+            <svg class="corner-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <path d="M 5 95 Q 5 5, 95 5" fill="none" stroke="#8B4513" stroke-width="2"/>
+                <path d="M 15 85 Q 15 15, 85 15" fill="none" stroke="#8B4513" stroke-width="1.5"/>
+                <path d="M 8 70 Q 20 60, 15 45 Q 10 55, 8 70" fill="#8B4513"/>
+                <path d="M 70 8 Q 60 20, 45 15 Q 55 10, 70 8" fill="#8B4513"/>
+                <circle cx="10" cy="10" r="4" fill="#8B4513"/>
+                <circle cx="10" cy="10" r="2" fill="#CD853F"/>
+            </svg>
+        </div>
+        <div class="corner-decoration corner-bl">
+            <svg class="corner-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <path d="M 5 95 Q 5 5, 95 5" fill="none" stroke="#8B4513" stroke-width="2"/>
+                <path d="M 15 85 Q 15 15, 85 15" fill="none" stroke="#8B4513" stroke-width="1.5"/>
+                <circle cx="10" cy="10" r="4" fill="#8B4513"/>
+            </svg>
+        </div>
+        <div class="corner-decoration corner-br">
+            <svg class="corner-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <path d="M 5 95 Q 5 5, 95 5" fill="none" stroke="#8B4513" stroke-width="2"/>
+                <path d="M 15 85 Q 15 15, 85 15" fill="none" stroke="#8B4513" stroke-width="1.5"/>
+                <circle cx="10" cy="10" r="4" fill="#8B4513"/>
+            </svg>
+        </div>
+
+        <div class="content">
+            <!-- Om Header -->
+            <div class="om-header">
+                <span class="om-symbol">ॐ</span>
+                <span class="om-text">|| SHREE GANESHAYA NAMAH ||</span>
+            </div>
+
+            <!-- Personal Details Section -->
+            <div class="section-header">Profile Details</div>
+
+            <div class="personal-section">
+                <div class="personal-info">
+                    <div th:if="${bioData.fullName}" class="info-row">
+                        <span class="info-label">Name</span>
+                        <span class="info-colon">:</span>
+                        <span class="info-value" th:text="${bioData.fullName}">Name</span>
+                    </div>
+                    <div th:if="${bioData.dateOfBirth}" class="info-row">
+                        <span class="info-label">Date of Birth</span>
+                        <span class="info-colon">:</span>
+                        <span class="info-value" th:text="${formattedDob}">DOB</span>
+                    </div>
+                    <div th:if="${bioData.birthTime}" class="info-row">
+                        <span class="info-label">Time of Birth</span>
+                        <span class="info-colon">:</span>
+                        <span class="info-value" th:text="${bioData.birthTime}">Time</span>
+                    </div>
+                    <div th:if="${bioData.birthPlace}" class="info-row">
+                        <span class="info-label">Place of Birth</span>
+                        <span class="info-colon">:</span>
+                        <span class="info-value" th:text="${bioData.birthPlace}">Place</span>
+                    </div>
+                    <div th:if="${bioData.rashi}" class="info-row">
+                        <span class="info-label">Rashi</span>
+                        <span class="info-colon">:</span>
+                        <span class="info-value" th:text="${bioData.rashi}">Rashi</span>
+                    </div>
+                    <div th:if="${bioData.nakshatra}" class="info-row">
+                        <span class="info-label">Nakshatra</span>
+                        <span class="info-colon">:</span>
+                        <span class="info-value" th:text="${bioData.nakshatra}">Nakshatra</span>
+                    </div>
+                    <div th:if="${bioData.gotra}" class="info-row">
+                        <span class="info-label">Gotra</span>
+                        <span class="info-colon">:</span>
+                        <span class="info-value" th:text="${bioData.gotra}">Gotra</span>
+                    </div>
+                    <div th:if="${bioData.manglikStatus}" class="info-row">
+                        <span class="info-label">Manglik</span>
+                        <span class="info-colon">:</span>
+                        <span class="info-value" th:text="${bioData.manglikStatus}">Status</span>
+                    </div>
+                    <div th:if="${bioData.height}" class="info-row">
+                        <span class="info-label">Height</span>
+                        <span class="info-colon">:</span>
+                        <span class="info-value" th:text="${bioData.height}">Height</span>
+                    </div>
+                    <div th:if="${bioData.highestQualification}" class="info-row">
+                        <span class="info-label">Education</span>
+                        <span class="info-colon">:</span>
+                        <span class="info-value" th:text="${bioData.highestQualification}">Education</span>
+                    </div>
+                    <div th:if="${bioData.occupation}" class="info-row">
+                        <span class="info-label">Occupation</span>
+                        <span class="info-colon">:</span>
+                        <span class="info-value" th:text="${bioData.occupation}">Occupation</span>
+                    </div>
+                    <div th:if="${bioData.maritalStatus}" class="info-row">
+                        <span class="info-label">Marital Status</span>
+                        <span class="info-colon">:</span>
+                        <span class="info-value" th:text="${bioData.maritalStatus}">Status</span>
+                    </div>
+                </div>
+                <div class="photo-container">
+                    <div class="photo-box">
+                        <img th:if="${hasPhoto}" th:src="'file:.' + ${bioData.photoPath}" alt="Photo"/>
+                        <div th:unless="${hasPhoto}" class="photo-placeholder">Photo</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Family Details -->
+            <div th:if="${hasFamily}">
+                <div class="section-header">Family Details</div>
+                <div th:if="${bioData.fatherName}" class="info-row-full">
+                    <span class="info-label">Father's Name</span>
+                    <span class="info-colon">:</span>
+                    <span class="info-value" th:text="${bioData.fatherName}">Father</span>
+                </div>
+                <div th:if="${bioData.fatherOccupation}" class="info-row-full">
+                    <span class="info-label">Father's Occupation</span>
+                    <span class="info-colon">:</span>
+                    <span class="info-value" th:text="${bioData.fatherOccupation}">Occupation</span>
+                </div>
+                <div th:if="${bioData.motherName}" class="info-row-full">
+                    <span class="info-label">Mother's Name</span>
+                    <span class="info-colon">:</span>
+                    <span class="info-value" th:text="${bioData.motherName}">Mother</span>
+                </div>
+                <div th:if="${bioData.numberOfBrothers != null or bioData.numberOfSisters != null}" class="info-row-full">
+                    <span class="info-label">Siblings</span>
+                    <span class="info-colon">:</span>
+                    <span class="info-value">
+                            <span th:if="${bioData.numberOfBrothers != null and bioData.numberOfBrothers > 0}" th:text="${bioData.numberOfBrothers + ' Brother(s)'}"></span>
+                            <span th:if="${bioData.numberOfBrothers != null and bioData.numberOfBrothers > 0 and bioData.numberOfSisters != null and bioData.numberOfSisters > 0}">, </span>
+                            <span th:if="${bioData.numberOfSisters != null and bioData.numberOfSisters > 0}" th:text="${bioData.numberOfSisters + ' Sister(s)'}"></span>
+                        </span>
+                </div>
+            </div>
+
+            <!-- Contact Details -->
+            <div th:if="${hasContact}">
+                <div class="section-header">Contact Information</div>
+                <div th:if="${bioData.contactNumber}" class="info-row-full">
+                    <span class="info-label">Phone Number</span>
+                    <span class="info-colon">:</span>
+                    <span class="info-value" th:text="${'+91 ' + bioData.contactNumber}">Phone</span>
+                </div>
+                <div th:if="${bioData.emailAddress}" class="info-row-full">
+                    <span class="info-label">Email ID</span>
+                    <span class="info-colon">:</span>
+                    <span class="info-value" th:text="${bioData.emailAddress}">Email</span>
+                </div>
+                <div th:if="${bioData.currentAddress or bioData.city}" class="info-row-full">
+                    <span class="info-label">Address</span>
+                    <span class="info-colon">:</span>
+                    <span class="info-value" th:text="${(bioData.currentAddress != null ? bioData.currentAddress + ', ' : '') + (bioData.city != null ? bioData.city : '')}">Address</span>
+                </div>
+            </div>
+
+            <!-- About Me -->
+            <div th:if="${bioData.aboutMe}">
+                <div class="section-header">About Me</div>
+                <div class="about-content" th:text="${bioData.aboutMe}">About me...</div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

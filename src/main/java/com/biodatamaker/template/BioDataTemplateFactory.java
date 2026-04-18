@@ -55,10 +55,10 @@ public class BioDataTemplateFactory {
     }
 
     /**
-     * Get the default template (Modern)
+     * Get the default template (Traditional)
      */
     public BioDataTemplate getDefaultTemplate() {
-        return templateRegistry.get("modern");
+        return templateRegistry.get("traditional");
     }
 
     /**

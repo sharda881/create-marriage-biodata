@@ -37,10 +37,18 @@ public class BioDataController {
 
     /**
      * Show create bio-data form (Step 1: Personal Details)
+     * @param template Optional template ID from URL (e.g., from template selection page)
      */
     @GetMapping("/create")
-    public String createForm(Model model) {
-        model.addAttribute("bioData", new BioDataDTO());
+    public String createForm(@RequestParam(required = false) String template, Model model) {
+        BioDataDTO bioDataDTO = new BioDataDTO();
+
+        // Pre-select template if provided via URL
+        if (template != null && !template.isBlank()) {
+            bioDataDTO.setSelectedTemplateId(template);
+        }
+
+        model.addAttribute("bioData", bioDataDTO);
         model.addAttribute("templates", templateFactory.getAllTemplates());
         model.addAttribute("step", 1);
         model.addAttribute("isNew", true);

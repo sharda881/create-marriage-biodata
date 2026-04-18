@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!-- ROYAL TEMPLATE - Maroon/Gold theme with regal design, photo on top left -->
+<div th:fragment="content" class="w-full">
+
+    <!-- Page with royal maroon gradient -->
+    <div class="relative" style="background: linear-gradient(135deg, #722F37 0%, #8B3A42 50%, #722F37 100%); min-height: 500px;">
+
+        <!-- Gold decorative top border -->
+        <div class="h-3 sm:h-4" style="background: linear-gradient(90deg, #B8860B, #FFD700, #DAA520, #FFD700, #B8860B);"></div>
+
+        <!-- Main content area -->
+        <div class="p-4 sm:p-6 md:p-8">
+
+            <!-- Royal Header -->
+            <div class="text-center mb-6">
+                <div class="inline-block px-6 sm:px-8 py-2 rounded-lg" style="background: linear-gradient(135deg, #FFD700, #DAA520);">
+                    <span class="text-xl sm:text-2xl" style="color: #722F37;">👑</span>
+                    <span class="text-lg sm:text-xl font-bold tracking-wider ml-2" style="color: #722F37;">BIO-DATA</span>
+                    <span class="text-xl sm:text-2xl ml-2" style="color: #722F37;">👑</span>
+                </div>
+                <div class="mt-3 text-xs sm:text-sm font-semibold tracking-widest" style="color: #FFD700;">|| SHREE GANESHAYA NAMAH ||</div>
+            </div>
+
+            <!-- Photo and Name Header Section -->
+            <div class="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6 mb-6 p-4 rounded-lg" style="background: linear-gradient(135deg, rgba(255,215,0,0.15), rgba(218,165,32,0.1));">
+                <!-- Photo -->
+                <div class="flex-shrink-0">
+                    <div class="w-28 h-36 sm:w-32 sm:h-40 md:w-36 md:h-44 border-4 rounded-lg overflow-hidden shadow-lg" style="border-color: #FFD700; background: #F5F0E1;">
+                        <img th:if="${bioData.photoPath != null}" th:src="${bioData.photoPath}"
+                             class="w-full h-full object-cover" alt="Profile Photo">
+                        <div th:unless="${bioData.photoPath != null}"
+                             class="w-full h-full flex items-center justify-center text-gray-400 text-4xl bg-amber-50">
+                            👤
+                        </div>
+                    </div>
+                </div>
+                <!-- Name and basic info -->
+                <div class="text-center sm:text-left flex-1">
+                    <h2 class="text-xl sm:text-2xl md:text-3xl font-bold mb-2" style="color: #FFD700;" th:text="${bioData.fullName}">Full Name</h2>
+                    <p th:if="${bioData.occupation != null}" class="text-sm sm:text-base mb-1" style="color: #F5DEB3;" th:text="${bioData.occupation}">Occupation</p>
+                    <p th:if="${bioData.city != null}" class="text-sm" style="color: #DEB887;">
+                        📍 <span th:text="${bioData.city + (bioData.state != null ? ', ' + bioData.state : '')}">Location</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Personal Details Card -->
+            <div class="rounded-lg overflow-hidden mb-6 shadow-lg" style="background: rgba(255,255,255,0.95);">
+                <div class="px-4 py-2 sm:px-6 sm:py-3" style="background: linear-gradient(90deg, #722F37, #8B3A42);">
+                    <h3 class="text-white font-bold text-sm sm:text-base uppercase tracking-wide">✨ Personal Details</h3>
+                </div>
+                <div class="p-4 sm:p-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div th:if="${bioData.dateOfBirth != null}" class="flex">
+                        <span class="text-gray-500 w-28 sm:w-32 text-sm">Date of Birth</span>
+                        <span class="text-gray-800 font-medium text-sm" th:text="${#temporals.format(bioData.dateOfBirth, 'dd MMM yyyy')}">DOB</span>
+                    </div>
+                    <div th:if="${bioData.birthTime != null}" class="flex">
+                        <span class="text-gray-500 w-28 sm:w-32 text-sm">Birth Time</span>
+                        <span class="text-gray-800 font-medium text-sm" th:text="${bioData.birthTime}">Time</span>
+                    </div>
+                    <div th:if="${bioData.birthPlace != null}" class="flex">
+                        <span class="text-gray-500 w-28 sm:w-32 text-sm">Birth Place</span>
+                        <span class="text-gray-800 font-medium text-sm" th:text="${bioData.birthPlace}">Place</span>
+                    </div>
+                    <div th:if="${bioData.height != null}" class="flex">
+                        <span class="text-gray-500 w-28 sm:w-32 text-sm">Height</span>
+                        <span class="text-gray-800 font-medium text-sm" th:text="${bioData.height}">Height</span>
+                    </div>
+                    <div th:if="${bioData.rashi != null}" class="flex">
+                        <span class="text-gray-500 w-28 sm:w-32 text-sm">Rashi</span>
+                        <span class="text-gray-800 font-medium text-sm" th:text="${bioData.rashi}">Rashi</span>
+                    </div>
+                    <div th:if="${bioData.nakshatra != null}" class="flex">
+                        <span class="text-gray-500 w-28 sm:w-32 text-sm">Nakshatra</span>
+                        <span class="text-gray-800 font-medium text-sm" th:text="${bioData.nakshatra}">Nakshatra</span>
+                    </div>
+                    <div th:if="${bioData.gotra != null}" class="flex">
+                        <span class="text-gray-500 w-28 sm:w-32 text-sm">Gotra</span>
+                        <span class="text-gray-800 font-medium text-sm" th:text="${bioData.gotra}">Gotra</span>
+                    </div>
+                    <div th:if="${bioData.manglikStatus != null}" class="flex">
+                        <span class="text-gray-500 w-28 sm:w-32 text-sm">Manglik</span>
+                        <span class="text-gray-800 font-medium text-sm" th:text="${bioData.manglikStatus}">Status</span>
+                    </div>
+                    <div th:if="${bioData.highestQualification != null}" class="flex">
+                        <span class="text-gray-500 w-28 sm:w-32 text-sm">Education</span>
+                        <span class="text-gray-800 font-medium text-sm" th:text="${bioData.highestQualification}">Education</span>
+                    </div>
+                    <div th:if="${bioData.maritalStatus != null}" class="flex">
+                        <span class="text-gray-500 w-28 sm:w-32 text-sm">Marital Status</span>
+                        <span class="text-gray-800 font-medium text-sm" th:text="${bioData.maritalStatus}">Status</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Family Details Card -->
+            <div th:if="${bioData.fatherName != null or bioData.motherName != null}" class="rounded-lg overflow-hidden mb-6 shadow-lg" style="background: rgba(255,255,255,0.95);">
+                <div class="px-4 py-2 sm:px-6 sm:py-3" style="background: linear-gradient(90deg, #722F37, #8B3A42);">
+                    <h3 class="text-white font-bold text-sm sm:text-base uppercase tracking-wide">👨‍👩‍👧 Family Details</h3>
+                </div>
+                <div class="p-4 sm:p-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div th:if="${bioData.fatherName != null}" class="flex">
+                        <span class="text-gray-500 w-28 sm:w-32 text-sm">Father's Name</span>
+                        <span class="text-gray-800 font-medium text-sm" th:text="${bioData.fatherName}">Father</span>
+                    </div>
+                    <div th:if="${bioData.fatherOccupation != null}" class="flex">
+                        <span class="text-gray-500 w-28 sm:w-32 text-sm">Father's Work</span>
+                        <span class="text-gray-800 font-medium text-sm" th:text="${bioData.fatherOccupation}">Occupation</span>
+                    </div>
+                    <div th:if="${bioData.motherName != null}" class="flex">
+                        <span class="text-gray-500 w-28 sm:w-32 text-sm">Mother's Name</span>
+                        <span class="text-gray-800 font-medium text-sm" th:text="${bioData.motherName}">Mother</span>
+                    </div>
+                    <div th:if="${bioData.numberOfBrothers != null or bioData.numberOfSisters != null}" class="flex">
+                        <span class="text-gray-500 w-28 sm:w-32 text-sm">Siblings</span>
+                        <span class="text-gray-800 font-medium text-sm">
+                            <span th:if="${bioData.numberOfBrothers != null}" th:text="${bioData.numberOfBrothers + ' Brother(s)'}"></span>
+                            <span th:if="${bioData.numberOfBrothers != null and bioData.numberOfSisters != null}">, </span>
+                            <span th:if="${bioData.numberOfSisters != null}" th:text="${bioData.numberOfSisters + ' Sister(s)'}"></span>
+                        </span>
+                    </div>
+                    <div th:if="${bioData.familyType != null}" class="flex">
+                        <span class="text-gray-500 w-28 sm:w-32 text-sm">Family Type</span>
+                        <span class="text-gray-800 font-medium text-sm" th:text="${bioData.familyType}">Type</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Details Card -->
+            <div th:if="${bioData.contactNumber != null or bioData.emailAddress != null}" class="rounded-lg overflow-hidden mb-6 shadow-lg" style="background: rgba(255,255,255,0.95);">
+                <div class="px-4 py-2 sm:px-6 sm:py-3" style="background: linear-gradient(90deg, #722F37, #8B3A42);">
+                    <h3 class="text-white font-bold text-sm sm:text-base uppercase tracking-wide">📞 Contact Information</h3>
+                </div>
+                <div class="p-4 sm:p-6 space-y-3">
+                    <div th:if="${bioData.contactNumber != null}" class="flex items-center">
+                        <span class="text-gray-500 w-28 sm:w-32 text-sm">Phone</span>
+                        <span class="text-gray-800 font-medium text-sm" th:text="${'+91 ' + bioData.contactNumber}">Phone</span>
+                    </div>
+                    <div th:if="${bioData.emailAddress != null}" class="flex items-center">
+                        <span class="text-gray-500 w-28 sm:w-32 text-sm">Email</span>
+                        <span class="text-gray-800 font-medium text-sm break-all" th:text="${bioData.emailAddress}">Email</span>
+                    </div>
+                    <div th:if="${bioData.currentAddress != null}" class="flex items-start">
+                        <span class="text-gray-500 w-28 sm:w-32 text-sm flex-shrink-0">Address</span>
+                        <span class="text-gray-800 font-medium text-sm" th:text="${bioData.currentAddress}">Address</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- About Me Card -->
+            <div th:if="${bioData.aboutMe != null}" class="rounded-lg overflow-hidden shadow-lg" style="background: rgba(255,255,255,0.95);">
+                <div class="px-4 py-2 sm:px-6 sm:py-3" style="background: linear-gradient(90deg, #722F37, #8B3A42);">
+                    <h3 class="text-white font-bold text-sm sm:text-base uppercase tracking-wide">💫 About Me</h3>
+                </div>
+                <div class="p-4 sm:p-6">
+                    <p class="text-gray-700 text-sm leading-relaxed" th:text="${bioData.aboutMe}">About me...</p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Gold decorative bottom border -->
+        <div class="h-3 sm:h-4" style="background: linear-gradient(90deg, #B8860B, #FFD700, #DAA520, #FFD700, #B8860B);"></div>
+    </div>
+</div>
+
+</html>

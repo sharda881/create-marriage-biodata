@@ -257,7 +257,7 @@ public class BioDataDTO {
                 .hobbiesAndInterests(this.hobbiesAndInterests)
                 .customFields(this.customFields)
                 .photoPath(this.photoPath)
-                .selectedTemplateId(this.selectedTemplateId != null ? this.selectedTemplateId : "modern")
+                .selectedTemplateId(this.selectedTemplateId != null && !this.selectedTemplateId.isBlank() ? this.selectedTemplateId : "traditional")
                 .status(this.status != null ? this.status : BioData.BioDataStatus.DRAFT)
                 .isPaid(this.isPaid != null ? this.isPaid : false)
                 .build();
