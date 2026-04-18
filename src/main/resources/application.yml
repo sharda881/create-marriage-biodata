@@ -1,0 +1,145 @@
+# =============================================================
+# Marriage Bio-Data Maker - Application Configuration
+# =============================================================
+
+spring:
+  application:
+    name: Marriage Bio-Data Maker
+
+  # Default profile
+  profiles:
+    active: dev
+
+  # Thymeleaf Configuration
+  thymeleaf:
+    cache: false
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML
+
+  # Servlet Configuration
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 50MB
+
+# Server Configuration (for Tomcat connector maxPostSize)
+server:
+  tomcat:
+    max-http-form-post-size: 50MB
+    max-swallow-size: 50MB
+
+  # Security - OAuth2 Configuration
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID:your-google-client-id}
+            client-secret: ${GOOGLE_CLIENT_SECRET:your-google-client-secret}
+            scope:
+              - email
+              - profile
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+
+# Application Custom Properties
+app:
+  name: Marriage Bio-Data Maker
+  version: 1.0.0
+  upload:
+    path: ${UPLOAD_PATH:./uploads}
+  payment:
+    qr-code-path: /images/payment_qr.png
+    upi-id: ${UPI_ID:example@upi}
+
+# Logging Configuration
+logging:
+  level:
+    root: INFO
+    com.biodatamaker: DEBUG
+    org.springframework.security: DEBUG
+
+---
+# =============================================================
+# Development Profile (H2 Database)
+# =============================================================
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+  # H2 Database Configuration
+  datasource:
+    url: jdbc:h2:file:./data/biodata_dev;DB_CLOSE_ON_EXIT=FALSE;AUTO_RECONNECT=TRUE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  # H2 Console
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+      settings:
+        web-allow-others: false
+
+  # JPA Configuration for H2
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+# Dev Server Configuration
+server:
+  port: 8080
+
+---
+# =============================================================
+# Production Profile (PostgreSQL Database)
+# =============================================================
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  # PostgreSQL Database Configuration
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/biodata_db}
+    driver-class-name: org.postgresql.Driver
+    username: ${DATABASE_USERNAME:postgres}
+    password: ${DATABASE_PASSWORD:postgres}
+
+  # H2 Console disabled in production
+  h2:
+    console:
+      enabled: false
+
+  # JPA Configuration for PostgreSQL
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+
+  # Thymeleaf caching enabled in production
+  thymeleaf:
+    cache: true
+
+# Production Server Configuration
+server:
+  port: ${PORT:8080}
+
+# Production Logging
+logging:
+  level:
+    root: WARN
+    com.biodatamaker: INFO
+    org.springframework.security: WARN

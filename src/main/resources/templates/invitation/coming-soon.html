@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Wedding Invitation Card')}"></head>
+<body class="bg-gradient-to-br from-pink-50 via-purple-50 to-orange-50 min-h-screen">
+
+    <!-- Navbar -->
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <!-- Main Content -->
+    <main class="pt-20 pb-10">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <!-- Hero Section -->
+            <div class="text-center py-16">
+                <!-- Decorative Elements -->
+                <div class="relative inline-block mb-8">
+                    <div class="absolute -top-4 -left-4 w-20 h-20 bg-pink-200 rounded-full opacity-50 animate-pulse"></div>
+                    <div class="absolute -bottom-4 -right-4 w-16 h-16 bg-purple-200 rounded-full opacity-50 animate-pulse" style="animation-delay: 0.5s;"></div>
+                    <div class="relative text-8xl">💌</div>
+                </div>
+
+                <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
+                    Wedding <span class="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-600">Invitation Card</span> Maker
+                </h1>
+
+                <p class="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+                    Create stunning, personalized wedding invitation cards that capture the essence of your special day
+                </p>
+
+                <!-- Coming Soon Badge -->
+                <div class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-full text-lg font-semibold shadow-lg mb-12">
+                    <span class="animate-pulse mr-2">🚧</span>
+                    Coming Soon
+                    <span class="animate-pulse ml-2">🚧</span>
+                </div>
+            </div>
+
+            <!-- Feature Preview Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+                <!-- Feature 1 -->
+                <div class="bg-white rounded-2xl shadow-xl p-8 transform hover:-translate-y-2 transition-all duration-300">
+                    <div class="w-16 h-16 bg-pink-100 rounded-2xl flex items-center justify-center mb-6">
+                        <span class="text-3xl">🎨</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">Beautiful Templates</h3>
+                    <p class="text-gray-600">Choose from 50+ stunning wedding invitation designs - Traditional, Modern, Floral, Royal & more</p>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="bg-white rounded-2xl shadow-xl p-8 transform hover:-translate-y-2 transition-all duration-300">
+                    <div class="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center mb-6">
+                        <span class="text-3xl">✏️</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">Easy Customization</h3>
+                    <p class="text-gray-600">Add your names, photos, venue details, and customize colors & fonts to match your theme</p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="bg-white rounded-2xl shadow-xl p-8 transform hover:-translate-y-2 transition-all duration-300">
+                    <div class="w-16 h-16 bg-orange-100 rounded-2xl flex items-center justify-center mb-6">
+                        <span class="text-3xl">📱</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">Share Anywhere</h3>
+                    <p class="text-gray-600">Download HD images, PDFs, or share directly via WhatsApp, Email & Social Media</p>
+                </div>
+            </div>
+
+            <!-- Sample Invitation Preview -->
+            <div class="bg-white rounded-3xl shadow-2xl p-8 md:p-12 mb-16">
+                <h2 class="text-2xl font-bold text-center text-gray-800 mb-8">Preview of What's Coming</h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Sample Card 1 -->
+                    <div class="relative group">
+                        <div class="bg-gradient-to-br from-red-100 to-orange-100 rounded-xl p-4 aspect-[3/4] flex flex-col items-center justify-center border-4 border-red-200">
+                            <div class="text-4xl mb-3">🪷</div>
+                            <div class="text-center">
+                                <p class="text-red-800 text-xs font-semibold">WEDDING INVITATION</p>
+                                <p class="text-red-600 text-lg font-bold mt-2">Priya & Rahul</p>
+                                <p class="text-red-500 text-xs mt-1">15th March 2025</p>
+                            </div>
+                        </div>
+                        <div class="absolute inset-0 bg-black bg-opacity-50 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <span class="text-white font-semibold">Traditional</span>
+                        </div>
+                    </div>
+
+                    <!-- Sample Card 2 -->
+                    <div class="relative group">
+                        <div class="bg-gradient-to-br from-purple-100 to-pink-100 rounded-xl p-4 aspect-[3/4] flex flex-col items-center justify-center border-4 border-purple-200">
+                            <div class="text-4xl mb-3">💜</div>
+                            <div class="text-center">
+                                <p class="text-purple-800 text-xs font-semibold tracking-widest">SAVE THE DATE</p>
+                                <p class="text-purple-600 text-lg font-bold mt-2">Ananya & Vikram</p>
+                                <p class="text-purple-500 text-xs mt-1">20th April 2025</p>
+                            </div>
+                        </div>
+                        <div class="absolute inset-0 bg-black bg-opacity-50 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <span class="text-white font-semibold">Modern</span>
+                        </div>
+                    </div>
+
+                    <!-- Sample Card 3 -->
+                    <div class="relative group">
+                        <div class="bg-gradient-to-br from-amber-100 to-yellow-100 rounded-xl p-4 aspect-[3/4] flex flex-col items-center justify-center border-4 border-amber-300">
+                            <div class="text-4xl mb-3">👑</div>
+                            <div class="text-center">
+                                <p class="text-amber-800 text-xs font-semibold">ROYAL WEDDING</p>
+                                <p class="text-amber-700 text-lg font-bold mt-2">Meera & Arjun</p>
+                                <p class="text-amber-600 text-xs mt-1">10th May 2025</p>
+                            </div>
+                        </div>
+                        <div class="absolute inset-0 bg-black bg-opacity-50 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <span class="text-white font-semibold">Royal</span>
+                        </div>
+                    </div>
+
+                    <!-- Sample Card 4 -->
+                    <div class="relative group">
+                        <div class="bg-gradient-to-br from-green-100 to-teal-100 rounded-xl p-4 aspect-[3/4] flex flex-col items-center justify-center border-4 border-green-200">
+                            <div class="text-4xl mb-3">🌸</div>
+                            <div class="text-center">
+                                <p class="text-green-800 text-xs font-semibold">YOU ARE INVITED</p>
+                                <p class="text-green-600 text-lg font-bold mt-2">Kavya & Rohan</p>
+                                <p class="text-green-500 text-xs mt-1">25th June 2025</p>
+                            </div>
+                        </div>
+                        <div class="absolute inset-0 bg-black bg-opacity-50 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <span class="text-white font-semibold">Floral</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- What You Can Create Section -->
+            <div class="mb-16">
+                <h2 class="text-2xl font-bold text-center text-gray-800 mb-8">What You'll Be Able to Create</h2>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="bg-white rounded-xl p-4 text-center shadow-md hover:shadow-lg transition-shadow">
+                        <span class="text-3xl">💒</span>
+                        <p class="text-sm font-medium text-gray-700 mt-2">Wedding Cards</p>
+                    </div>
+                    <div class="bg-white rounded-xl p-4 text-center shadow-md hover:shadow-lg transition-shadow">
+                        <span class="text-3xl">💍</span>
+                        <p class="text-sm font-medium text-gray-700 mt-2">Engagement Cards</p>
+                    </div>
+                    <div class="bg-white rounded-xl p-4 text-center shadow-md hover:shadow-lg transition-shadow">
+                        <span class="text-3xl">🎊</span>
+                        <p class="text-sm font-medium text-gray-700 mt-2">Sangeet Cards</p>
+                    </div>
+                    <div class="bg-white rounded-xl p-4 text-center shadow-md hover:shadow-lg transition-shadow">
+                        <span class="text-3xl">🪔</span>
+                        <p class="text-sm font-medium text-gray-700 mt-2">Haldi Cards</p>
+                    </div>
+                    <div class="bg-white rounded-xl p-4 text-center shadow-md hover:shadow-lg transition-shadow">
+                        <span class="text-3xl">🌺</span>
+                        <p class="text-sm font-medium text-gray-700 mt-2">Mehendi Cards</p>
+                    </div>
+                    <div class="bg-white rounded-xl p-4 text-center shadow-md hover:shadow-lg transition-shadow">
+                        <span class="text-3xl">🎉</span>
+                        <p class="text-sm font-medium text-gray-700 mt-2">Reception Cards</p>
+                    </div>
+                    <div class="bg-white rounded-xl p-4 text-center shadow-md hover:shadow-lg transition-shadow">
+                        <span class="text-3xl">📅</span>
+                        <p class="text-sm font-medium text-gray-700 mt-2">Save The Date</p>
+                    </div>
+                    <div class="bg-white rounded-xl p-4 text-center shadow-md hover:shadow-lg transition-shadow">
+                        <span class="text-3xl">🙏</span>
+                        <p class="text-sm font-medium text-gray-700 mt-2">Thank You Cards</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notify Me Section -->
+            <div class="bg-gradient-to-r from-pink-500 to-purple-600 rounded-3xl p-8 md:p-12 text-center text-white">
+                <h2 class="text-2xl md:text-3xl font-bold mb-4">Be the First to Know!</h2>
+                <p class="text-pink-100 mb-8 max-w-xl mx-auto">
+                    We're working hard to bring you the best wedding invitation card maker. 
+                    Enter your email to get notified when we launch!
+                </p>
+
+                <form class="max-w-md mx-auto flex flex-col sm:flex-row gap-4">
+                    <input type="email" placeholder="Enter your email"
+                           class="flex-1 px-6 py-3 rounded-full text-gray-800 focus:outline-none focus:ring-4 focus:ring-pink-300">
+                    <button type="button" onclick="showNotifyAlert()"
+                            class="px-8 py-3 bg-white text-purple-600 font-semibold rounded-full hover:bg-pink-100 transition-colors">
+                        Notify Me
+                    </button>
+                </form>
+
+                <p class="text-pink-200 text-sm mt-4">No spam, we promise! Just one email when we launch.</p>
+            </div>
+
+            <!-- Back to Home -->
+            <div class="text-center mt-12">
+                <a href="/" class="inline-flex items-center text-purple-600 hover:text-purple-800 font-medium">
+                    <span class="mr-2">←</span> Back to Home
+                </a>
+                <span class="mx-4 text-gray-300">|</span>
+                <a href="/templates" class="inline-flex items-center text-purple-600 hover:text-purple-800 font-medium">
+                    Browse Bio-Data Templates <span class="ml-2">→</span>
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+
+    <!-- JavaScript for Notify Alert -->
+    <script>
+        function showNotifyAlert() {
+            const email = document.querySelector('input[type="email"]').value;
+            if (email && email.includes('@')) {
+                alert('Thank you! We will notify you at ' + email + ' when the Wedding Invitation Card Maker launches!');
+                document.querySelector('input[type="email"]').value = '';
+            } else {
+                alert('Please enter a valid email address.');
+            }
+        }
+    </script>
+
+    <style>
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+    </style>
+
+</body>
+</html>

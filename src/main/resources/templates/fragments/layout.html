@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<!-- Common Head Fragment -->
+<head th:fragment="head(title)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title} + ' | Marriage Bio-Data Maker'">Marriage Bio-Data Maker</title>
+    <link rel="icon" type="image/svg+xml" th:href="@{/favicon.svg}">
+
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Custom Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#FEF2F2',
+                            100: '#FEE2E2',
+                            200: '#FECACA',
+                            300: '#FCA5A5',
+                            400: '#F87171',
+                            500: '#EF4444',
+                            600: '#DC2626',
+                            700: '#B91C1C',
+                            800: '#991B1B',
+                            900: '#7F1D1D',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Alpine.js for interactive components -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom Styles -->
+    <style>
+        /* Hide elements with x-cloak until Alpine.js loads */
+        [x-cloak] { display: none !important; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+    </style>
+</head>
+
+<!-- Navigation Fragment -->
+<nav th:fragment="navbar" class="bg-white shadow-lg fixed w-full top-0 z-50" x-data="{ mobileMenuOpen: false }">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16">
+            <!-- Logo -->
+            <div class="flex items-center">
+                <a th:href="${#authorization.expression('isAuthenticated()') ? '/dashboard' : '/'}" class="flex items-center">
+                    <span class="text-2xl">💒</span>
+                    <span class="ml-2 text-xl font-bold text-gray-800">BioData Maker</span>
+                </a>
+            </div>
+
+            <!-- Desktop Navigation Links -->
+            <div class="hidden md:flex items-center space-x-4">
+                <!-- Links for authenticated users -->
+                <a sec:authorize="isAuthenticated()" href="/dashboard" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
+                    Dashboard
+                </a>
+                <a sec:authorize="isAuthenticated()" href="/biodata/create" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
+                    Create New
+                </a>
+                <a href="/templates" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
+                    Templates
+                </a>
+
+                <!-- Wedding Invitation Card - NEW -->
+                <a href="/invitation-card" class="relative text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center">
+                    <span>💌 Invitation Card</span>
+                    <span class="ml-1 px-1.5 py-0.5 text-xs bg-gradient-to-r from-pink-500 to-orange-400 text-white rounded-full">NEW</span>
+                </a>
+
+                <!-- Admin Link -->
+                <a sec:authorize="hasRole('ADMIN')" href="/admin"
+                   class="text-purple-600 hover:text-purple-800 px-3 py-2 rounded-md text-sm font-medium">
+                    Admin Panel
+                </a>
+            </div>
+
+            <!-- Right side buttons -->
+            <div class="flex items-center space-x-2">
+                <!-- User Menu for authenticated users (Desktop) -->
+                <div sec:authorize="isAuthenticated()" class="hidden md:flex items-center">
+                    <div class="relative" x-data="{ open: false }">
+                        <button @click="open = !open" class="flex items-center space-x-2 text-gray-700 hover:text-gray-900">
+                            <div class="w-8 h-8 rounded-full bg-gradient-to-r from-purple-400 to-pink-500 flex items-center justify-center text-white font-semibold"
+                                 sec:authentication="name" th:text="${#strings.substring(#authentication.name, 0, 1).toUpperCase()}">U</div>
+                            <span class="hidden md:block text-sm font-medium" sec:authentication="name">User</span>
+                        </button>
+
+                        <!-- Dropdown Menu -->
+                        <div x-show="open" @click.away="open = false"
+                             class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+                            <a href="/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                Profile
+                            </a>
+                            <a href="/payment/history" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                Payment History
+                            </a>
+                            <div class="border-t border-gray-100"></div>
+                            <form th:action="@{/logout}" method="post">
+                                <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
+                                    Logout
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Login/Register buttons for unauthenticated users (Desktop) -->
+                <div sec:authorize="!isAuthenticated()" class="hidden md:flex items-center space-x-4">
+                    <a href="/login" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
+                        Login
+                    </a>
+                    <a href="/register" class="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:shadow-lg transition-shadow">
+                        Sign Up
+                    </a>
+                </div>
+
+                <!-- Mobile menu button -->
+                <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 focus:outline-none">
+                    <svg class="h-6 w-6" x-show="!mobileMenuOpen" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                    <svg class="h-6 w-6" x-show="mobileMenuOpen" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="display: none;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div x-show="mobileMenuOpen" @click.away="mobileMenuOpen = false" class="md:hidden bg-white border-t border-gray-200 shadow-lg">
+        <div class="px-4 py-4 space-y-2">
+            <!-- Public Links -->
+            <a href="/templates" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100">
+                🎨 Templates
+            </a>
+            <a href="/invitation-card" class="flex items-center px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100">
+                💌 Invitation Card
+                <span class="ml-2 px-1.5 py-0.5 text-xs bg-gradient-to-r from-pink-500 to-orange-400 text-white rounded-full">NEW</span>
+            </a>
+
+            <!-- Authenticated Links -->
+            <div sec:authorize="isAuthenticated()">
+                <div class="border-t border-gray-200 my-2"></div>
+                <a href="/dashboard" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100">
+                    📊 Dashboard
+                </a>
+                <a href="/biodata/create" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100">
+                    ➕ Create New
+                </a>
+                <a href="/profile" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100">
+                    👤 Profile
+                </a>
+                <a href="/payment/history" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100">
+                    💳 Payment History
+                </a>
+                <div class="border-t border-gray-200 my-2"></div>
+                <form th:action="@{/logout}" method="post">
+                    <button type="submit" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-red-600 hover:bg-red-50">
+                        🚪 Logout
+                    </button>
+                </form>
+            </div>
+
+            <!-- Admin Link -->
+            <div sec:authorize="hasRole('ADMIN')">
+                <a href="/admin" class="block px-3 py-2 rounded-md text-base font-medium text-purple-600 hover:bg-purple-50">
+                    ⚙️ Admin Panel
+                </a>
+            </div>
+
+            <!-- Unauthenticated Links -->
+            <div sec:authorize="!isAuthenticated()">
+                <div class="border-t border-gray-200 my-2"></div>
+                <a href="/login" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100">
+                    🔐 Login
+                </a>
+                <a href="/register" class="block px-3 py-2 rounded-md text-base font-medium text-white bg-gradient-to-r from-purple-600 to-pink-600 hover:shadow-lg">
+                    ✨ Sign Up
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alpine.js for dropdown -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</nav>
+
+<!-- Footer Fragment -->
+<footer th:fragment="footer" class="bg-gray-800 text-white py-8 mt-auto">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+                <h3 class="text-lg font-semibold mb-4">Marriage Bio-Data Maker</h3>
+                <p class="text-gray-400 text-sm">Create beautiful, professional marriage bio-data in minutes.</p>
+            </div>
+            <div>
+                <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
+                <ul class="space-y-2 text-gray-400 text-sm">
+                    <li><a href="/dashboard" class="hover:text-white">Dashboard</a></li>
+                    <li><a href="/templates" class="hover:text-white">Templates</a></li>
+                    <li><a href="/biodata/create" class="hover:text-white">Create Bio-Data</a></li>
+                    <li><a href="/invitation-card" class="hover:text-white">Invitation Card</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="text-lg font-semibold mb-4">Support</h3>
+                <p class="text-gray-400 text-sm">Need help? Contact us at support@biodatamaker.app</p>
+            </div>
+        </div>
+        <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400 text-sm">
+            <p>&copy; <span th:text="${#temporals.year(#temporals.createNow())}">2024</span> Marriage Bio-Data Maker. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+<!-- Alert Messages Fragment -->
+<div th:fragment="alerts">
+    <!-- Success Alert -->
+    <div th:if="${success}" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4" role="alert">
+        <span class="block sm:inline" th:text="${success}">Success message</span>
+    </div>
+    
+    <!-- Error Alert -->
+    <div th:if="${error}" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4" role="alert">
+        <span class="block sm:inline" th:text="${error}">Error message</span>
+    </div>
+    
+    <!-- Info Alert -->
+    <div th:if="${info}" class="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded mb-4" role="alert">
+        <span class="block sm:inline" th:text="${info}">Info message</span>
+    </div>
+</div>
+
+</html>

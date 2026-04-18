@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head('Templates')}"></head>
+<body class="bg-gray-50 min-h-screen">
+
+    <!-- Navbar -->
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <!-- Main Content -->
+    <main class="pt-20 pb-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <!-- Header -->
+            <div class="text-center mb-12">
+                <h1 class="text-4xl font-bold text-gray-900 mb-4">Beautifully Handcrafted Marriage Biodata Templates</h1>
+                <p class="text-gray-600 max-w-3xl mx-auto text-lg">
+                    We have designed the best looking, well formatted marriage biodata formats for you to 
+                    just choose and make biodata without any hassle. No need to invest time on layouts, 
+                    designs and getting that perfect biodata for marriage.
+                </p>
+            </div>
+
+            <!-- Template Gallery -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                <!-- Traditional Classic Template -->
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+                    <div class="relative" style="height: 320px; background: #F5EFE0; padding: 16px;">
+                        <!-- Template Preview -->
+                        <div class="h-full border-2 rounded-lg relative overflow-hidden" style="border-color: #8B7355; background: #F5EFE0;">
+                            <!-- Corner decorations -->
+                            <div class="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2" style="border-color: #8B7355;"></div>
+                            <div class="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2" style="border-color: #8B7355;"></div>
+                            <div class="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2" style="border-color: #8B7355;"></div>
+                            <div class="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2" style="border-color: #8B7355;"></div>
+                            
+                            <!-- Content -->
+                            <div class="p-4">
+                                <!-- Om Header -->
+                                <div class="text-center mb-3" style="color: #C4A35A;">
+                                    <div class="text-lg font-bold">ॐ श्री गणेशाय नमः</div>
+                                </div>
+                                
+                                <!-- Personal Details Section -->
+                                <div class="flex">
+                                    <div class="flex-1 pr-2">
+                                        <div class="inline-block px-2 py-0.5 text-white text-[8px] font-bold mb-2 rounded" style="background: #6B7B4C;">PERSONAL DETAILS</div>
+                                        <div class="space-y-1 text-[7px]" style="color: #444;">
+                                            <div class="flex"><span class="w-16">Name</span><span class="mx-1">:</span><span class="font-medium text-gray-800">Mahima Singh</span></div>
+                                            <div class="flex"><span class="w-16">Date of Birth</span><span class="mx-1">:</span><span>20 November 1995</span></div>
+                                            <div class="flex"><span class="w-16">Time of Birth</span><span class="mx-1">:</span><span>7:20 PM</span></div>
+                                            <div class="flex"><span class="w-16">Place of Birth</span><span class="mx-1">:</span><span>New Delhi</span></div>
+                                            <div class="flex"><span class="w-16">Rashi</span><span class="mx-1">:</span><span>Mesh (Aries)</span></div>
+                                            <div class="flex"><span class="w-16">Height</span><span class="mx-1">:</span><span>5 feet 4 inches</span></div>
+                                            <div class="flex"><span class="w-16">Education</span><span class="mx-1">:</span><span>B.COM Hons</span></div>
+                                        </div>
+                                    </div>
+                                    <!-- Photo -->
+                                    <div class="w-16 h-20 border-2 overflow-hidden" style="border-color: #8B7355;">
+                                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Photo" class="w-full h-full object-cover"/>
+                                    </div>
+                                </div>
+
+                                <!-- Family Details -->
+                                <div class="mt-2">
+                                    <div class="inline-block px-2 py-0.5 text-white text-[8px] font-bold mb-1 rounded" style="background: #6B7B4C;">FAMILY DETAILS</div>
+                                    <div class="space-y-0.5 text-[7px]" style="color: #444;">
+                                        <div class="flex"><span class="w-20">Father's Name</span><span class="mx-1">:</span><span>Sh. Deepak Singh</span></div>
+                                        <div class="flex"><span class="w-20">Mother's Name</span><span class="mx-1">:</span><span>Smt. Madhu Singh</span></div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Contact Details -->
+                                <div class="mt-2">
+                                    <div class="inline-block px-2 py-0.5 text-white text-[8px] font-bold mb-1 rounded" style="background: #6B7B4C;">CONTACT DETAILS</div>
+                                    <div class="space-y-0.5 text-[7px]" style="color: #444;">
+                                        <div class="flex"><span class="w-20">Contact Number</span><span class="mx-1">:</span><span>+91 98765 43210</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="absolute top-6 right-6 px-3 py-1 bg-green-500 text-white text-xs font-bold rounded-full shadow">FREE</span>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Traditional Classic</h3>
+                        <p class="text-gray-600 text-sm mb-4">Classic design with ornate borders and traditional Indian wedding colors. Features Om header.</p>
+                        <a href="/biodata/create?template=traditional" class="block w-full py-3 text-center text-white rounded-lg font-semibold hover:opacity-90 transition-opacity" style="background: #8B7355;">
+                            Use This Template
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Royal Maroon Template -->
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+                    <div class="relative" style="height: 320px; background: #722F37; padding: 16px;">
+                        <!-- Template Preview -->
+                        <div class="h-full rounded-lg relative overflow-hidden" style="background: #722F37;">
+                            <!-- Header with Photo -->
+                            <div class="p-3 flex items-start" style="background: linear-gradient(135deg, rgba(196,163,90,0.3), rgba(139,115,85,0.3));">
+                                <div class="w-14 h-18 border-2 bg-white/90 rounded overflow-hidden" style="border-color: #C4A35A;">
+                                    <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Photo" class="w-full h-full object-cover"/>
+                                </div>
+                                <div class="ml-3 pt-1">
+                                    <div class="text-white font-bold text-sm">Mahima Jain Aggarwal</div>
+                                    <div class="text-amber-200 text-[8px] mt-0.5">Date of Birth : 03 November 1995</div>
+                                    <div class="text-amber-200 text-[8px]">Place of Birth : New Delhi</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Content -->
+                            <div class="p-3" style="background: rgba(255,255,255,0.05);">
+                                <div class="inline-block px-2 py-0.5 text-white text-[8px] font-bold mb-2 rounded" style="background: #C45B7D;">PERSONAL DETAILS</div>
+                                <div class="grid grid-cols-2 gap-x-3 gap-y-0.5 text-[7px] text-white/80">
+                                    <div class="flex"><span class="w-14 text-white/60">Date of Birth</span><span>20 November 1994</span></div>
+                                    <div class="flex"><span class="w-14 text-white/60">Time of Birth</span><span>7:20 PM</span></div>
+                                    <div class="flex"><span class="w-14 text-white/60">Place of Birth</span><span>New Delhi</span></div>
+                                    <div class="flex"><span class="w-14 text-white/60">Rashi</span><span>Tula (Libra)</span></div>
+                                    <div class="flex"><span class="w-14 text-white/60">Height</span><span>5 feet 9 inches</span></div>
+                                    <div class="flex"><span class="w-14 text-white/60">Gotra</span><span>Singh</span></div>
+                                </div>
+                                
+                                <div class="inline-block px-2 py-0.5 text-white text-[8px] font-bold mt-2 mb-1 rounded" style="background: #C45B7D;">FAMILY DETAILS</div>
+                                <div class="grid grid-cols-2 gap-x-3 gap-y-0.5 text-[7px] text-white/80">
+                                    <div class="flex"><span class="w-16 text-white/60">Father's Name</span><span>Sh. Deepak Gupta</span></div>
+                                    <div class="flex"><span class="w-16 text-white/60">Father's Occupation</span><span>Business</span></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Bottom pattern -->
+                            <div class="absolute bottom-0 left-0 right-0 h-6" style="background: linear-gradient(90deg, #C4A35A, #8B7355, #C4A35A);">
+                                <div class="flex items-center justify-center h-full text-amber-100 text-xs tracking-widest">◆ ◆ ◆ ◆ ◆</div>
+                            </div>
+                        </div>
+                        <span class="absolute top-6 right-6 px-3 py-1 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xs font-bold rounded-full shadow">PREMIUM</span>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Royal Maroon</h3>
+                        <p class="text-gray-600 text-sm mb-4">Sophisticated maroon and gold design. Perfect for those seeking a regal and elegant look.</p>
+                        <a href="/biodata/create?template=royal" class="block w-full py-3 text-center bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-semibold hover:shadow-lg transition-shadow">
+                            Use This Template
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Elegant Cream Template -->
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+                    <div class="relative" style="height: 320px; background: #FDF8F0; padding: 16px;">
+                        <!-- Template Preview -->
+                        <div class="h-full border-2 rounded-lg relative overflow-hidden" style="border-color: #C4A35A; background: #FDF8F0;">
+                            <!-- Decorative corners -->
+                            <div class="absolute top-1 left-1 w-6 h-6 border-t-2 border-l-2" style="border-color: #C4A35A;"></div>
+                            <div class="absolute top-1 right-1 w-6 h-6 border-t-2 border-r-2" style="border-color: #C4A35A;"></div>
+                            <div class="absolute bottom-1 left-1 w-6 h-6 border-b-2 border-l-2" style="border-color: #C4A35A;"></div>
+                            <div class="absolute bottom-1 right-1 w-6 h-6 border-b-2 border-r-2" style="border-color: #C4A35A;"></div>
+                            
+                            <!-- Om Header -->
+                            <div class="text-center pt-3 pb-2" style="color: #6B7B4C;">
+                                <div class="text-sm font-bold">ॐ श्री गणेशाय नमः</div>
+                            </div>
+                            
+                            <!-- Content with Photo -->
+                            <div class="px-4 flex">
+                                <div class="flex-1 pr-3">
+                                    <div class="inline-block px-2 py-0.5 text-white text-[8px] font-bold mb-2 rounded" style="background: #6B7B4C;">PERSONAL DETAILS</div>
+                                    <div class="space-y-0.5 text-[7px]" style="color: #444;">
+                                        <div class="flex"><span class="w-14">Name</span><span class="mx-1">:</span><span class="font-medium">Mahima Jain Aggarwal</span></div>
+                                        <div class="flex"><span class="w-14">Date of Birth</span><span class="mx-1">:</span><span>20 November 1994</span></div>
+                                        <div class="flex"><span class="w-14">Time of Birth</span><span class="mx-1">:</span><span>7:20 PM</span></div>
+                                        <div class="flex"><span class="w-14">Place of Birth</span><span class="mx-1">:</span><span>New Delhi</span></div>
+                                        <div class="flex"><span class="w-14">Rashi</span><span class="mx-1">:</span><span>Tula (Libra)</span></div>
+                                        <div class="flex"><span class="w-14">Nakshatra</span><span class="mx-1">:</span><span>Aswini</span></div>
+                                        <div class="flex"><span class="w-14">Complexion</span><span class="mx-1">:</span><span>Fair</span></div>
+                                        <div class="flex"><span class="w-14">Height</span><span class="mx-1">:</span><span>5 feet 9 inches</span></div>
+                                    </div>
+                                </div>
+                                <div class="w-16 h-20 border-2 overflow-hidden" style="border-color: #8B7355;">
+                                    <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="Photo" class="w-full h-full object-cover"/>
+                                </div>
+                            </div>
+
+                            <div class="px-4 mt-2">
+                                <div class="inline-block px-2 py-0.5 text-white text-[8px] font-bold mb-1 rounded" style="background: #6B7B4C;">FAMILY DETAILS</div>
+                                <div class="space-y-0.5 text-[7px]" style="color: #444;">
+                                    <div class="flex"><span class="w-20">Father's Name</span><span class="mx-1">:</span><span>Sh. Deepak Gupta</span></div>
+                                    <div class="flex"><span class="w-20">Father's Occupation</span><span class="mx-1">:</span><span>Business (Steel Trading)</span></div>
+                                    <div class="flex"><span class="w-20">Mother's Name</span><span class="mx-1">:</span><span>Smt. Madhu Gupta</span></div>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="absolute top-6 right-6 px-3 py-1 bg-green-500 text-white text-xs font-bold rounded-full shadow">FREE</span>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Elegant Cream</h3>
+                        <p class="text-gray-600 text-sm mb-4">Sophisticated design with cream background and elegant golden accents. Classic and timeless.</p>
+                        <a href="/biodata/create?template=elegant" class="block w-full py-3 text-center text-white rounded-lg font-semibold hover:opacity-90 transition-opacity" style="background: #6B7B4C;">
+                            Use This Template
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Modern Clean Template -->
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+                    <div class="relative" style="height: 320px; background: #F8FAFC; padding: 16px;">
+                        <!-- Template Preview -->
+                        <div class="h-full border rounded-lg relative overflow-hidden bg-white" style="border-color: #E2E8F0;">
+                            <!-- Header -->
+                            <div class="text-center py-2 border-b" style="border-color: #2C5F7C;">
+                                <div class="text-sm font-bold tracking-wider" style="color: #2C5F7C;">BIODATA</div>
+                            </div>
+                            
+                            <!-- Top section with Photo -->
+                            <div class="p-3 flex items-start border-b" style="border-color: #E2E8F0;">
+                                <div class="w-14 h-18 border-2 overflow-hidden" style="border-color: #2C5F7C;">
+                                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Photo" class="w-full h-full object-cover"/>
+                                </div>
+                                <div class="ml-3">
+                                    <div class="font-bold text-sm" style="color: #2C5F7C;">Saurabh Kumar Singh</div>
+                                    <div class="text-[8px] text-gray-500 mt-0.5">Date of Birth : 04/05/1997</div>
+                                    <div class="text-[8px] text-gray-500">Place of Birth : Delhi, India</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Content -->
+                            <div class="p-3">
+                                <div class="inline-block px-2 py-0.5 text-white text-[8px] font-bold mb-2 rounded" style="background: #2C5F7C;">PERSONAL DETAILS</div>
+                                <div class="space-y-0.5 text-[7px] text-gray-600">
+                                    <div class="flex"><span class="w-14 text-gray-500">Name</span><span class="mx-1">:</span><span>Saurabh Kumar Singh</span></div>
+                                    <div class="flex"><span class="w-14 text-gray-500">Date of Birth</span><span class="mx-1">:</span><span>04/05/1997</span></div>
+                                    <div class="flex"><span class="w-14 text-gray-500">Place of Birth</span><span class="mx-1">:</span><span>Delhi, India</span></div>
+                                    <div class="flex"><span class="w-14 text-gray-500">Height</span><span class="mx-1">:</span><span>5 feet 9 inches</span></div>
+                                    <div class="flex"><span class="w-14 text-gray-500">Caste</span><span class="mx-1">:</span><span>Business</span></div>
+                                </div>
+                                
+                                <div class="inline-block px-2 py-0.5 text-white text-[8px] font-bold mt-2 mb-1 rounded" style="background: #2C5F7C;">FAMILY DETAILS</div>
+                                <div class="space-y-0.5 text-[7px] text-gray-600">
+                                    <div class="flex"><span class="w-20 text-gray-500">Father's Name</span><span class="mx-1">:</span><span>Sh. Deepak Kumar Singh</span></div>
+                                </div>
+                                
+                                <div class="inline-block px-2 py-0.5 text-amber-700 text-[8px] font-bold mt-2 mb-1 rounded" style="background: #FEF3C7;">CONTACT DETAILS</div>
+                            </div>
+                        </div>
+                        <span class="absolute top-6 right-6 px-3 py-1 bg-green-500 text-white text-xs font-bold rounded-full shadow">FREE</span>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Modern Clean</h3>
+                        <p class="text-gray-600 text-sm mb-4">Clean and professional design. Perfect for modern professionals seeking a minimalist look.</p>
+                        <a href="/biodata/create?template=modern" class="block w-full py-3 text-center text-white rounded-lg font-semibold hover:opacity-90 transition-opacity" style="background: #2C5F7C;">
+                            Use This Template
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Floral Pink Template -->
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+                    <div class="relative" style="height: 320px; background: #FFF5F7; padding: 16px;">
+                        <!-- Template Preview -->
+                        <div class="h-full border-2 rounded-lg relative overflow-hidden" style="border-color: #C45B7D; background: #FFF5F7;">
+                            <!-- Corner decorations -->
+                            <div class="absolute top-0 left-0 w-8 h-8 border-t-3 border-l-3" style="border-color: #C45B7D;"></div>
+                            <div class="absolute top-0 right-0 w-8 h-8 border-t-3 border-r-3" style="border-color: #C45B7D;"></div>
+                            <div class="absolute bottom-0 left-0 w-8 h-8 border-b-3 border-l-3" style="border-color: #C45B7D;"></div>
+                            <div class="absolute bottom-0 right-0 w-8 h-8 border-b-3 border-r-3" style="border-color: #C45B7D;"></div>
+                            
+                            <!-- Content with Photo -->
+                            <div class="p-4">
+                                <div class="flex">
+                                    <div class="flex-1 pr-2">
+                                        <div class="inline-block px-2 py-0.5 text-white text-[8px] font-bold mb-2 rounded" style="background: #C45B7D;">PERSONAL DETAILS</div>
+                                        <div class="space-y-0.5 text-[7px]" style="color: #555;">
+                                            <div class="flex"><span class="w-14">Name</span><span class="mx-1">:</span><span class="font-medium">Mahima Singh</span></div>
+                                            <div class="flex"><span class="w-14">Date of Birth</span><span class="mx-1">:</span><span>20 November 1995</span></div>
+                                            <div class="flex"><span class="w-14">Place of Birth</span><span class="mx-1">:</span><span>New Delhi</span></div>
+                                            <div class="flex"><span class="w-14">Rashi</span><span class="mx-1">:</span><span>Mesh (Aries)</span></div>
+                                            <div class="flex"><span class="w-14">Height</span><span class="mx-1">:</span><span>5 feet 4 inches</span></div>
+                                            <div class="flex"><span class="w-14">Education</span><span class="mx-1">:</span><span>MBA, Delhi University</span></div>
+                                        </div>
+                                    </div>
+                                    <div class="w-14 h-18 border-2 overflow-hidden" style="border-color: #C45B7D;">
+                                        <img src="https://randomuser.me/api/portraits/women/75.jpg" alt="Photo" class="w-full h-full object-cover"/>
+                                    </div>
+                                </div>
+
+                                <div class="mt-2">
+                                    <div class="inline-block px-2 py-0.5 text-white text-[8px] font-bold mb-1 rounded" style="background: #C45B7D;">FAMILY DETAILS</div>
+                                    <div class="space-y-0.5 text-[7px]" style="color: #555;">
+                                        <div class="flex"><span class="w-20">Father's Name</span><span class="mx-1">:</span><span>Sh. Rajesh Singh</span></div>
+                                        <div class="flex"><span class="w-20">Mother's Name</span><span class="mx-1">:</span><span>Smt. Sunita Singh</span></div>
+                                        <div class="flex"><span class="w-20">Siblings</span><span class="mx-1">:</span><span>1 Brother (Unmarried)</span></div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-2">
+                                    <div class="inline-block px-2 py-0.5 text-white text-[8px] font-bold mb-1 rounded" style="background: #C45B7D;">CONTACT DETAILS</div>
+                                    <div class="space-y-0.5 text-[7px]" style="color: #555;">
+                                        <div class="flex"><span class="w-20">Contact Number</span><span class="mx-1">:</span><span>+91 98765 43210</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="absolute top-6 right-6 px-3 py-1 bg-green-500 text-white text-xs font-bold rounded-full shadow">FREE</span>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Floral Pink</h3>
+                        <p class="text-gray-600 text-sm mb-4">Elegant pink background with decorative corner borders. Perfect for a feminine touch.</p>
+                        <a href="/biodata/create?template=floral" class="block w-full py-3 text-center text-white rounded-lg font-semibold hover:opacity-90 transition-opacity" style="background: #C45B7D;">
+                            Use This Template
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Simple Classic Template -->
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+                    <div class="relative" style="height: 320px; background: #F5F8F5; padding: 16px;">
+                        <!-- Template Preview -->
+                        <div class="h-full border-2 rounded-lg relative overflow-hidden" style="border-color: #3D5A4C; background: #F5F8F5;">
+                            <!-- Header -->
+                            <div class="text-center py-2 border-b-2" style="border-color: #3D5A4C;">
+                                <div class="text-sm font-bold tracking-wider" style="color: #3D5A4C;">BIODATA</div>
+                            </div>
+                            
+                            <!-- Content with Photo -->
+                            <div class="p-3">
+                                <div class="flex items-start mb-3">
+                                    <div class="w-12 h-16 border-2 overflow-hidden" style="border-color: #3D5A4C;">
+                                        <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Photo" class="w-full h-full object-cover"/>
+                                    </div>
+                                    <div class="ml-3">
+                                        <div class="font-bold text-sm" style="color: #B91C1C;">Saurabh Kumar Singh</div>
+                                        <div class="text-[8px] text-gray-500 mt-0.5">Date of Birth : 04/05/1997</div>
+                                        <div class="text-[8px] text-gray-500">Place of Birth : Delhi, India</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="border-b-2 pb-0.5 mb-2" style="border-color: #B91C1C;">
+                                    <span class="text-[9px] font-bold" style="color: #B91C1C;">PERSONAL DETAILS</span>
+                                </div>
+                                <div class="space-y-0.5 text-[7px] text-gray-600">
+                                    <div class="flex"><span class="w-14 text-gray-500">Name</span><span class="mx-1">:</span><span>Saurabh Kumar Singh</span></div>
+                                    <div class="flex"><span class="w-14 text-gray-500">Date of Birth</span><span class="mx-1">:</span><span>04/05/1997</span></div>
+                                    <div class="flex"><span class="w-14 text-gray-500">Height</span><span class="mx-1">:</span><span>5 feet 9 inches</span></div>
+                                    <div class="flex"><span class="w-14 text-gray-500">Education</span><span class="mx-1">:</span><span>MD from Amity University</span></div>
+                                </div>
+                                
+                                <div class="border-b-2 pb-0.5 mt-2 mb-1" style="border-color: #B91C1C;">
+                                    <span class="text-[9px] font-bold" style="color: #B91C1C;">FAMILY DETAILS</span>
+                                </div>
+                                <div class="space-y-0.5 text-[7px] text-gray-600">
+                                    <div class="flex"><span class="w-20 text-gray-500">Father's Name</span><span class="mx-1">:</span><span>Dr. SD Kumar Singh</span></div>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="absolute top-6 right-6 px-3 py-1 bg-green-500 text-white text-xs font-bold rounded-full shadow">FREE</span>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Simple Classic</h3>
+                        <p class="text-gray-600 text-sm mb-4">Clean and professional design with minimal decorations. Great for formal use.</p>
+                        <a href="/biodata/create?template=simple" class="block w-full py-3 text-center text-white rounded-lg font-semibold hover:opacity-90 transition-opacity" style="background: #3D5A4C;">
+                            Use This Template
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- CTA Section -->
+            <div class="mt-16 text-center">
+                <div class="bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl p-8 text-white">
+                    <h3 class="text-2xl font-bold mb-4">Ready to create your bio-data?</h3>
+                    <p class="text-white/80 mb-6">Choose a template and start filling in your details. No registration required!</p>
+                    <a href="/biodata/create"
+                       class="inline-block px-8 py-3 bg-white text-purple-600 font-semibold rounded-lg hover:shadow-lg transition-shadow">
+                        Start Creating Now
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+</html>

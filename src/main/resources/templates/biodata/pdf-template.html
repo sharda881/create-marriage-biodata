@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <style>
+        @page {
+            size: A4;
+            margin: 0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            font-size: 11pt;
+            line-height: 1.4;
+            color: #333;
+            background: #F5EBD8;
+        }
+
+        .page {
+            width: 210mm;
+            min-height: 297mm;
+            padding: 8mm;
+            position: relative;
+            background: #F5EBD8;
+        }
+
+        /* Main Border Container */
+        .border-container {
+            position: relative;
+            border: 2px solid #8B4513;
+            padding: 12mm 15mm;
+            min-height: 281mm;
+            background: #F5EBD8;
+        }
+
+        /* Decorative Corner Images */
+        .corner-decoration {
+            position: absolute;
+            width: 35mm;
+            height: 35mm;
+        }
+
+        .corner-tl {
+            top: 2mm;
+            left: 2mm;
+        }
+
+        .corner-tr {
+            top: 2mm;
+            right: 2mm;
+            transform: scaleX(-1);
+        }
+
+        .corner-bl {
+            bottom: 2mm;
+            left: 2mm;
+            transform: scaleY(-1);
+        }
+
+        .corner-br {
+            bottom: 2mm;
+            right: 2mm;
+            transform: scale(-1, -1);
+        }
+
+        /* SVG Corner Flourish */
+        .corner-svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .content {
+            position: relative;
+            z-index: 5;
+        }
+
+        /* Om Header */
+        .om-header {
+            text-align: center;
+            margin-bottom: 6mm;
+            padding-bottom: 3mm;
+        }
+
+        .om-symbol {
+            font-size: 24pt;
+            color: #8B0000;
+            display: block;
+            margin-bottom: 2mm;
+        }
+
+        .om-text {
+            font-size: 11pt;
+            color: #8B0000;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        /* Section Header Style */
+        .section-header {
+            background: #8B0000;
+            color: #fff;
+            padding: 2mm 4mm;
+            font-size: 10pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4mm;
+            margin-top: 5mm;
+            display: block;
+        }
+
+        /* Personal Section Layout */
+        .personal-section {
+            display: table;
+            width: 100%;
+            margin-bottom: 2mm;
+        }
+
+        .personal-info {
+            display: table-cell;
+            vertical-align: top;
+            width: 65%;
+            padding-right: 5mm;
+        }
+
+        .photo-container {
+            display: table-cell;
+            vertical-align: top;
+            width: 35%;
+            text-align: right;
+        }
+
+        .photo-box {
+            width: 38mm;
+            height: 48mm;
+            border: 2px solid #8B4513;
+            background: #E8E0D0;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .photo-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .photo-placeholder {
+            width: 100%;
+            height: 100%;
+            display: table-cell;
+            vertical-align: middle;
+            text-align: center;
+            color: #999;
+            font-size: 9pt;
+            background: #E8E0D0;
+        }
+
+        /* Info Row Styling */
+        .info-row {
+            display: table;
+            width: 100%;
+            padding: 1mm 0;
+            border-bottom: 1px dotted #D4C4A8;
+        }
+
+        .info-label {
+            display: table-cell;
+            width: 38%;
+            color: #555;
+            font-size: 9pt;
+            vertical-align: top;
+            padding: 1mm 0;
+        }
+
+        .info-colon {
+            display: table-cell;
+            width: 4%;
+            color: #555;
+            font-size: 9pt;
+            text-align: center;
+            vertical-align: top;
+            padding: 1mm 0;
+        }
+
+        .info-value {
+            display: table-cell;
+            width: 58%;
+            color: #222;
+            font-size: 9pt;
+            font-weight: 500;
+            vertical-align: top;
+            padding: 1mm 0;
+        }
+
+        /* Full Width Info Row */
+        .info-row-full {
+            display: table;
+            width: 100%;
+            padding: 1mm 0;
+            border-bottom: 1px dotted #D4C4A8;
+        }
+
+        .info-row-full .info-label {
+            width: 30%;
+        }
+
+        .info-row-full .info-colon {
+            width: 3%;
+        }
+
+        .info-row-full .info-value {
+            width: 67%;
+        }
+
+        /* Custom Fields Section */
+        .custom-section {
+            margin-top: 4mm;
+        }
+
+        /* About Section */
+        .about-content {
+            padding: 3mm;
+            background: #EDE7D9;
+            border-left: 3px solid #8B0000;
+            font-size: 9pt;
+            line-height: 1.5;
+            color: #444;
+            margin-top: 2mm;
+        }
+
+        /* Theme Variations */
+        .theme-traditional .section-header { background: #8B0000; }
+        .theme-traditional .border-container { border-color: #8B4513; }
+        .theme-traditional .photo-box { border-color: #8B4513; }
+        .theme-traditional .om-symbol, .theme-traditional .om-text { color: #8B0000; }
+        .theme-traditional .about-content { border-left-color: #8B0000; }
+
+        .theme-royal .section-header { background: #722F37; }
+        .theme-royal .border-container { border-color: #722F37; background: #FDF8F0; }
+        .theme-royal .page { background: #FDF8F0; }
+        .theme-royal .photo-box { border-color: #722F37; }
+        .theme-royal .om-symbol, .theme-royal .om-text { color: #722F37; }
+        .theme-royal .about-content { border-left-color: #722F37; }
+
+        .theme-modern .section-header { background: #2C5F7C; }
+        .theme-modern .border-container { border-color: #2C5F7C; background: #F5F8FA; }
+        .theme-modern .page { background: #F5F8FA; }
+        .theme-modern .photo-box { border-color: #2C5F7C; }
+        .theme-modern .om-symbol, .theme-modern .om-text { color: #2C5F7C; }
+        .theme-modern .about-content { border-left-color: #2C5F7C; }
+
+        .theme-elegant .section-header { background: #6B4C7B; }
+        .theme-elegant .border-container { border-color: #6B4C7B; background: #FAF5FC; }
+        .theme-elegant .page { background: #FAF5FC; }
+        .theme-elegant .photo-box { border-color: #6B4C7B; }
+        .theme-elegant .om-symbol, .theme-elegant .om-text { color: #6B4C7B; }
+        .theme-elegant .about-content { border-left-color: #6B4C7B; }
+
+        .theme-floral .section-header { background: #C45B7D; }
+        .theme-floral .border-container { border-color: #C45B7D; background: #FFF5F7; }
+        .theme-floral .page { background: #FFF5F7; }
+        .theme-floral .photo-box { border-color: #C45B7D; }
+        .theme-floral .om-symbol, .theme-floral .om-text { color: #C45B7D; }
+        .theme-floral .about-content { border-left-color: #C45B7D; }
+
+        .theme-simple .section-header { background: #3D5A4C; }
+        .theme-simple .border-container { border-color: #3D5A4C; background: #F5F8F5; }
+        .theme-simple .page { background: #F5F8F5; }
+        .theme-simple .photo-box { border-color: #3D5A4C; }
+        .theme-simple .om-symbol, .theme-simple .om-text { color: #3D5A4C; }
+        .theme-simple .about-content { border-left-color: #3D5A4C; }
+    </style>
+</head>
+<body th:class="'theme-' + ${template.templateId}">
+
+    <div class="page">
+        <div class="border-container">
+            <!-- Top Left Corner Decoration -->
+            <div class="corner-decoration corner-tl">
+                <svg class="corner-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#8B4513"/>
+                            <stop offset="50%" style="stop-color:#CD853F"/>
+                            <stop offset="100%" style="stop-color:#8B4513"/>
+                        </linearGradient>
+                    </defs>
+                    <!-- Outer curved line -->
+                    <path d="M 5 95 Q 5 5, 95 5" fill="none" stroke="url(#goldGrad)" stroke-width="2"/>
+                    <!-- Inner curved line -->
+                    <path d="M 15 85 Q 15 15, 85 15" fill="none" stroke="url(#goldGrad)" stroke-width="1.5"/>
+                    <!-- Decorative flourish elements -->
+                    <path d="M 8 70 Q 20 60, 15 45 Q 10 55, 8 70" fill="#8B4513"/>
+                    <path d="M 70 8 Q 60 20, 45 15 Q 55 10, 70 8" fill="#8B4513"/>
+                    <!-- Corner ornament -->
+                    <circle cx="10" cy="10" r="4" fill="#8B4513"/>
+                    <circle cx="10" cy="10" r="2" fill="#CD853F"/>
+                    <!-- Leaf/paisley decorations -->
+                    <path d="M 25 75 Q 35 65, 30 55 Q 25 65, 25 75" fill="#8B4513" opacity="0.8"/>
+                    <path d="M 75 25 Q 65 35, 55 30 Q 65 25, 75 25" fill="#8B4513" opacity="0.8"/>
+                    <!-- Small dots -->
+                    <circle cx="20" cy="80" r="1.5" fill="#8B4513"/>
+                    <circle cx="80" cy="20" r="1.5" fill="#8B4513"/>
+                    <circle cx="35" cy="65" r="1" fill="#CD853F"/>
+                    <circle cx="65" cy="35" r="1" fill="#CD853F"/>
+                    <!-- Curved connecting lines -->
+                    <path d="M 12 50 Q 25 45, 40 50" fill="none" stroke="#8B4513" stroke-width="1"/>
+                    <path d="M 50 12 Q 45 25, 50 40" fill="none" stroke="#8B4513" stroke-width="1"/>
+                </svg>
+            </div>
+
+            <!-- Top Right Corner Decoration -->
+            <div class="corner-decoration corner-tr">
+                <svg class="corner-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="goldGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#8B4513"/>
+                            <stop offset="50%" style="stop-color:#CD853F"/>
+                            <stop offset="100%" style="stop-color:#8B4513"/>
+                        </linearGradient>
+                    </defs>
+                    <path d="M 5 95 Q 5 5, 95 5" fill="none" stroke="url(#goldGrad2)" stroke-width="2"/>
+                    <path d="M 15 85 Q 15 15, 85 15" fill="none" stroke="url(#goldGrad2)" stroke-width="1.5"/>
+                    <path d="M 8 70 Q 20 60, 15 45 Q 10 55, 8 70" fill="#8B4513"/>
+                    <path d="M 70 8 Q 60 20, 45 15 Q 55 10, 70 8" fill="#8B4513"/>
+                    <circle cx="10" cy="10" r="4" fill="#8B4513"/>
+                    <circle cx="10" cy="10" r="2" fill="#CD853F"/>
+                    <path d="M 25 75 Q 35 65, 30 55 Q 25 65, 25 75" fill="#8B4513" opacity="0.8"/>
+                    <path d="M 75 25 Q 65 35, 55 30 Q 65 25, 75 25" fill="#8B4513" opacity="0.8"/>
+                    <circle cx="20" cy="80" r="1.5" fill="#8B4513"/>
+                    <circle cx="80" cy="20" r="1.5" fill="#8B4513"/>
+                    <circle cx="35" cy="65" r="1" fill="#CD853F"/>
+                    <circle cx="65" cy="35" r="1" fill="#CD853F"/>
+                    <path d="M 12 50 Q 25 45, 40 50" fill="none" stroke="#8B4513" stroke-width="1"/>
+                    <path d="M 50 12 Q 45 25, 50 40" fill="none" stroke="#8B4513" stroke-width="1"/>
+                </svg>
+            </div>
+
+            <!-- Bottom Left Corner Decoration -->
+            <div class="corner-decoration corner-bl">
+                <svg class="corner-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="goldGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#8B4513"/>
+                            <stop offset="50%" style="stop-color:#CD853F"/>
+                            <stop offset="100%" style="stop-color:#8B4513"/>
+                        </linearGradient>
+                    </defs>
+                    <path d="M 5 95 Q 5 5, 95 5" fill="none" stroke="url(#goldGrad3)" stroke-width="2"/>
+                    <path d="M 15 85 Q 15 15, 85 15" fill="none" stroke="url(#goldGrad3)" stroke-width="1.5"/>
+                    <path d="M 8 70 Q 20 60, 15 45 Q 10 55, 8 70" fill="#8B4513"/>
+                    <path d="M 70 8 Q 60 20, 45 15 Q 55 10, 70 8" fill="#8B4513"/>
+                    <circle cx="10" cy="10" r="4" fill="#8B4513"/>
+                    <circle cx="10" cy="10" r="2" fill="#CD853F"/>
+                    <path d="M 25 75 Q 35 65, 30 55 Q 25 65, 25 75" fill="#8B4513" opacity="0.8"/>
+                    <path d="M 75 25 Q 65 35, 55 30 Q 65 25, 75 25" fill="#8B4513" opacity="0.8"/>
+                    <circle cx="20" cy="80" r="1.5" fill="#8B4513"/>
+                    <circle cx="80" cy="20" r="1.5" fill="#8B4513"/>
+                    <circle cx="35" cy="65" r="1" fill="#CD853F"/>
+                    <circle cx="65" cy="35" r="1" fill="#CD853F"/>
+                    <path d="M 12 50 Q 25 45, 40 50" fill="none" stroke="#8B4513" stroke-width="1"/>
+                    <path d="M 50 12 Q 45 25, 50 40" fill="none" stroke="#8B4513" stroke-width="1"/>
+                </svg>
+            </div>
+
+            <!-- Bottom Right Corner Decoration -->
+            <div class="corner-decoration corner-br">
+                <svg class="corner-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="goldGrad4" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#8B4513"/>
+                            <stop offset="50%" style="stop-color:#CD853F"/>
+                            <stop offset="100%" style="stop-color:#8B4513"/>
+                        </linearGradient>
+                    </defs>
+                    <path d="M 5 95 Q 5 5, 95 5" fill="none" stroke="url(#goldGrad4)" stroke-width="2"/>
+                    <path d="M 15 85 Q 15 15, 85 15" fill="none" stroke="url(#goldGrad4)" stroke-width="1.5"/>
+                    <path d="M 8 70 Q 20 60, 15 45 Q 10 55, 8 70" fill="#8B4513"/>
+                    <path d="M 70 8 Q 60 20, 45 15 Q 55 10, 70 8" fill="#8B4513"/>
+                    <circle cx="10" cy="10" r="4" fill="#8B4513"/>
+                    <circle cx="10" cy="10" r="2" fill="#CD853F"/>
+                    <path d="M 25 75 Q 35 65, 30 55 Q 25 65, 25 75" fill="#8B4513" opacity="0.8"/>
+                    <path d="M 75 25 Q 65 35, 55 30 Q 65 25, 75 25" fill="#8B4513" opacity="0.8"/>
+                    <circle cx="20" cy="80" r="1.5" fill="#8B4513"/>
+                    <circle cx="80" cy="20" r="1.5" fill="#8B4513"/>
+                    <circle cx="35" cy="65" r="1" fill="#CD853F"/>
+                    <circle cx="65" cy="35" r="1" fill="#CD853F"/>
+                    <path d="M 12 50 Q 25 45, 40 50" fill="none" stroke="#8B4513" stroke-width="1"/>
+                    <path d="M 50 12 Q 45 25, 50 40" fill="none" stroke="#8B4513" stroke-width="1"/>
+                </svg>
+            </div>
+
+            <!-- Content -->
+            <div class="content">
+
+                <!-- Om Header (for traditional Indian look) -->
+                <div class="om-header">
+                    <span class="om-symbol">ॐ</span>
+                    <span class="om-text">|| SHREE GANESHAYA NAMAH ||</span>
+                </div>
+
+                <!-- Personal Details Section -->
+                <div class="section-header">Profile Details</div>
+
+                <div class="personal-section">
+                    <div class="personal-info">
+                        <div th:if="${bioData.fullName}" class="info-row">
+                            <span class="info-label">Name</span>
+                            <span class="info-colon">:</span>
+                            <span class="info-value" th:text="${bioData.fullName}">Mahima Singh</span>
+                        </div>
+                        <div th:if="${bioData.dateOfBirth}" class="info-row">
+                            <span class="info-label">Date of Birth</span>
+                            <span class="info-colon">:</span>
+                            <span class="info-value" th:text="${formattedDob}">20 November 1995</span>
+                        </div>
+                        <div th:if="${bioData.birthTime}" class="info-row">
+                            <span class="info-label">Time of Birth</span>
+                            <span class="info-colon">:</span>
+                            <span class="info-value" th:text="${bioData.birthTime}">7:20 PM</span>
+                        </div>
+                        <div th:if="${bioData.birthPlace}" class="info-row">
+                            <span class="info-label">Place of Birth</span>
+                            <span class="info-colon">:</span>
+                            <span class="info-value" th:text="${bioData.birthPlace}">New Delhi</span>
+                        </div>
+                        <div th:if="${bioData.rashi}" class="info-row">
+                            <span class="info-label">Rashi</span>
+                            <span class="info-colon">:</span>
+                            <span class="info-value" th:text="${bioData.rashi}">Mesh (Aries)</span>
+                        </div>
+                        <div th:if="${bioData.nakshatra}" class="info-row">
+                            <span class="info-label">Nakshatra</span>
+                            <span class="info-colon">:</span>
+                            <span class="info-value" th:text="${bioData.nakshatra}">Rohini</span>
+                        </div>
+                        <div th:if="${bioData.gotra}" class="info-row">
+                            <span class="info-label">Gotra</span>
+                            <span class="info-colon">:</span>
+                            <span class="info-value" th:text="${bioData.gotra}">Singh</span>
+                        </div>
+                        <div th:if="${bioData.manglikStatus}" class="info-row">
+                            <span class="info-label">Manglik</span>
+                            <span class="info-colon">:</span>
+                            <span class="info-value" th:text="${bioData.manglikStatus}">Non-Manglik</span>
+                        </div>
+                        <div th:if="${bioData.complexion}" class="info-row">
+                            <span class="info-label">Complexion</span>
+                            <span class="info-colon">:</span>
+                            <span class="info-value" th:text="${bioData.complexion}">Fair</span>
+                        </div>
+                        <div th:if="${bioData.height}" class="info-row">
+                            <span class="info-label">Height</span>
+                            <span class="info-colon">:</span>
+                            <span class="info-value" th:text="${bioData.height}">5 feet 9 inches</span>
+                        </div>
+                        <div th:if="${bioData.bloodGroup}" class="info-row">
+                            <span class="info-label">Blood Group</span>
+                            <span class="info-colon">:</span>
+                            <span class="info-value" th:text="${bioData.bloodGroup}">O+</span>
+                        </div>
+                        <div th:if="${bioData.highestQualification}" class="info-row">
+                            <span class="info-label">Education</span>
+                            <span class="info-colon">:</span>
+                            <span class="info-value" th:text="${bioData.highestQualification + (bioData.collegeName != null ? ', ' + bioData.collegeName : '') + (bioData.passingYear != null ? ' (' + bioData.passingYear + ')' : '')}">Delhi University, 2018</span>
+                        </div>
+                        <div th:if="${bioData.occupation or bioData.designation}" class="info-row">
+                            <span class="info-label">Occupation</span>
+                            <span class="info-colon">:</span>
+                            <span class="info-value" th:text="${(bioData.designation != null ? bioData.designation + ', ' : '') + (bioData.employerName != null ? bioData.employerName : (bioData.occupation != null ? bioData.occupation : ''))}">Senior Consultant, BCG</span>
+                        </div>
+                        <div th:if="${bioData.maritalStatus}" class="info-row">
+                            <span class="info-label">Marital Status</span>
+                            <span class="info-colon">:</span>
+                            <span class="info-value" th:text="${bioData.maritalStatus}">Never Married</span>
+                        </div>
+                    </div>
+                    <div class="photo-container">
+                        <div class="photo-box">
+                            <img th:if="${hasPhoto}" th:src="'file:.' + ${bioData.photoPath}" alt="Photo"/>
+                            <div th:unless="${hasPhoto}" class="photo-placeholder">Photo</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Family Details Section -->
+                <div th:if="${hasFamily}">
+                    <div class="section-header">Family Details</div>
+
+                    <div th:if="${bioData.fatherName}" class="info-row-full">
+                        <span class="info-label">Father's Name</span>
+                        <span class="info-colon">:</span>
+                        <span class="info-value" th:text="${bioData.fatherName}">Sh. Deepak Singh</span>
+                    </div>
+                    <div th:if="${bioData.fatherOccupation}" class="info-row-full">
+                        <span class="info-label">Father's Occupation</span>
+                        <span class="info-colon">:</span>
+                        <span class="info-value" th:text="${bioData.fatherOccupation}">Business (Motor Parts Trading)</span>
+                    </div>
+                    <div th:if="${bioData.motherName}" class="info-row-full">
+                        <span class="info-label">Mother's Name</span>
+                        <span class="info-colon">:</span>
+                        <span class="info-value" th:text="${bioData.motherName}">Smt. Madhu Singh</span>
+                    </div>
+                    <div th:if="${bioData.motherOccupation}" class="info-row-full">
+                        <span class="info-label">Mother's Occupation</span>
+                        <span class="info-colon">:</span>
+                        <span class="info-value" th:text="${bioData.motherOccupation}">Homemaker</span>
+                    </div>
+                    <div th:if="${bioData.numberOfBrothers != null or bioData.numberOfSisters != null}" class="info-row-full">
+                        <span class="info-label">Siblings</span>
+                        <span class="info-colon">:</span>
+                        <span class="info-value">
+                            <span th:if="${bioData.numberOfBrothers != null and bioData.numberOfBrothers > 0}" th:text="${bioData.numberOfBrothers + ' Brother(s)'}"></span>
+                            <span th:if="${bioData.numberOfBrothers != null and bioData.numberOfBrothers > 0 and bioData.numberOfSisters != null and bioData.numberOfSisters > 0}">, </span>
+                            <span th:if="${bioData.numberOfSisters != null and bioData.numberOfSisters > 0}" th:text="${bioData.numberOfSisters + ' Sister(s)'}"></span>
+                            <span th:if="${(bioData.numberOfBrothers == null or bioData.numberOfBrothers == 0) and (bioData.numberOfSisters == null or bioData.numberOfSisters == 0)}">None</span>
+                        </span>
+                    </div>
+                    <div th:if="${bioData.familyType}" class="info-row-full">
+                        <span class="info-label">Family Type</span>
+                        <span class="info-colon">:</span>
+                        <span class="info-value" th:text="${bioData.familyType}">Nuclear</span>
+                    </div>
+                    <div th:if="${bioData.familyStatus}" class="info-row-full">
+                        <span class="info-label">Family Status</span>
+                        <span class="info-colon">:</span>
+                        <span class="info-value" th:text="${bioData.familyStatus}">Upper Middle Class</span>
+                    </div>
+                    <div th:if="${bioData.nativePlace}" class="info-row-full">
+                        <span class="info-label">Native Place</span>
+                        <span class="info-colon">:</span>
+                        <span class="info-value" th:text="${bioData.nativePlace}">Delhi</span>
+                    </div>
+                </div>
+
+                <!-- Contact Details Section -->
+                <div th:if="${hasContact}">
+                    <div class="section-header">Contact Information</div>
+
+                    <div th:if="${bioData.contactNumber}" class="info-row-full">
+                        <span class="info-label">Phone Number</span>
+                        <span class="info-colon">:</span>
+                        <span class="info-value" th:text="${'+91 ' + bioData.contactNumber}">+91 1129921929</span>
+                    </div>
+                    <div th:if="${bioData.emailAddress}" class="info-row-full">
+                        <span class="info-label">Email ID</span>
+                        <span class="info-colon">:</span>
+                        <span class="info-value" th:text="${bioData.emailAddress}">mahima.singh@mail.com</span>
+                    </div>
+                    <div th:if="${bioData.currentAddress or bioData.city}" class="info-row-full">
+                        <span class="info-label">Address</span>
+                        <span class="info-colon">:</span>
+                        <span class="info-value" th:text="${(bioData.currentAddress != null ? bioData.currentAddress + ', ' : '') + (bioData.city != null ? bioData.city : '') + (bioData.state != null ? ', ' + bioData.state : '')}">M Block, House No 23, Greater Kailash</span>
+                    </div>
+                </div>
+
+                <!-- Custom Fields Section -->
+                <div th:if="${customFieldsMap != null and !customFieldsMap.isEmpty()}" class="custom-section">
+                    <div class="section-header">Additional Details</div>
+
+                    <div th:each="field : ${customFieldsMap}" class="info-row-full">
+                        <span class="info-label" th:text="${field.key}">Field Name</span>
+                        <span class="info-colon">:</span>
+                        <span class="info-value" th:text="${field.value}">Field Value</span>
+                    </div>
+                </div>
+
+                <!-- About Me Section -->
+                <div th:if="${bioData.aboutMe}">
+                    <div class="section-header">About Me</div>
+                    <div class="about-content" th:text="${bioData.aboutMe}">
+                        About me text goes here...
+                    </div>
+                </div>
+
+                <!-- Hobbies & Interests Section -->
+                <div th:if="${bioData.hobbiesAndInterests}">
+                    <div class="section-header">Hobbies &amp; Interests</div>
+                    <div class="about-content" th:text="${bioData.hobbiesAndInterests}">
+                        Reading, Traveling, Music...
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
