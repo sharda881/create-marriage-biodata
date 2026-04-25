@@ -52,6 +52,9 @@ app:
   payment:
     qr-code-path: /images/payment_qr.png
     upi-id: ${UPI_ID:example@upi}
+  pdf:
+    service:
+      url: ${PDF_SERVICE_URL:http://localhost:3001}
 
 # Logging Configuration
 logging:
