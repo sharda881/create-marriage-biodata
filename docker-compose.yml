@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  springboot:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - pdf-service
+
+  pdf-service:
+    build: ./pdf-service
+    ports:
+      - "3001:3001"
