@@ -24,7 +24,6 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <openhtmltopdf.version>1.0.10</openhtmltopdf.version>
     </properties>
 
     <dependencies>
@@ -32,6 +31,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
         </dependency>
 
         <dependency>
@@ -76,25 +80,6 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
-        </dependency>
-
-        <!-- OpenHTMLtoPDF for PDF Generation -->
-        <dependency>
-            <groupId>com.openhtmltopdf</groupId>
-            <artifactId>openhtmltopdf-core</artifactId>
-            <version>${openhtmltopdf.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.openhtmltopdf</groupId>
-            <artifactId>openhtmltopdf-pdfbox</artifactId>
-            <version>${openhtmltopdf.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.openhtmltopdf</groupId>
-            <artifactId>openhtmltopdf-slf4j</artifactId>
-            <version>${openhtmltopdf.version}</version>
         </dependency>
 
         <!-- Jsoup for HTML parsing -->
