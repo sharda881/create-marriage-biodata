@@ -20,10 +20,16 @@ app.post('/generate-pdf', async (req, res) => {
   try {
     const html = req.body;
 
+    if (!browser || !browser.isConnected()) {
+      console.log('Restarting browser...');
+      browser = await chromium.launch({
+        args: ['--no-sandbox', '--disable-setuid-sandbox']
+      });
+    }
     page = await browser.newPage();
 
     await page.setContent(html, {
-      waitUntil: 'networkidle',
+      waitUntil: 'load',
       timeout: 30000
     });
 
