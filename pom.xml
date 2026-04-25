@@ -24,7 +24,6 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <openhtmltopdf.version>1.0.10</openhtmltopdf.version>
     </properties>
 
     <dependencies>
@@ -59,6 +58,20 @@
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
 
+        <!-- Playwright for PDF Generation -->
+        <dependency>
+            <groupId>com.microsoft.playwright</groupId>
+            <artifactId>playwright</artifactId>
+            <version>1.43.0</version>
+        </dependency>
+
+        <!-- Image Scaling Library -->
+        <dependency>
+            <groupId>org.imgscalr</groupId>
+            <artifactId>imgscalr-lib</artifactId>
+            <version>4.2</version>
+        </dependency>
+
         <!-- Thymeleaf Extras for Spring Security -->
         <dependency>
             <groupId>org.thymeleaf.extras</groupId>
@@ -76,25 +89,6 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
-        </dependency>
-
-        <!-- OpenHTMLtoPDF for PDF Generation -->
-        <dependency>
-            <groupId>com.openhtmltopdf</groupId>
-            <artifactId>openhtmltopdf-core</artifactId>
-            <version>${openhtmltopdf.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.openhtmltopdf</groupId>
-            <artifactId>openhtmltopdf-pdfbox</artifactId>
-            <version>${openhtmltopdf.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.openhtmltopdf</groupId>
-            <artifactId>openhtmltopdf-slf4j</artifactId>
-            <version>${openhtmltopdf.version}</version>
         </dependency>
 
         <!-- Jsoup for HTML parsing -->

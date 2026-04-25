@@ -5,21 +5,25 @@ import com.biodatamaker.entity.BioData;
 import com.biodatamaker.entity.User;
 import com.biodatamaker.exception.PaymentRequiredException;
 import com.biodatamaker.exception.ResourceNotFoundException;
-import com.biodatamaker.exception.UnauthorizedAccessException;
 import com.biodatamaker.repository.BioDataRepository;
 import com.biodatamaker.template.BioDataTemplate;
 import com.biodatamaker.template.BioDataTemplateFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.imgscalr.Scalr;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -38,6 +42,7 @@ public class BioDataService {
     private final SystemConfigService configService;
 
     private static final String UPLOAD_DIR = "./uploads/photos";
+    private static final int MAX_IMAGE_WIDTH = 1024;
 
     /**
      * Create a new bio-data draft
@@ -218,97 +223,100 @@ public class BioDataService {
     }
 
     /**
-     * Upload photo for bio-data - supports both authenticated and anonymous users
+     * Uploads and resizes a photo for a given bio-data.
+     *
+     * @param bioDataId The ID of the bio-data.
+     * @param user      The current user (can be null for anonymous).
+     * @param file      The uploaded image file.
+     * @return The relative path to the saved, resized image.
+     * @throws IOException If an error occurs during file processing.
      */
     @Transactional
     public String uploadPhoto(Long bioDataId, User user, MultipartFile file) throws IOException {
-        BioData bioData;
-        if (user != null) {
-            bioData = getBioDataForUser(bioDataId, user);
-        } else {
-            // Anonymous user - just get by ID
-            bioData = getBioDataById(bioDataId);
-        }
-
-        // Create upload directory if not exists
-        Path uploadPath = Paths.get(UPLOAD_DIR);
-        if (!Files.exists(uploadPath)) {
-            Files.createDirectories(uploadPath);
-        }
-
-        // Generate unique filename
-        String originalFilename = file.getOriginalFilename();
-        String extension = originalFilename != null && originalFilename.contains(".")
-                ? originalFilename.substring(originalFilename.lastIndexOf("."))
-                : ".jpg";
-        String filename = "photo_" + bioDataId + "_" + UUID.randomUUID() + extension;
-
-        // Save file
-        Path filePath = uploadPath.resolve(filename);
-        Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-
-        // Update bio-data with photo path
-        String relativePath = "/uploads/photos/" + filename;
-        bioData.setPhotoPath(relativePath);
-        bioDataRepository.save(bioData);
-
-        log.info("Uploaded photo for bio-data {}: {}", bioDataId, relativePath);
-        return relativePath;
+        BioData bioData = (user != null) ? getBioDataForUser(bioDataId, user) : getBioDataById(bioDataId);
+        String extension = getFileExtension(file.getOriginalFilename());
+        return resizeAndSaveImage(bioData, file.getInputStream(), extension);
     }
 
     /**
-     * Upload photo from Base64 encoded string - supports both authenticated and anonymous users
+     * Uploads and resizes a photo from a Base64 encoded string.
+     *
+     * @param bioDataId  The ID of the bio-data.
+     * @param user       The current user (can be null for anonymous).
+     * @param base64Data The Base64 encoded image data string.
+     * @return The relative path to the saved, resized image.
+     * @throws IOException If an error occurs during file processing.
      */
     @Transactional
     public String uploadPhotoFromBase64(Long bioDataId, User user, String base64Data) throws IOException {
-        BioData bioData;
-        if (user != null) {
-            bioData = getBioDataForUser(bioDataId, user);
-        } else {
-            // Anonymous user - just get by ID
-            bioData = getBioDataById(bioDataId);
+        BioData bioData = (user != null) ? getBioDataForUser(bioDataId, user) : getBioDataById(bioDataId);
+
+        String[] parts = base64Data.split(",");
+        if (parts.length != 2) throw new IllegalArgumentException("Invalid base64 image data");
+
+        String mimeType = parts[0];
+        String extension = ".jpg"; // Default
+        if (mimeType.contains("png")) extension = ".png";
+        else if (mimeType.contains("gif")) extension = ".gif";
+        else if (mimeType.contains("webp")) extension = ".webp";
+
+        byte[] imageBytes = java.util.Base64.getDecoder().decode(parts[1]);
+        return resizeAndSaveImage(bioData, new ByteArrayInputStream(imageBytes), extension);
+    }
+
+    /**
+     * Resizes an image to a standard width, saves it, and updates the bio-data record.
+     *
+     * @param bioData     The bio-data entity to update.
+     * @param inputStream The input stream of the image data.
+     * @param extension   The file extension (e.g., ".jpg").
+     * @return The relative path to the saved image.
+     * @throws IOException If an error occurs during image processing or saving.
+     */
+    private String resizeAndSaveImage(BioData bioData, InputStream inputStream, String extension) throws IOException {
+        // Read the original image
+        BufferedImage originalImage = ImageIO.read(inputStream);
+        if (originalImage == null) {
+            throw new IOException("Could not read image file.");
         }
 
-        // Create upload directory if not exists
+        // Resize the image only if it's wider than the max width
+        BufferedImage resizedImage = originalImage;
+        if (originalImage.getWidth() > MAX_IMAGE_WIDTH) {
+            resizedImage = Scalr.resize(originalImage, Scalr.Method.QUALITY, Scalr.Mode.FIT_TO_WIDTH, MAX_IMAGE_WIDTH);
+        }
+
+        // Convert the resized image back to a byte array
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        String formatName = extension.startsWith(".") ? extension.substring(1) : extension;
+        ImageIO.write(resizedImage, formatName, outputStream);
+        byte[] resizedImageBytes = outputStream.toByteArray();
+
+        // Create upload directory if it doesn't exist
         Path uploadPath = Paths.get(UPLOAD_DIR);
         if (!Files.exists(uploadPath)) {
             Files.createDirectories(uploadPath);
         }
 
-        // Parse base64 data
-        String[] parts = base64Data.split(",");
-        if (parts.length != 2) {
-            throw new IllegalArgumentException("Invalid base64 image data");
-        }
-
-        // Extract extension from MIME type
-        String mimeType = parts[0];
-        String extension = ".jpg";
-        if (mimeType.contains("png")) {
-            extension = ".png";
-        } else if (mimeType.contains("gif")) {
-            extension = ".gif";
-        } else if (mimeType.contains("webp")) {
-            extension = ".webp";
-        }
-
-        // Decode base64
-        byte[] imageBytes = java.util.Base64.getDecoder().decode(parts[1]);
-
-        // Generate unique filename
-        String filename = "photo_" + bioDataId + "_" + UUID.randomUUID() + extension;
-
-        // Save file
+        // Generate a unique filename and save the file
+        String filename = "photo_" + bioData.getId() + "_" + UUID.randomUUID() + extension;
         Path filePath = uploadPath.resolve(filename);
-        Files.write(filePath, imageBytes);
+        Files.write(filePath, resizedImageBytes);
 
-        // Update bio-data with photo path
+        // Update the bio-data with the new photo path
         String relativePath = "/uploads/photos/" + filename;
         bioData.setPhotoPath(relativePath);
         bioDataRepository.save(bioData);
 
-        log.info("Uploaded photo from base64 for bio-data {}: {}", bioDataId, relativePath);
+        log.info("Resized and uploaded photo for bio-data {}: {}", bioData.getId(), relativePath);
         return relativePath;
+    }
+
+    private String getFileExtension(String filename) {
+        if (filename == null || !filename.contains(".")) {
+            return ".jpg"; // Default extension
+        }
+        return filename.substring(filename.lastIndexOf("."));
     }
 
     /**
