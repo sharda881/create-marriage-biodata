@@ -167,7 +167,7 @@
             <div class="profile-section">
                 <div class="photo-col">
                     <div class="photo-box">
-                        <img th:if="${hasPhoto}" th:src="'file:.' + ${bioData.photoPath}" alt="Photo"/>
+                        <img th:if="${hasPhoto}" th:src="${photoAsBase64}" alt="Photo"/>
                         <div th:unless="${hasPhoto}" style="width:100%;height:100%;display:table-cell;vertical-align:middle;text-align:center;color:#999;">Photo</div>
                     </div>
                 </div>

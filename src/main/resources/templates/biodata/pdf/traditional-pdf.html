@@ -278,7 +278,7 @@
                 </div>
                 <div class="photo-container">
                     <div class="photo-box">
-                        <img th:if="${hasPhoto}" th:src="'file:.' + ${bioData.photoPath}" alt="Photo"/>
+                        <img th:if="${hasPhoto}" th:src="${photoAsBase64}" alt="Photo"/>
                         <div th:unless="${hasPhoto}" class="photo-placeholder">Photo</div>
                     </div>
                 </div>
@@ -326,7 +326,7 @@
                     <span class="info-colon">:</span>
                     <span class="info-value" th:text="${bioData.emailAddress}">Email</span>
                 </div>
-                <div th:if="${bioData.currentAddress or bioData.city}" class="info-row-full">
+                <div th:if="${bioData.currentAddress != null or bioData.city != null}" class="info-row-full">
                     <span class="info-label">Address</span>
                     <span class="info-colon">:</span>
                     <span class="info-value" th:text="${(bioData.currentAddress != null ? bioData.currentAddress + ', ' : '') + (bioData.city != null ? bioData.city : '')}">Address</span>
