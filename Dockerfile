@@ -14,6 +14,18 @@ RUN mvn clean package -DskipTests
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 
+# ✅ Install required Chromium runtime dependencies (Alpine)
+RUN apk add --no-cache \
+    nss \
+    freetype \
+    harfbuzz \
+    ca-certificates \
+    ttf-freefont \
+    libstdc++
+
+# ✅ Restrict Playwright to Chromium only
+ENV PLAYWRIGHT_BROWSERS=chromium
+
 # 3. Create the uploads folder so the app doesn't crash when saving photos
 RUN mkdir -p uploads/photos
 
