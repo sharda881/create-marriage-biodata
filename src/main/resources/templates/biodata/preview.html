@@ -25,6 +25,7 @@
                         ✏️ Edit
                     </a>
                     <a th:if="${!needsPayment}" th:href="@{/biodata/download/{id}(id=${bioData.id})}"
+                       onclick="alert('Your download will start in a few seconds...');"
                        class="px-4 py-2 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700">
                         📥 Download PDF
                     </a>
@@ -89,6 +90,7 @@
                     ← Back to Dashboard
                 </a>
                 <a th:if="${!needsPayment}" th:href="@{/biodata/download/{id}(id=${bioData.id})}"
+                   onclick="alert('Your download will start in a few seconds...');"
                    class="px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 shadow-lg text-center">
                     📥 Download PDF
                 </a>

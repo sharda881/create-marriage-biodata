@@ -4,29 +4,31 @@ import com.biodatamaker.entity.BioData;
 import com.biodatamaker.entity.User;
 import com.biodatamaker.template.BioDataTemplate;
 import com.biodatamaker.template.BioDataTemplateFactory;
-import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.microsoft.playwright.BrowserContext;
+import com.microsoft.playwright.Page;
+import com.microsoft.playwright.options.WaitUntilState;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jsoup.Jsoup;
-import org.jsoup.helper.W3CDom;
-import org.jsoup.nodes.Document;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Base64;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 
 /**
- * Service for generating PDF from BioData using OpenHTMLtoPDF.
+ * Service for generating PDFs by using a shared, embedded Playwright instance.
+ * This service renders HTML using Thymeleaf and then uses an in-process browser
+ * engine, managed by PlaywrightService, to convert the HTML to a PDF document.
  */
 @Service
 @RequiredArgsConstructor
@@ -36,28 +38,36 @@ public class PdfService {
     private final TemplateEngine templateEngine;
     private final BioDataTemplateFactory templateFactory;
     private final BioDataService bioDataService;
+    private final PlaywrightService playwrightService; // Inject the shared service
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd MMMM yyyy", Locale.ENGLISH);
 
     /**
-     * Generate PDF for a bio-data - supports both authenticated and anonymous users
-     * @param bioDataId The bio-data ID
-     * @param user The user requesting the PDF (can be null for anonymous)
-     * @return PDF as byte array
+     * Generates a PDF for a given bio-data ID.
+     * This method supports both authenticated and anonymous users. For authenticated users,
+     * it validates their access rights before proceeding.
+     *
+     * @param bioDataId The ID of the bio-data to generate the PDF for.
+     * @param user      The user requesting the PDF. Can be null for anonymous access.
+     * @return A byte array containing the generated PDF.
+     * @throws IOException if there is an error during HTML rendering or PDF generation.
      */
     public byte[] generatePdf(Long bioDataId, User user) throws IOException {
-        // Validate access only for authenticated users
         if (user != null) {
             bioDataService.validateDownloadAccess(user, bioDataId);
         }
-
-        // Get bio-data (for anonymous or authenticated)
         BioData bioData = bioDataService.getBioDataById(bioDataId);
         return generatePdfFromBioData(bioData);
     }
 
     /**
-     * Generate PDF from BioData entity (internal use)
+     * Generates a PDF from a BioData entity.
+     * This method orchestrates the process of rendering HTML and calling the internal
+     * PDF conversion logic. It also increments the download count for the bio-data.
+     *
+     * @param bioData The BioData entity to generate the PDF from.
+     * @return A byte array containing the generated PDF.
+     * @throws IOException if the PDF generation fails.
      */
     public byte[] generatePdfFromBioData(BioData bioData) throws IOException {
         // Get template
@@ -66,14 +76,37 @@ public class PdfService {
         // Render HTML using Thymeleaf
         String html = renderBioDataHtml(bioData, template);
 
-        // Convert HTML to PDF
-        byte[] pdf = convertHtmlToPdf(html);
+        try {
+            byte[] pdf = convertHtmlToPdf(html);
+            bioDataService.incrementDownloadCount(bioData.getId());
+            log.info("Successfully generated PDF for bio-data {} using template {}", bioData.getId(), template.getTemplateId());
+            return pdf;
+        } catch (Exception e) {
+            log.error("Failed to generate PDF using Playwright for bio-data ID: {}", bioData.getId(), e);
+            throw new IOException("PDF generation failed.", e);
+        }
+    }
 
-        // Increment download count
-        bioDataService.incrementDownloadCount(bioData.getId());
+    /**
+     * Converts an HTML string to a PDF using the shared Playwright/Chromium instance.
+     *
+     * @param html The HTML content as a string.
+     * @return A byte array of the generated PDF.
+     */
+    private byte[] convertHtmlToPdf(String html) {
+        log.debug("Generating PDF from HTML using shared Playwright instance...");
 
-        log.info("Generated PDF for bio-data {} using template {}", bioData.getId(), template.getTemplateId());
-        return pdf;
+        try (BrowserContext context = playwrightService.getBrowser().newContext();
+             Page page = context.newPage()) {
+
+            page.setContent(html, new Page.SetContentOptions()
+                    .setWaitUntil(WaitUntilState.LOAD));
+
+            return page.pdf(new Page.PdfOptions()
+                    .setFormat("A4")
+                    .setPrintBackground(true)
+                    .setScale(1));
+        }
     }
 
     /**
@@ -100,8 +133,9 @@ public class PdfService {
         context.setVariable("age", bioData.getAge());
         context.setVariable("currentYear", LocalDate.now().getYear());
 
-        // Add helper booleans
-        context.setVariable("hasPhoto", bioData.getPhotoPath() != null && !bioData.getPhotoPath().isBlank());
+        // Prepare photo and add to context
+        populatePhotoForTemplate(context, bioData);
+
         context.setVariable("hasEducation", hasEducationDetails(bioData));
         context.setVariable("hasProfession", hasProfessionDetails(bioData));
         context.setVariable("hasFamily", hasFamilyDetails(bioData));
@@ -123,6 +157,42 @@ public class PdfService {
     }
 
     /**
+     * Encodes the bio-data photo into a Base64 string and adds it to the Thymeleaf context.
+     *
+     * @param context The Thymeleaf context.
+     * @param bioData The bio-data entity containing the photo path.
+     */
+    private void populatePhotoForTemplate(Context context, BioData bioData) {
+        String photoAsBase64 = null;
+        if (bioData.getPhotoPath() != null && !bioData.getPhotoPath().isBlank()) {
+            photoAsBase64 = encodeImageAsBase64("." + bioData.getPhotoPath());
+        }
+        context.setVariable("photoAsBase64", photoAsBase64);
+        context.setVariable("hasPhoto", photoAsBase64 != null);
+    }
+
+    /**
+     * Reads an image file from the given path and encodes it into a Base64 Data URL.
+     *
+     * @param imagePath The file system path to the image.
+     * @return A string representing the Base64 Data URL, or null if the file cannot be read.
+     */
+    private String encodeImageAsBase64(String imagePath) {
+        try {
+            byte[] imageBytes = Files.readAllBytes(Paths.get(imagePath));
+            String base64String = Base64.getEncoder().encodeToString(imageBytes);
+            String mimeType = "image/png"; // Default
+            if (imagePath.toLowerCase().endsWith(".jpg") || imagePath.toLowerCase().endsWith(".jpeg")) {
+                mimeType = "image/jpeg";
+            }
+            return "data:" + mimeType + ";base64," + base64String;
+        } catch (IOException e) {
+            log.warn("Could not read image file for Base64 encoding: {}", imagePath, e);
+            return null;
+        }
+    }
+
+    /**
      * Parse custom fields JSON string to Map
      */
     private Map<String, String> parseCustomFields(String customFieldsJson) {
@@ -135,35 +205,6 @@ public class PdfService {
         } catch (Exception e) {
             log.warn("Failed to parse custom fields JSON: {}", e.getMessage());
             return new LinkedHashMap<>();
-        }
-    }
-
-    /**
-     * Convert HTML string to PDF bytes using OpenHTMLtoPDF
-     */
-    private byte[] convertHtmlToPdf(String html) throws IOException {
-        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-            // Parse HTML with JSoup to ensure valid XHTML
-            Document document = Jsoup.parse(html);
-            document.outputSettings()
-                    .syntax(Document.OutputSettings.Syntax.xml)
-                    .escapeMode(org.jsoup.nodes.Entities.EscapeMode.xhtml);
-
-            // Convert to W3C Document
-            W3CDom w3cDom = new W3CDom();
-            org.w3c.dom.Document w3cDoc = w3cDom.fromJsoup(document);
-
-            // Build PDF
-            PdfRendererBuilder builder = new PdfRendererBuilder();
-            builder.useFastMode();
-            builder.withW3cDocument(w3cDoc, "/");
-            builder.toStream(outputStream);
-            builder.run();
-
-            return outputStream.toByteArray();
-        } catch (Exception e) {
-            log.error("Error generating PDF", e);
-            throw new IOException("Failed to generate PDF: " + e.getMessage(), e);
         }
     }
 
