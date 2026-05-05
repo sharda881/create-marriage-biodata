@@ -56,13 +56,13 @@
                 
                 <!-- Om Header -->
                 <div class="text-center mb-4 sm:mb-6 pb-3 border-b" style="border-color: #8B451340;">
-                    <div class="text-3xl sm:text-4xl mb-2" style="color: #8B0000;">ॐ</div>
-                    <div class="text-xs sm:text-sm font-bold tracking-widest" style="color: #8B0000;">|| SHREE GANESHAYA NAMAH ||</div>
+                    <div class="text-3xl sm:text-4xl mb-2" style="color: #5B7553;">ॐ</div>
+                    <div class="text-xs sm:text-sm font-bold tracking-widest" style="color: #5B7553;">|| SHREE GANESHAYA NAMAH ||</div>
                 </div>
 
                 <!-- Profile Details Section Header -->
                 <div class="mb-4">
-                    <div class="inline-block px-3 sm:px-4 py-1.5 sm:py-2 text-white text-xs sm:text-sm font-bold uppercase tracking-wide" style="background: #8B0000;">
+                    <div class="inline-block px-3 sm:px-4 py-1.5 sm:py-2 text-white text-xs sm:text-sm font-bold uppercase tracking-wide" style="background: #5B7553;">
                         Profile Details
                     </div>
                 </div>
@@ -144,7 +144,7 @@
                 <!-- Family Details Section -->
                 <div th:if="${bioData.fatherName != null or bioData.motherName != null}" class="mb-6">
                     <div class="mb-4">
-                        <div class="inline-block px-3 sm:px-4 py-1.5 sm:py-2 text-white text-xs sm:text-sm font-bold uppercase tracking-wide" style="background: #8B0000;">
+                        <div class="inline-block px-3 sm:px-4 py-1.5 sm:py-2 text-white text-xs sm:text-sm font-bold uppercase tracking-wide" style="background: #5B7553;">
                             Family Details
                         </div>
                     </div>
@@ -177,7 +177,7 @@
                 <!-- Contact Details Section -->
                 <div th:if="${bioData.contactNumber != null or bioData.emailAddress != null}" class="mb-6">
                     <div class="mb-4">
-                        <div class="inline-block px-3 sm:px-4 py-1.5 sm:py-2 text-white text-xs sm:text-sm font-bold uppercase tracking-wide" style="background: #8B0000;">
+                        <div class="inline-block px-3 sm:px-4 py-1.5 sm:py-2 text-white text-xs sm:text-sm font-bold uppercase tracking-wide" style="background: #5B7553;">
                             Contact Information
                         </div>
                     </div>
@@ -201,11 +201,11 @@
                 <!-- About Me Section -->
                 <div th:if="${bioData.aboutMe != null}" class="mb-6">
                     <div class="mb-4">
-                        <div class="inline-block px-3 sm:px-4 py-1.5 sm:py-2 text-white text-xs sm:text-sm font-bold uppercase tracking-wide" style="background: #8B0000;">
+                        <div class="inline-block px-3 sm:px-4 py-1.5 sm:py-2 text-white text-xs sm:text-sm font-bold uppercase tracking-wide" style="background: #5B7553;">
                             About Me
                         </div>
                     </div>
-                    <div class="p-3 sm:p-4 border-l-4 text-sm" style="background: #EDE7D9; border-left-color: #8B0000;">
+                    <div class="p-3 sm:p-4 border-l-4 text-sm" style="background: #EDE7D9; border-left-color: #5B7553;">
                         <p class="text-gray-700 leading-relaxed" th:text="${bioData.aboutMe}">About me text...</p>
                     </div>
                 </div>

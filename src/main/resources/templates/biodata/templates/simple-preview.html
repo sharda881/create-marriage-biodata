@@ -24,9 +24,9 @@
                 <!-- Photo -->
                 <div class="flex-shrink-0 flex justify-center sm:justify-start">
                     <div class="w-28 h-36 sm:w-32 sm:h-40 border-2 overflow-hidden" style="border-color: #166534; background: #F0FDF4;">
-                        <img th:if="${bioData.photoPath != null}" th:src="${bioData.photoPath}"
+                        <img th:if="${!#strings.isEmpty(bioData.photoPath}" th:src="${bioData.photoPath}"
                              class="w-full h-full object-cover" alt="Profile Photo">
-                        <div th:unless="${bioData.photoPath != null}"
+                        <div th:unless="${bioData.photoPath}"
                              class="w-full h-full flex items-center justify-center text-green-300 text-4xl">
                             👤
                         </div>
@@ -36,17 +36,17 @@
                 <div class="flex-1 text-center sm:text-left">
                     <h2 class="text-xl sm:text-2xl font-bold mb-2" style="color: #166534;" th:text="${bioData.fullName}">Full Name</h2>
                     <table class="w-full text-sm">
-                        <tr th:if="${bioData.occupation != null}">
+                        <tr th:if="${!#strings.isEmpty(bioData.occupation)}">
                             <td class="py-1 text-gray-500 w-28 sm:w-32">Occupation</td>
                             <td class="py-1 text-gray-800" th:text="${bioData.occupation}">Occupation</td>
                         </tr>
-                        <tr th:if="${bioData.highestQualification != null}">
+                        <tr th:if="${!#strings.isEmpty(bioData.highestQualification)}">
                             <td class="py-1 text-gray-500">Education</td>
                             <td class="py-1 text-gray-800" th:text="${bioData.highestQualification}">Education</td>
                         </tr>
-                        <tr th:if="${bioData.city != null}">
+                        <tr th:if="${!#strings.isEmpty(bioData.city)}">
                             <td class="py-1 text-gray-500">Location</td>
-                            <td class="py-1 text-gray-800" th:text="${bioData.city + (bioData.state != null ? ', ' + bioData.state : '')}">Location</td>
+                            <td class="py-1 text-gray-800" th:text="${bioData.city + (!#strings.isEmpty(bioData.state) ? ', ' + bioData.state : '')}">Location</td>
                         </tr>
                     </table>
                 </div>
@@ -58,72 +58,72 @@
                     Personal Details
                 </h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-1">
-                    <div th:if="${bioData.dateOfBirth != null}" class="flex py-1.5 border-b border-gray-100">
+                    <div th:if="${!#strings.isEmpty(bioData.dateOfBirth}" class="flex py-1.5 border-b border-gray-100">
                         <span class="text-gray-500 w-28 sm:w-32 text-sm">Date of Birth</span>
                         <span class="text-gray-800 text-sm font-medium" th:text="${#temporals.format(bioData.dateOfBirth, 'dd MMM yyyy')}">DOB</span>
                     </div>
-                    <div th:if="${bioData.birthTime != null}" class="flex py-1.5 border-b border-gray-100">
+                    <div th:if="${!#strings.isEmpty(bioData.birthTime}" class="flex py-1.5 border-b border-gray-100">
                         <span class="text-gray-500 w-28 sm:w-32 text-sm">Birth Time</span>
                         <span class="text-gray-800 text-sm font-medium" th:text="${bioData.birthTime}">Time</span>
                     </div>
-                    <div th:if="${bioData.birthPlace != null}" class="flex py-1.5 border-b border-gray-100">
+                    <div th:if="${!#strings.isEmpty(bioData.birthPlace}" class="flex py-1.5 border-b border-gray-100">
                         <span class="text-gray-500 w-28 sm:w-32 text-sm">Birth Place</span>
                         <span class="text-gray-800 text-sm font-medium" th:text="${bioData.birthPlace}">Place</span>
                     </div>
-                    <div th:if="${bioData.height != null}" class="flex py-1.5 border-b border-gray-100">
+                    <div th:if="${!#strings.isEmpty(bioData.height}" class="flex py-1.5 border-b border-gray-100">
                         <span class="text-gray-500 w-28 sm:w-32 text-sm">Height</span>
                         <span class="text-gray-800 text-sm font-medium" th:text="${bioData.height}">Height</span>
                     </div>
-                    <div th:if="${bioData.rashi != null}" class="flex py-1.5 border-b border-gray-100">
+                    <div th:if="${!#strings.isEmpty(bioData.rashi}" class="flex py-1.5 border-b border-gray-100">
                         <span class="text-gray-500 w-28 sm:w-32 text-sm">Rashi</span>
                         <span class="text-gray-800 text-sm font-medium" th:text="${bioData.rashi}">Rashi</span>
                     </div>
-                    <div th:if="${bioData.nakshatra != null}" class="flex py-1.5 border-b border-gray-100">
+                    <div th:if="${!#strings.isEmpty(bioData.nakshatra}" class="flex py-1.5 border-b border-gray-100">
                         <span class="text-gray-500 w-28 sm:w-32 text-sm">Nakshatra</span>
                         <span class="text-gray-800 text-sm font-medium" th:text="${bioData.nakshatra}">Nakshatra</span>
                     </div>
-                    <div th:if="${bioData.gotra != null}" class="flex py-1.5 border-b border-gray-100">
+                    <div th:if="${!#strings.isEmpty(bioData.gotra}" class="flex py-1.5 border-b border-gray-100">
                         <span class="text-gray-500 w-28 sm:w-32 text-sm">Gotra</span>
                         <span class="text-gray-800 text-sm font-medium" th:text="${bioData.gotra}">Gotra</span>
                     </div>
-                    <div th:if="${bioData.manglikStatus != null}" class="flex py-1.5 border-b border-gray-100">
+                    <div th:if="${!#strings.isEmpty(bioData.manglikStatus}" class="flex py-1.5 border-b border-gray-100">
                         <span class="text-gray-500 w-28 sm:w-32 text-sm">Manglik</span>
                         <span class="text-gray-800 text-sm font-medium" th:text="${bioData.manglikStatus}">Status</span>
                     </div>
-                    <div th:if="${bioData.maritalStatus != null}" class="flex py-1.5 border-b border-gray-100">
+                    <div th:if="${!#strings.isEmpty(bioData.maritalStatus)}" class="flex py-1.5 border-b border-gray-100">
                         <span class="text-gray-500 w-28 sm:w-32 text-sm">Marital Status</span>
-                        <span class="text-gray-800 text-sm font-medium" th:text="${bioData.maritalStatus}">Status</span>
+                        <span class="text-gray-800 text-sm font-medium" th:text="${#strings.capitalizeWords(#strings.toLowerCase(#strings.replace(bioData.maritalStatus, '_', ' ')))}">Status</span>
                     </div>
                 </div>
             </div>
 
             <!-- Family Details -->
-            <div th:if="${bioData.fatherName != null or bioData.motherName != null}" class="mb-6">
+            <div th:if="${!#strings.isEmpty(bioData.fatherName != null or bioData.motherName}" class="mb-6">
                 <h3 class="text-base sm:text-lg font-bold mb-3 pb-2 border-b-2" style="color: #166534; border-color: #166534;">
                     Family Details
                 </h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-1">
-                    <div th:if="${bioData.fatherName != null}" class="flex py-1.5 border-b border-gray-100">
+                    <div th:if="${!#strings.isEmpty(bioData.fatherName}" class="flex py-1.5 border-b border-gray-100">
                         <span class="text-gray-500 w-28 sm:w-32 text-sm">Father's Name</span>
                         <span class="text-gray-800 text-sm font-medium" th:text="${bioData.fatherName}">Father</span>
                     </div>
-                    <div th:if="${bioData.fatherOccupation != null}" class="flex py-1.5 border-b border-gray-100">
+                    <div th:if="${!#strings.isEmpty(bioData.fatherOccupation}" class="flex py-1.5 border-b border-gray-100">
                         <span class="text-gray-500 w-28 sm:w-32 text-sm">Father's Work</span>
                         <span class="text-gray-800 text-sm font-medium" th:text="${bioData.fatherOccupation}">Occupation</span>
                     </div>
-                    <div th:if="${bioData.motherName != null}" class="flex py-1.5 border-b border-gray-100">
+                    <div th:if="${!#strings.isEmpty(bioData.motherName}" class="flex py-1.5 border-b border-gray-100">
                         <span class="text-gray-500 w-28 sm:w-32 text-sm">Mother's Name</span>
                         <span class="text-gray-800 text-sm font-medium" th:text="${bioData.motherName}">Mother</span>
                     </div>
-                    <div th:if="${bioData.numberOfBrothers != null or bioData.numberOfSisters != null}" class="flex py-1.5 border-b border-gray-100">
+                    <div th:if="${!#strings.isEmpty(bioData.numberOfBrothers != null or bioData.numberOfSisters}" class="flex py-1.5 border-b border-gray-100">
                         <span class="text-gray-500 w-28 sm:w-32 text-sm">Siblings</span>
                         <span class="text-gray-800 text-sm font-medium">
-                            <span th:if="${bioData.numberOfBrothers != null}" th:text="${bioData.numberOfBrothers + ' Brother(s)'}"></span>
-                            <span th:if="${bioData.numberOfBrothers != null and bioData.numberOfSisters != null}">, </span>
-                            <span th:if="${bioData.numberOfSisters != null}" th:text="${bioData.numberOfSisters + ' Sister(s)'}"></span>
+                            <span th:if="${!#strings.isEmpty(bioData.numberOfBrothers}" th:text="${bioData.numberOfBrothers + ' Brother(s)'}"></span>
+                            <span th:if="${!#strings.isEmpty(bioData.numberOfBrothers != null and bioData.numberOfSisters}">, </span>
+                            <span th:if="${!#strings.isEmpty(bioData.numberOfSisters}" th:text="${bioData.numberOfSisters + ' Sister(s)'}"></span>
                         </span>
                     </div>
-                    <div th:if="${bioData.familyType != null}" class="flex py-1.5 border-b border-gray-100">
+                    <div th:if="${!#strings.isEmpty(bioData.familyType}" class="flex py-1.5 border-b border-gray-100">
                         <span class="text-gray-500 w-28 sm:w-32 text-sm">Family Type</span>
                         <span class="text-gray-800 text-sm font-medium" th:text="${bioData.familyType}">Type</span>
                     </div>
@@ -131,20 +131,20 @@
             </div>
 
             <!-- Contact Details -->
-            <div th:if="${bioData.contactNumber != null or bioData.emailAddress != null}" class="mb-6">
+            <div th:if="${!#strings.isEmpty(bioData.contactNumber != null or bioData.emailAddress}" class="mb-6">
                 <h3 class="text-base sm:text-lg font-bold mb-3 pb-2 border-b-2" style="color: #166534; border-color: #166534;">
                     Contact Information
                 </h3>
                 <div class="space-y-1">
-                    <div th:if="${bioData.contactNumber != null}" class="flex py-1.5 border-b border-gray-100">
+                    <div th:if="${!#strings.isEmpty(bioData.contactNumber}" class="flex py-1.5 border-b border-gray-100">
                         <span class="text-gray-500 w-28 sm:w-32 text-sm">Phone</span>
                         <span class="text-gray-800 text-sm font-medium" th:text="${'+91 ' + bioData.contactNumber}">Phone</span>
                     </div>
-                    <div th:if="${bioData.emailAddress != null}" class="flex py-1.5 border-b border-gray-100">
+                    <div th:if="${!#strings.isEmpty(bioData.emailAddress}" class="flex py-1.5 border-b border-gray-100">
                         <span class="text-gray-500 w-28 sm:w-32 text-sm">Email</span>
                         <span class="text-gray-800 text-sm font-medium break-all" th:text="${bioData.emailAddress}">Email</span>
                     </div>
-                    <div th:if="${bioData.currentAddress != null}" class="flex py-1.5 border-b border-gray-100">
+                    <div th:if="${!#strings.isEmpty(bioData.currentAddress}" class="flex py-1.5 border-b border-gray-100">
                         <span class="text-gray-500 w-28 sm:w-32 text-sm flex-shrink-0">Address</span>
                         <span class="text-gray-800 text-sm font-medium" th:text="${bioData.currentAddress}">Address</span>
                     </div>
@@ -152,7 +152,7 @@
             </div>
 
             <!-- About Me -->
-            <div th:if="${bioData.aboutMe != null}">
+            <div th:if="${!#strings.isEmpty(bioData.aboutMe}">
                 <h3 class="text-base sm:text-lg font-bold mb-3 pb-2 border-b-2" style="color: #166534; border-color: #166534;">
                     About Me
                 </h3>
