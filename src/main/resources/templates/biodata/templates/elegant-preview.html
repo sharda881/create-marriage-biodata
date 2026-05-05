@@ -28,7 +28,7 @@
                 <div class="p-4 sm:p-6 flex flex-col sm:flex-row items-center gap-4 sm:gap-6" style="background: linear-gradient(135deg, #F3E8FF 0%, #FAF5FC 100%);">
                     <div class="flex-shrink-0">
                         <div class="w-28 h-36 sm:w-32 sm:h-40 rounded-xl overflow-hidden shadow-lg border-4 border-white">
-                            <img th:if="${!#strings.isEmpty(bioData.photoPath}" th:src="${bioData.photoPath}"
+                            <img th:if="${!#strings.isEmpty(bioData.photoPath)}" th:src="${bioData.photoPath}"
                                  class="w-full h-full object-cover" alt="Profile Photo">
                             <div th:unless="${bioData.photoPath}"
                                  class="w-full h-full flex items-center justify-center text-purple-300 text-4xl bg-purple-50">
@@ -53,27 +53,27 @@
                 <!-- Details Grid -->
                 <div class="p-4 sm:p-6 border-t border-purple-100">
                     <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                        <div th:if="${!#strings.isEmpty(bioData.dateOfBirth}" class="text-center p-3 rounded-lg bg-purple-50">
+                        <div th:if="${!#strings.isEmpty(bioData.dateOfBirth)}" class="text-center p-3 rounded-lg bg-purple-50">
                             <p class="text-xs text-purple-400 mb-1">🎂 Birth Date</p>
                             <p class="text-sm font-semibold text-purple-800" th:text="${#temporals.format(bioData.dateOfBirth, 'dd MMM yyyy')}">DOB</p>
                         </div>
-                        <div th:if="${!#strings.isEmpty(bioData.height}" class="text-center p-3 rounded-lg bg-pink-50">
+                        <div th:if="${!#strings.isEmpty(bioData.height)}" class="text-center p-3 rounded-lg bg-pink-50">
                             <p class="text-xs text-pink-400 mb-1">📏 Height</p>
                             <p class="text-sm font-semibold text-pink-800" th:text="${bioData.height}">Height</p>
                         </div>
-                        <div th:if="${!#strings.isEmpty(bioData.nakshatra}" class="text-center p-3 rounded-lg bg-purple-50">
+                        <div th:if="${!#strings.isEmpty(bioData.nakshatra)}" class="text-center p-3 rounded-lg bg-purple-50">
                             <p class="text-xs text-purple-400 mb-1">🌟 Nakshatra</p>
                             <p class="text-sm font-semibold text-purple-800" th:text="${bioData.nakshatra}">Nakshatra</p>
                         </div>
-                        <div th:if="${!#strings.isEmpty(bioData.gotra}" class="text-center p-3 rounded-lg bg-pink-50">
+                        <div th:if="${!#strings.isEmpty(bioData.gotra)}" class="text-center p-3 rounded-lg bg-pink-50">
                             <p class="text-xs text-pink-400 mb-1">🏛️ Gotra</p>
                             <p class="text-sm font-semibold text-pink-800" th:text="${bioData.gotra}">Gotra</p>
                         </div>
-                        <div th:if="${!#strings.isEmpty(bioData.manglikStatus}" class="text-center p-3 rounded-lg bg-purple-50">
+                        <div th:if="${!#strings.isEmpty(bioData.manglikStatus)}" class="text-center p-3 rounded-lg bg-purple-50">
                             <p class="text-xs text-purple-400 mb-1">♂️ Manglik</p>
                             <p class="text-sm font-semibold text-purple-800" th:text="${bioData.manglikStatus}">Status</p>
                         </div>
-                        <div th:if="${!#strings.isEmpty(bioData.highestQualification}" class="text-center p-3 rounded-lg bg-pink-50">
+                        <div th:if="${!#strings.isEmpty(bioData.highestQualification)}" class="text-center p-3 rounded-lg bg-pink-50">
                             <p class="text-xs text-pink-400 mb-1">🎓 Education</p>
                             <p class="text-sm font-semibold text-pink-800" th:text="${bioData.highestQualification}">Education</p>
                         </div>
@@ -82,49 +82,49 @@
             </div>
 
             <!-- Family Details -->
-            <div th:if="${!#strings.isEmpty(bioData.fatherName != null or bioData.motherName}" class="bg-white rounded-2xl shadow-lg overflow-hidden mb-6 border border-purple-100">
+            <div th:if="${bioData.fatherName != null or bioData.motherName != null}" class="bg-white rounded-2xl shadow-lg overflow-hidden mb-6 border border-purple-100">
                 <div class="px-4 py-3 sm:px-6 sm:py-4 border-b border-purple-100" style="background: linear-gradient(90deg, #9333EA, #A855F7);">
                     <h3 class="text-white font-bold text-sm sm:text-base">💜 Family Details</h3>
                 </div>
                 <div class="p-4 sm:p-6 space-y-3">
-                    <div th:if="${!#strings.isEmpty(bioData.fatherName}" class="flex items-center py-2 border-b border-purple-50">
+                    <div th:if="${!#strings.isEmpty(bioData.fatherName)}" class="flex items-center py-2 border-b border-purple-50">
                         <span class="text-purple-400 w-32 text-sm">Father's Name</span>
                         <span class="text-purple-800 font-medium text-sm" th:text="${bioData.fatherName}">Father</span>
                     </div>
-                    <div th:if="${!#strings.isEmpty(bioData.fatherOccupation}" class="flex items-center py-2 border-b border-purple-50">
+                    <div th:if="${!#strings.isEmpty(bioData.fatherOccupation)}" class="flex items-center py-2 border-b border-purple-50">
                         <span class="text-purple-400 w-32 text-sm">Father's Work</span>
                         <span class="text-purple-800 font-medium text-sm" th:text="${bioData.fatherOccupation}">Occupation</span>
                     </div>
-                    <div th:if="${!#strings.isEmpty(bioData.motherName}" class="flex items-center py-2 border-b border-purple-50">
+                    <div th:if="${!#strings.isEmpty(bioData.motherName)}" class="flex items-center py-2 border-b border-purple-50">
                         <span class="text-purple-400 w-32 text-sm">Mother's Name</span>
                         <span class="text-purple-800 font-medium text-sm" th:text="${bioData.motherName}">Mother</span>
                     </div>
-                    <div th:if="${!#strings.isEmpty(bioData.numberOfBrothers != null or bioData.numberOfSisters}" class="flex items-center py-2">
+                    <div th:if="${bioData.numberOfBrothers != null or bioData.numberOfSisters != null}" class="flex items-center py-2">
                         <span class="text-purple-400 w-32 text-sm">Siblings</span>
                         <span class="text-purple-800 font-medium text-sm">
-                            <span th:if="${!#strings.isEmpty(bioData.numberOfBrothers}" th:text="${bioData.numberOfBrothers + ' Brother(s)'}"></span>
-                            <span th:if="${!#strings.isEmpty(bioData.numberOfBrothers != null and bioData.numberOfSisters}">, </span>
-                            <span th:if="${!#strings.isEmpty(bioData.numberOfSisters}" th:text="${bioData.numberOfSisters + ' Sister(s)'}"></span>
+                            <span th:if="${bioData.numberOfBrothers != null}" th:text="${bioData.numberOfBrothers + ' Brother(s)'}"></span>
+                            <span th:if="${bioData.numberOfBrothers != null and bioData.numberOfSisters != null}">, </span>
+                            <span th:if="${bioData.numberOfSisters != null}" th:text="${bioData.numberOfSisters + ' Sister(s)'}"></span>
                         </span>
                     </div>
                 </div>
             </div>
 
             <!-- Contact Details -->
-            <div th:if="${!#strings.isEmpty(bioData.contactNumber != null or bioData.emailAddress}" class="bg-white rounded-2xl shadow-lg overflow-hidden mb-6 border border-purple-100">
+            <div th:if="${bioData.contactNumber != null or bioData.emailAddress != null}" class="bg-white rounded-2xl shadow-lg overflow-hidden mb-6 border border-purple-100">
                 <div class="px-4 py-3 sm:px-6 sm:py-4 border-b border-purple-100" style="background: linear-gradient(90deg, #9333EA, #A855F7);">
                     <h3 class="text-white font-bold text-sm sm:text-base">💌 Contact Information</h3>
                 </div>
                 <div class="p-4 sm:p-6 space-y-3">
-                    <div th:if="${!#strings.isEmpty(bioData.contactNumber}" class="flex items-center py-2 border-b border-purple-50">
+                    <div th:if="${!#strings.isEmpty(bioData.contactNumber)}" class="flex items-center py-2 border-b border-purple-50">
                         <span class="text-purple-400 w-32 text-sm">📱 Phone</span>
                         <span class="text-purple-800 font-medium text-sm" th:text="${'+91 ' + bioData.contactNumber}">Phone</span>
                     </div>
-                    <div th:if="${!#strings.isEmpty(bioData.emailAddress}" class="flex items-center py-2 border-b border-purple-50">
+                    <div th:if="${!#strings.isEmpty(bioData.emailAddress)}" class="flex items-center py-2 border-b border-purple-50">
                         <span class="text-purple-400 w-32 text-sm">📧 Email</span>
                         <span class="text-purple-800 font-medium text-sm break-all" th:text="${bioData.emailAddress}">Email</span>
                     </div>
-                    <div th:if="${!#strings.isEmpty(bioData.currentAddress}" class="flex items-start py-2">
+                    <div th:if="${!#strings.isEmpty(bioData.currentAddress)}" class="flex items-start py-2">
                         <span class="text-purple-400 w-32 text-sm flex-shrink-0">🏠 Address</span>
                         <span class="text-purple-800 font-medium text-sm" th:text="${bioData.currentAddress}">Address</span>
                     </div>
@@ -132,7 +132,7 @@
             </div>
 
             <!-- About Me -->
-            <div th:if="${!#strings.isEmpty(bioData.aboutMe}" class="bg-white rounded-2xl shadow-lg overflow-hidden border border-purple-100">
+            <div th:if="${!#strings.isEmpty(bioData.aboutMe)}" class="bg-white rounded-2xl shadow-lg overflow-hidden border border-purple-100">
                 <div class="px-4 py-3 sm:px-6 sm:py-4 border-b border-purple-100" style="background: linear-gradient(90deg, #9333EA, #A855F7);">
                     <h3 class="text-white font-bold text-sm sm:text-base">✨ About Me</h3>
                 </div>
