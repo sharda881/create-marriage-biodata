@@ -219,17 +219,17 @@
                 <div class="info-col">
                     <div class="name-text" th:text="${bioData.fullName}">Full Name</div>
                     <div class="basic-info">
-                        <div th:if="${bioData.occupation}" class="basic-row">
+                        <div th:if="${!#strings.isEmpty(bioData.occupation)}" class="basic-row">
                             <span class="basic-label">Occupation</span>
                             <span class="basic-value" th:text="${bioData.occupation}">Occupation</span>
                         </div>
-                        <div th:if="${bioData.highestQualification}" class="basic-row">
+                        <div th:if="${!#strings.isEmpty(bioData.highestQualification)}" class="basic-row">
                             <span class="basic-label">Education</span>
                             <span class="basic-value" th:text="${bioData.highestQualification}">Education</span>
                         </div>
-                        <div th:if="${bioData.city}" class="basic-row">
+                        <div th:if="${!#strings.isEmpty(bioData.city)}" class="basic-row">
                             <span class="basic-label">Location</span>
-                            <span class="basic-value" th:text="${bioData.city + (bioData.state != null ? ', ' + bioData.state : '')}">Location</span>
+                            <span class="basic-value" th:text="${bioData.city + (!#strings.isEmpty(bioData.state) ? ', ' + bioData.state : '')}">Location</span>
                         </div>
                     </div>
                 </div>
@@ -240,49 +240,49 @@
                 <div class="section-title">Personal Details</div>
                 <div class="info-grid">
                     <div class="info-row">
-                        <div th:if="${bioData.dateOfBirth}" class="info-cell">
+                        <div th:if="${bioData.dateOfBirth != null}" class="info-cell">
                             <span class="info-label">Date of Birth:</span>
                             <span class="info-value" th:text="${formattedDob}">DOB</span>
                         </div>
-                        <div th:if="${bioData.birthTime}" class="info-cell">
+                        <div th:if="${!#strings.isEmpty(bioData.birthTime)}" class="info-cell">
                             <span class="info-label">Birth Time:</span>
                             <span class="info-value" th:text="${bioData.birthTime}">Time</span>
                         </div>
                     </div>
                     <div class="info-row">
-                        <div th:if="${bioData.birthPlace}" class="info-cell">
+                        <div th:if="${!#strings.isEmpty(bioData.birthPlace)}" class="info-cell">
                             <span class="info-label">Birth Place:</span>
                             <span class="info-value" th:text="${bioData.birthPlace}">Place</span>
                         </div>
-                        <div th:if="${bioData.height}" class="info-cell">
+                        <div th:if="${!#strings.isEmpty(bioData.height)}" class="info-cell">
                             <span class="info-label">Height:</span>
                             <span class="info-value" th:text="${bioData.height}">Height</span>
                         </div>
                     </div>
                     <div class="info-row">
-                        <div th:if="${bioData.rashi}" class="info-cell">
+                        <div th:if="${!#strings.isEmpty(bioData.rashi)}" class="info-cell">
                             <span class="info-label">Rashi:</span>
                             <span class="info-value" th:text="${bioData.rashi}">Rashi</span>
                         </div>
-                        <div th:if="${bioData.nakshatra}" class="info-cell">
+                        <div th:if="${!#strings.isEmpty(bioData.nakshatra)}" class="info-cell">
                             <span class="info-label">Nakshatra:</span>
                             <span class="info-value" th:text="${bioData.nakshatra}">Nakshatra</span>
                         </div>
                     </div>
                     <div class="info-row">
-                        <div th:if="${bioData.gotra}" class="info-cell">
+                        <div th:if="${!#strings.isEmpty(bioData.gotra)}" class="info-cell">
                             <span class="info-label">Gotra:</span>
                             <span class="info-value" th:text="${bioData.gotra}">Gotra</span>
                         </div>
-                        <div th:if="${bioData.manglikStatus}" class="info-cell">
+                        <div th:if="${!#strings.isEmpty(bioData.manglikStatus)}" class="info-cell">
                             <span class="info-label">Manglik:</span>
                             <span class="info-value" th:text="${bioData.manglikStatus}">Status</span>
                         </div>
                     </div>
-                    <div th:if="${bioData.maritalStatus}" class="info-row">
+                    <div th:if="${!#strings.isEmpty(bioData.maritalStatus)}" class="info-row">
                         <div class="info-cell">
                             <span class="info-label">Marital Status:</span>
-                            <span class="info-value" th:text="${bioData.maritalStatus}">Status</span>
+                            <span class="info-value" th:text="${#strings.capitalizeWords(#strings.toLowerCase(#strings.replace(bioData.maritalStatus, '_', ' ')))}">Status</span>
                         </div>
                         <div class="info-cell"></div>
                     </div>
@@ -290,21 +290,21 @@
             </div>
 
             <!-- Family Details -->
-            <div th:if="${hasFamily}" class="section">
+            <div th:if="${!#strings.isEmpty(bioData.fatherName) or !#strings.isEmpty(bioData.motherName)}" class="section">
                 <div class="section-title">Family Details</div>
                 <div class="info-grid">
                     <div class="info-row">
-                        <div th:if="${bioData.fatherName}" class="info-cell">
+                        <div th:if="${!#strings.isEmpty(bioData.fatherName)}" class="info-cell">
                             <span class="info-label">Father's Name:</span>
                             <span class="info-value" th:text="${bioData.fatherName}">Father</span>
                         </div>
-                        <div th:if="${bioData.fatherOccupation}" class="info-cell">
+                        <div th:if="${!#strings.isEmpty(bioData.fatherOccupation)}" class="info-cell">
                             <span class="info-label">Father's Work:</span>
                             <span class="info-value" th:text="${bioData.fatherOccupation}">Occupation</span>
                         </div>
                     </div>
                     <div class="info-row">
-                        <div th:if="${bioData.motherName}" class="info-cell">
+                        <div th:if="${!#strings.isEmpty(bioData.motherName)}" class="info-cell">
                             <span class="info-label">Mother's Name:</span>
                             <span class="info-value" th:text="${bioData.motherName}">Mother</span>
                         </div>
@@ -317,7 +317,7 @@
                             </span>
                         </div>
                     </div>
-                    <div th:if="${bioData.familyType}" class="info-row">
+                    <div th:if="${!#strings.isEmpty(bioData.familyType)}" class="info-row">
                         <div class="info-cell">
                             <span class="info-label">Family Type:</span>
                             <span class="info-value" th:text="${bioData.familyType}">Type</span>
@@ -328,24 +328,24 @@
             </div>
 
             <!-- Contact Details -->
-            <div th:if="${hasContact}" class="section">
+            <div th:if="${!#strings.isEmpty(bioData.contactNumber) or !#strings.isEmpty(bioData.emailAddress)}" class="section">
                 <div class="section-title">Contact Information</div>
-                <div th:if="${bioData.contactNumber}" class="full-row">
+                <div th:if="${!#strings.isEmpty(bioData.contactNumber)}" class="full-row">
                     <span class="full-label">Phone:</span>
                     <span class="full-value" th:text="${'+91 ' + bioData.contactNumber}">Phone</span>
                 </div>
-                <div th:if="${bioData.emailAddress}" class="full-row">
+                <div th:if="${!#strings.isEmpty(bioData.emailAddress)}" class="full-row">
                     <span class="full-label">Email:</span>
                     <span class="full-value" th:text="${bioData.emailAddress}">Email</span>
                 </div>
-                <div th:if="${bioData.currentAddress}" class="full-row">
+                <div th:if="${!#strings.isEmpty(bioData.currentAddress)}" class="full-row">
                     <span class="full-label">Address:</span>
                     <span class="full-value" th:text="${bioData.currentAddress}">Address</span>
                 </div>
             </div>
 
             <!-- About Me -->
-            <div th:if="${bioData.aboutMe}" class="section">
+            <div th:if="${!#strings.isEmpty(bioData.aboutMe)}" class="section">
                 <div class="section-title">About Me</div>
                 <div class="about-box">
                     <p class="about-text" th:text="${bioData.aboutMe}">About me...</p>
