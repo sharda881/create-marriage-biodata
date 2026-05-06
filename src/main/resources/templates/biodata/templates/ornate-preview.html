@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!-- ORNATE TEMPLATE - Mauve/Tan theme with decorative corner ornaments -->
+<div th:fragment="content" class="w-full">
+
+    <div style="background-color: #f0f0f0; display: flex; justify-content: center; padding: 20px;">
+        
+        <!-- Main Biodata Card -->
+        <div style="background-color: #927668; width: 100%; max-width: 750px; padding: 70px 50px; color: #ffffff; position: relative; box-sizing: border-box; box-shadow: 0 10px 40px rgba(0,0,0,0.3); font-family: 'Montserrat', sans-serif;">
+            
+            <!-- Double-line frame and Ornate Corners -->
+            <div style="position: absolute; top: 15px; left: 15px; right: 15px; bottom: 15px; border: 1px solid #dec2b1; pointer-events: none;"></div>
+            
+            <!-- Corner SVG Ornaments -->
+            <svg style="position: absolute; width: 80px; height: 80px; fill: none; stroke: #dec2b1; stroke-width: 1; top: 20px; left: 20px;" viewBox="0 0 100 100">
+                <path d="M0,40 L0,0 L40,0 M10,30 L10,10 L30,10 M15,15 Q25,5 45,15" stroke="currentColor"/>
+                <circle cx="5" cy="5" r="1.5" fill="currentColor"/>
+            </svg>
+            <svg style="position: absolute; width: 80px; height: 80px; fill: none; stroke: #dec2b1; stroke-width: 1; top: 20px; right: 20px; transform: scaleX(-1);" viewBox="0 0 100 100">
+                <path d="M0,40 L0,0 L40,0 M10,30 L10,10 L30,10 M15,15 Q25,5 45,15" stroke="currentColor"/>
+            </svg>
+            <svg style="position: absolute; width: 80px; height: 80px; fill: none; stroke: #dec2b1; stroke-width: 1; bottom: 20px; left: 20px; transform: scaleY(-1);" viewBox="0 0 100 100">
+                <path d="M0,40 L0,0 L40,0 M10,30 L10,10 L30,10 M15,15 Q25,5 45,15" stroke="currentColor"/>
+            </svg>
+            <svg style="position: absolute; width: 80px; height: 80px; fill: none; stroke: #dec2b1; stroke-width: 1; bottom: 20px; right: 20px; transform: scale(-1);" viewBox="0 0 100 100">
+                <path d="M0,40 L0,0 L40,0 M10,30 L10,10 L30,10 M15,15 Q25,5 45,15" stroke="currentColor"/>
+            </svg>
+
+            <!-- Personal Details Section -->
+            <section style="margin-bottom: 45px; position: relative; z-index: 2;">
+                <h2 style="font-size: 1.1rem; font-weight: 700; letter-spacing: 1px; margin: 0 0 10px 0; text-transform: uppercase;">PERSONAL DETAILS</h2>
+                <div style="display: flex; align-items: center; margin-bottom: 25px;">
+                    <div style="height: 1px; background-color: #dec2b1; width: 60px;"></div>
+                    <div style="color: #dec2b1; padding: 0 10px; font-size: 20px;">✧ ━━━ ✧</div>
+                    <div style="height: 1px; background-color: #dec2b1; width: 60px;"></div>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+                    <div style="display: grid; grid-template-columns: 180px 30px 1fr; row-gap: 10px; font-size: 15px; line-height: 1.4; flex: 1; min-width: 300px;">
+                        <div style="font-weight: 500;">Name</div><div style="color: #dec2b1; text-align: center;">:</div><div style="font-weight: 400; opacity: 0.95;" th:text="${bioData.fullName}">Full Name</div>
+                        
+                        <div th:if="${bioData.dateOfBirth != null}" style="font-weight: 500;">Date of Birth</div><div th:if="${bioData.dateOfBirth != null}" style="color: #dec2b1; text-align: center;">:</div><div th:if="${bioData.dateOfBirth != null}" style="font-weight: 400; opacity: 0.95;" th:text="${#temporals.format(bioData.dateOfBirth, 'dd MMMM yyyy')}">Date of Birth</div>
+                        
+                        <div th:if="${bioData.birthTime != null}" style="font-weight: 500;">Time of Birth</div><div th:if="${bioData.birthTime != null}" style="color: #dec2b1; text-align: center;">:</div><div th:if="${bioData.birthTime != null}" style="font-weight: 400; opacity: 0.95;" th:text="${bioData.birthTime}">Birth Time</div>
+                        
+                        <div th:if="${bioData.birthPlace != null}" style="font-weight: 500;">Place of Birth</div><div th:if="${bioData.birthPlace != null}" style="color: #dec2b1; text-align: center;">:</div><div th:if="${bioData.birthPlace != null}" style="font-weight: 400; opacity: 0.95;" th:text="${bioData.birthPlace}">Birth Place</div>
+                        
+                        <div th:if="${bioData.rashi != null}" style="font-weight: 500;">Rashi</div><div th:if="${bioData.rashi != null}" style="color: #dec2b1; text-align: center;">:</div><div th:if="${bioData.rashi != null}" style="font-weight: 400; opacity: 0.95;" th:text="${bioData.rashi}">Rashi</div>
+                        
+                        <div th:if="${bioData.nakshatra != null}" style="font-weight: 500;">Nakshatra</div><div th:if="${bioData.nakshatra != null}" style="color: #dec2b1; text-align: center;">:</div><div th:if="${bioData.nakshatra != null}" style="font-weight: 400; opacity: 0.95;" th:text="${bioData.nakshatra}">Nakshatra</div>
+                        
+                        <div th:if="${bioData.complexion != null}" style="font-weight: 500;">Complexion</div><div th:if="${bioData.complexion != null}" style="color: #dec2b1; text-align: center;">:</div><div th:if="${bioData.complexion != null}" style="font-weight: 400; opacity: 0.95;" th:text="${bioData.complexion}">Complexion</div>
+                        
+                        <div th:if="${bioData.height != null}" style="font-weight: 500;">Height</div><div th:if="${bioData.height != null}" style="color: #dec2b1; text-align: center;">:</div><div th:if="${bioData.height != null}" style="font-weight: 400; opacity: 0.95;" th:text="${bioData.height}">Height</div>
+                        
+                        <div th:if="${bioData.gotra != null}" style="font-weight: 500;">Gotra</div><div th:if="${bioData.gotra != null}" style="color: #dec2b1; text-align: center;">:</div><div th:if="${bioData.gotra != null}" style="font-weight: 400; opacity: 0.95;" th:text="${bioData.gotra}">Gotra</div>
+                        
+                        <div th:if="${bioData.highestQualification != null}" style="font-weight: 500;">Education</div><div th:if="${bioData.highestQualification != null}" style="color: #dec2b1; text-align: center;">:</div><div th:if="${bioData.highestQualification != null}" style="font-weight: 400; opacity: 0.95;" th:text="${bioData.highestQualification}">Education</div>
+                        
+                        <div th:if="${bioData.occupation != null}" style="font-weight: 500;">Work</div><div th:if="${bioData.occupation != null}" style="color: #dec2b1; text-align: center;">:</div><div th:if="${bioData.occupation != null}" style="font-weight: 400; opacity: 0.95;" th:text="${bioData.occupation}">Occupation</div>
+                    </div>
+                    <div style="width: 200px; height: 250px; overflow: hidden; flex-shrink: 0; box-shadow: 5px 5px 15px rgba(0,0,0,0.2);">
+                        <img th:if="${bioData.photoPath != null}" th:src="${bioData.photoPath}"
+                             style="width: 100%; height: 100%; object-fit: cover;" alt="Profile Photo">
+                        <div th:unless="${bioData.photoPath != null}"
+                             style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.1); color: #dec2b1; font-size: 4rem;">
+                            👤
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Family Details Section -->
+            <section th:if="${bioData.fatherName != null or bioData.motherName != null}" style="margin-bottom: 45px; position: relative; z-index: 2;">
+                <h2 style="font-size: 1.1rem; font-weight: 700; letter-spacing: 1px; margin: 0 0 10px 0; text-transform: uppercase;">FAMILY DETAILS</h2>
+                <div style="display: flex; align-items: center; margin-bottom: 25px;">
+                    <div style="height: 1px; background-color: #dec2b1; width: 60px;"></div>
+                    <div style="color: #dec2b1; padding: 0 10px; font-size: 20px;">✧ ━━━ ✧</div>
+                    <div style="height: 1px; background-color: #dec2b1; width: 60px;"></div>
+                </div>
+                <div style="display: grid; grid-template-columns: 180px 30px 1fr; row-gap: 10px; font-size: 15px; line-height: 1.4;">
+                    <div th:if="${bioData.fatherName != null}" style="font-weight: 500;">Father's Name</div><div th:if="${bioData.fatherName != null}" style="color: #dec2b1; text-align: center;">:</div><div th:if="${bioData.fatherName != null}" style="font-weight: 400; opacity: 0.95;" th:text="${bioData.fatherName}">Father Name</div>
+                    
+                    <div th:if="${bioData.fatherOccupation != null}" style="font-weight: 500;">Father's Occupation</div><div th:if="${bioData.fatherOccupation != null}" style="color: #dec2b1; text-align: center;">:</div><div th:if="${bioData.fatherOccupation != null}" style="font-weight: 400; opacity: 0.95;" th:text="${bioData.fatherOccupation}">Father Occupation</div>
+                    
+                    <div th:if="${bioData.motherName != null}" style="font-weight: 500;">Mother's Name</div><div th:if="${bioData.motherName != null}" style="color: #dec2b1; text-align: center;">:</div><div th:if="${bioData.motherName != null}" style="font-weight: 400; opacity: 0.95;" th:text="${bioData.motherName}">Mother Name</div>
+                    
+                    <div th:if="${bioData.motherOccupation != null}" style="font-weight: 500;">Mother's Occupation</div><div th:if="${bioData.motherOccupation != null}" style="color: #dec2b1; text-align: center;">:</div><div th:if="${bioData.motherOccupation != null}" style="font-weight: 400; opacity: 0.95;" th:text="${bioData.motherOccupation}">Mother Occupation</div>
+                    
+                    <div th:if="${bioData.numberOfBrothers != null or bioData.numberOfSisters != null}" style="font-weight: 500;">Siblings</div>
+                    <div th:if="${bioData.numberOfBrothers != null or bioData.numberOfSisters != null}" style="color: #dec2b1; text-align: center;">:</div>
+                    <div th:if="${bioData.numberOfBrothers != null or bioData.numberOfSisters != null}" style="font-weight: 400; opacity: 0.95;">
+                        <span th:if="${bioData.numberOfBrothers != null}" th:text="${bioData.numberOfBrothers + ' Brother(s)'}"></span>
+                        <span th:if="${bioData.numberOfBrothers != null and bioData.numberOfSisters != null}">, </span>
+                        <span th:if="${bioData.numberOfSisters != null}" th:text="${bioData.numberOfSisters + ' Sister(s)'}"></span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Contact Details Section -->
+            <section th:if="${bioData.contactNumber != null or bioData.emailAddress != null or bioData.currentAddress != null}" style="margin-bottom: 45px; position: relative; z-index: 2;">
+                <h2 style="font-size: 1.1rem; font-weight: 700; letter-spacing: 1px; margin: 0 0 10px 0; text-transform: uppercase;">CONTACT DETAILS</h2>
+                <div style="display: flex; align-items: center; margin-bottom: 25px;">
+                    <div style="height: 1px; background-color: #dec2b1; width: 60px;"></div>
+                    <div style="color: #dec2b1; padding: 0 10px; font-size: 20px;">✧ ━━━ ✧</div>
+                    <div style="height: 1px; background-color: #dec2b1; width: 60px;"></div>
+                </div>
+                <div style="display: grid; grid-template-columns: 180px 30px 1fr; row-gap: 10px; font-size: 15px; line-height: 1.4;">
+                    <div th:if="${bioData.fatherName != null}" style="font-weight: 500;">Contact Person</div><div th:if="${bioData.fatherName != null}" style="color: #dec2b1; text-align: center;">:</div><div th:if="${bioData.fatherName != null}" style="font-weight: 400; opacity: 0.95;" th:text="${bioData.fatherName}">Contact Person</div>
+                    
+                    <div th:if="${bioData.contactNumber != null}" style="font-weight: 500;">Contact Number</div><div th:if="${bioData.contactNumber != null}" style="color: #dec2b1; text-align: center;">:</div><div th:if="${bioData.contactNumber != null}" style="font-weight: 400; opacity: 0.95;" th:text="${'+91 ' + bioData.contactNumber}">Phone</div>
+                    
+                    <div th:if="${bioData.emailAddress != null}" style="font-weight: 500;">Email ID</div><div th:if="${bioData.emailAddress != null}" style="color: #dec2b1; text-align: center;">:</div><div th:if="${bioData.emailAddress != null}" style="font-weight: 400; opacity: 0.95;" th:text="${bioData.emailAddress}">Email</div>
+                    
+                    <div th:if="${bioData.currentAddress != null}" style="font-weight: 500;">Residential Address</div><div th:if="${bioData.currentAddress != null}" style="color: #dec2b1; text-align: center;">:</div><div th:if="${bioData.currentAddress != null}" style="font-weight: 400; opacity: 0.95;" th:text="${bioData.currentAddress}">Address</div>
+                </div>
+            </section>
+
+        </div>
+    </div>
+</div>
+
+</html>
