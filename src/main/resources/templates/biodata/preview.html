@@ -54,8 +54,11 @@
                         <!-- PREMIUM ELITE TEMPLATE -->
                         <div th:if="${template.templateId.equals('premium')}" th:insert="~{biodata/templates/premium-preview :: content}"></div>
 
+                        <!-- ORNATE TEMPLATE -->
+                        <div th:if="${template.templateId.equals('ornate')}" th:insert="~{biodata/templates/ornate-preview :: content}"></div>
+
                         <!-- DEFAULT FALLBACK -->
-                        <div th:if="${!template.templateId.equals('traditional') and !template.templateId.equals('royal') and !template.templateId.equals('modern') and !template.templateId.equals('elegant') and !template.templateId.equals('floral') and !template.templateId.equals('simple') and !template.templateId.equals('premium-green') and !template.templateId.equals('premium-silver') and !template.templateId.equals('premium')}"
+                        <div th:if="${!template.templateId.equals('traditional') and !template.templateId.equals('royal') and !template.templateId.equals('modern') and !template.templateId.equals('elegant') and !template.templateId.equals('floral') and !template.templateId.equals('simple') and !template.templateId.equals('premium-green') and !template.templateId.equals('premium-silver') and !template.templateId.equals('premium') and !template.templateId.equals('ornate')}"
                              th:insert="~{biodata/templates/traditional-preview :: content}"></div>
 
                     </div>
@@ -259,6 +262,59 @@
                                             </div>
                                         </div>
 
+                                        <!-- ORNATE Template Preview -->
+                                        <div th:if="${t.templateId.equals('ornate')}" class="h-full rounded relative overflow-hidden" style="background: #927668;">
+                                            <!-- Ornate Corners -->
+                                            <svg style="position: absolute; width: 35px; height: 35px; fill: none; stroke: #dec2b1; stroke-width: 1; top: 4px; left: 4px;" viewBox="0 0 100 100">
+                                                <path d="M0,40 L0,0 L40,0 M10,30 L10,10 L30,10 M15,15 Q25,5 45,15" stroke="currentColor"/>
+                                                <circle cx="5" cy="5" r="1.5" fill="currentColor"/>
+                                            </svg>
+                                            <svg style="position: absolute; width: 35px; height: 35px; fill: none; stroke: #dec2b1; stroke-width: 1; top: 4px; right: 4px; transform: scaleX(-1);" viewBox="0 0 100 100">
+                                                <path d="M0,40 L0,0 L40,0 M10,30 L10,10 L30,10 M15,15 Q25,5 45,15" stroke="currentColor"/>
+                                            </svg>
+                                            <svg style="position: absolute; width: 35px; height: 35px; fill: none; stroke: #dec2b1; stroke-width: 1; bottom: 4px; left: 4px; transform: scaleY(-1);" viewBox="0 0 100 100">
+                                                <path d="M0,40 L0,0 L40,0 M10,30 L10,10 L30,10 M15,15 Q25,5 45,15" stroke="currentColor"/>
+                                            </svg>
+                                            <svg style="position: absolute; width: 35px; height: 35px; fill: none; stroke: #dec2b1; stroke-width: 1; bottom: 4px; right: 4px; transform: scale(-1);" viewBox="0 0 100 100">
+                                                <path d="M0,40 L0,0 L40,0 M10,30 L10,10 L30,10 M15,15 Q25,5 45,15" stroke="currentColor"/>
+                                            </svg>
+
+                                            <div class="p-3" style="position: relative; z-index: 2;">
+                                                <div class="text-[8px] font-bold text-white tracking-wider mb-1">PERSONAL DETAILS</div>
+                                                <div class="flex items-center mb-2">
+                                                    <div style="height: 1px; background-color: #dec2b1; width: 18px;"></div>
+                                                    <div style="color: #dec2b1; padding: 0 3px; font-size: 7px;">✧ ━━━ ✧</div>
+                                                    <div style="height: 1px; background-color: #dec2b1; width: 18px;"></div>
+                                                </div>
+
+                                                <div class="flex gap-2">
+                                                    <div class="flex-1">
+                                                        <div class="text-[7px] text-white/90 space-y-1">
+                                                            <div class="flex"><span class="w-12 opacity-70">Name</span><span class="mx-0.5" style="color: #dec2b1;">:</span><span>Mahima Singh</span></div>
+                                                            <div class="flex"><span class="w-12 opacity-70">DOB</span><span class="mx-0.5" style="color: #dec2b1;">:</span><span>20 Nov 1995</span></div>
+                                                            <div class="flex"><span class="w-12 opacity-70">Height</span><span class="mx-0.5" style="color: #dec2b1;">:</span><span>5'4"</span></div>
+                                                            <div class="flex"><span class="w-12 opacity-70">Rashi</span><span class="mx-0.5" style="color: #dec2b1;">:</span><span>Tula</span></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="w-12 h-16 overflow-hidden" style="box-shadow: 2px 2px 6px rgba(0,0,0,0.3);">
+                                                        <img src="https://randomuser.me/api/portraits/women/50.jpg" alt="Photo" class="w-full h-full object-cover">
+                                                    </div>
+                                                </div>
+
+                                                <div class="mt-2">
+                                                    <div class="text-[8px] font-bold text-white tracking-wider mb-1">FAMILY DETAILS</div>
+                                                    <div class="flex items-center mb-1">
+                                                        <div style="height: 1px; background-color: #dec2b1; width: 18px;"></div>
+                                                        <div style="color: #dec2b1; padding: 0 3px; font-size: 7px;">✧ ━━━ ✧</div>
+                                                        <div style="height: 1px; background-color: #dec2b1; width: 18px;"></div>
+                                                    </div>
+                                                    <div class="text-[7px] text-white/90 space-y-0.5">
+                                                        <div class="flex"><span class="w-16 opacity-70">Father</span><span class="mx-0.5" style="color: #dec2b1;">:</span><span>Sh. Deepak Singh</span></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                         <!-- PREMIUM GREEN Template Preview -->
                                         <div th:if="${t.templateId.equals('premium-green')}" class="h-full rounded-lg overflow-hidden" style="background: linear-gradient(135deg, #064E3B, #065F46);">
                                             <div class="p-3 text-center border-b" style="border-color: #047857;">
@@ -396,6 +452,9 @@
                                         <p th:if="${t.templateId.equals('premium')}" class="text-gray-600 text-xs mb-3">
                                             Exclusive violet gradient design
                                         </p>
+                                        <p th:if="${t.templateId.equals('ornate')}" class="text-gray-600 text-xs mb-3">
+                                            Mauve with ornate tan borders & vintage corners
+                                        </p>
 
                                         <!-- Use Template Button - Traditional -->
                                         <button th:if="${t.templateId.equals('traditional')}" type="submit"
@@ -453,6 +512,13 @@
                                         <!-- Use Template Button - Premium Elite -->
                                         <button th:if="${t.templateId.equals('premium')}" type="submit"
                                                 class="w-full py-2 text-center text-white rounded-lg text-sm font-semibold hover:shadow-lg transition-shadow bg-gradient-to-r from-purple-600 to-violet-600">
+                                            Use Template
+                                        </button>
+
+                                        <!-- Use Template Button - Ornate -->
+                                        <button th:if="${t.templateId.equals('ornate')}" type="submit"
+                                                class="w-full py-2 text-center text-white rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity"
+                                                style="background: #927668;">
                                             Use Template
                                         </button>
                                     </div>

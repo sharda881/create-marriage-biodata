@@ -14,10 +14,10 @@ public class PremiumSilverTemplate extends AbstractBioDataTemplate {
         super(
                 "premium-silver",
                 "Premium Silver",
-                "Sophisticated silver and gray design with metallic accents. Perfect for a modern and elegant look.",
-                "#2D3748",  // Dark gray
-                "#C0C0C0",  // Silver
-                "#2D3748",  // Dark gray background
+                "Regal silver and gray design matching Royal Gold aesthetic. Perfect for a sophisticated and elegant look.",
+                "#475569",  // Slate gray (matching Royal structure)
+                "#CBD5E1",  // Silver
+                "#F5F5F5",  // Light gray background
                 true        // Premium template
         );
     }

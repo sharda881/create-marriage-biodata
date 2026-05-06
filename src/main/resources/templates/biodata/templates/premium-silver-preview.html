@@ -1,172 +1,230 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
-<!-- PREMIUM SILVER TEMPLATE - Dark Gray/Silver theme with elegant design, photo on top left -->
+<!-- PREMIUM SILVER TEMPLATE - Dark Gray/Silver theme with regal design (matching Royal structure) -->
 <div th:fragment="content" class="w-full">
 
-    <!-- Page with premium silver gradient -->
-    <div class="relative" style="background: linear-gradient(135deg, #2D3748 0%, #4A5568 50%, #2D3748 100%); min-height: 500px;">
+    <!-- Page with royal silver background -->
+    <div class="relative overflow-hidden" style="background: #475569; min-height: 600px; padding-bottom: 80px;">
 
-        <!-- Silver decorative top border -->
-        <div class="h-2 sm:h-3" style="background: linear-gradient(90deg, #909090, #C0C0C0, #A8A8A8, #C0C0C0, #909090);"></div>
+        <!-- Mandala background effect -->
+        <div class="absolute -top-12 -right-12 w-64 h-64 rounded-full opacity-10"
+             style="background: radial-gradient(circle, rgba(255,255,255,0.5) 0%, transparent 70%); border: 1px solid rgba(255,255,255,0.1);"></div>
 
         <!-- Main content area -->
-        <div class="p-3 sm:p-4 md:p-6">
+        <div class="p-6 sm:p-8 md:p-10 relative z-10">
 
-            <!-- Premium Header -->
-            <div class="text-center mb-4">
-                <div class="inline-block px-4 sm:px-6 py-1.5 rounded-lg" style="background: linear-gradient(135deg, #C0C0C0, #A8A8A8);">
-                    <span class="text-lg sm:text-xl" style="color: #2D3748;">💎</span>
-                    <span class="text-base sm:text-lg font-bold tracking-wider ml-2" style="color: #2D3748;">BIO-DATA</span>
-                    <span class="text-lg sm:text-xl ml-2" style="color: #2D3748;">💎</span>
-                </div>
-                <div class="mt-2 text-xs sm:text-sm font-semibold tracking-widest" style="color: #C0C0C0;">|| SHREE GANESHAYA NAMAH ||</div>
-            </div>
-
-            <!-- Photo and Name Header Section -->
-            <div class="flex flex-col sm:flex-row items-center sm:items-start gap-3 sm:gap-4 mb-4 p-3 rounded-lg" style="background: linear-gradient(135deg, rgba(192,192,192,0.15), rgba(168,168,168,0.1));">
+            <!-- Profile Header -->
+            <div class="flex flex-col sm:flex-row items-start gap-4 sm:gap-6 mb-8">
                 <!-- Photo -->
                 <div class="flex-shrink-0">
-                    <div class="w-24 h-32 sm:w-28 sm:h-36 md:w-32 md:h-40 border-3 rounded-lg overflow-hidden shadow-lg" style="border-color: #C0C0C0; background: #F8F8F8;">
+                    <div class="w-36 h-48 sm:w-40 sm:h-52 border-2 overflow-hidden"
+                         style="border-color: rgba(255,255,255,0.1); background: #F5F5F5;">
                         <img th:if="${bioData.photoPath != null}" th:src="${bioData.photoPath}"
                              class="w-full h-full object-cover" alt="Profile Photo">
                         <div th:unless="${bioData.photoPath != null}"
-                             class="w-full h-full flex items-center justify-center text-gray-400 text-3xl bg-gray-50">
+                             class="w-full h-full flex items-center justify-center text-gray-400 text-3xl">
                             👤
                         </div>
                     </div>
                 </div>
                 <!-- Name and basic info -->
-                <div class="text-center sm:text-left flex-1">
-                    <h2 class="text-lg sm:text-xl md:text-2xl font-bold mb-1" style="color: #C0C0C0;" th:text="${bioData.fullName}">Full Name</h2>
-                    <p th:if="${!#strings.isEmpty(bioData.occupation)}" class="text-xs sm:text-sm mb-1" style="color: #E5E5E5;" th:text="${bioData.occupation}">Occupation</p>
-                    <p th:if="${!#strings.isEmpty(bioData.city)}" class="text-xs sm:text-sm" style="color: #D3D3D3;">
-                        📍 <span th:text="${bioData.city + (!#strings.isEmpty(bioData.state) ? ', ' + bioData.state : '')}">Location</span>
+                <div class="flex-1 pt-0 sm:pt-4">
+                    <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold mb-3" style="color: #FFFFFF; letter-spacing: 0.5px;" th:text="${bioData.fullName}">Full Name</h2>
+                    <p th:if="${bioData.dateOfBirth != null}" class="text-base sm:text-lg mb-2" style="color: rgba(255,255,255,0.9);">
+                        Date of Birth : <span th:text="${#temporals.format(bioData.dateOfBirth, 'dd MMMM yyyy')}">03 November 1995</span>
+                    </p>
+                    <p th:if="${!#strings.isEmpty(bioData.birthPlace)}" class="text-base sm:text-lg mb-3" style="color: rgba(255,255,255,0.9);">
+                        Place of Birth : <span th:text="${bioData.birthPlace}">New Delhi</span>
+                    </p>
+                    <!-- About Me without label -->
+                    <p th:if="${!#strings.isEmpty(bioData.aboutMe)}" class="text-sm sm:text-base mt-4 italic leading-relaxed" style="color: rgba(255,255,255,0.95);" th:text="${bioData.aboutMe}">
+                        About me text appears here...
                     </p>
                 </div>
             </div>
 
-            <!-- Personal Details Card -->
-            <div class="rounded-lg overflow-hidden mb-4 shadow-lg" style="background: rgba(255,255,255,0.95);">
-                <div class="px-3 py-2 sm:px-4 sm:py-2" style="background: linear-gradient(90deg, #2D3748, #4A5568);">
-                    <h3 class="text-white font-bold text-xs sm:text-sm uppercase tracking-wide">✨ Personal Details</h3>
+            <!-- Personal Details Section -->
+            <div class="mb-8">
+                <div class="text-center mb-6">
+                    <div class="inline-block px-6 sm:px-8 py-2 rounded-full shadow-md"
+                         style="background: #CBD5E1; color: #1F2937;">
+                        <span class="text-xs sm:text-sm font-bold tracking-widest uppercase">Personal Details</span>
+                    </div>
                 </div>
-                <div class="p-3 sm:p-4 grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    <div th:if="${bioData.dateOfBirth != null}" class="flex">
-                        <span class="text-gray-500 w-24 sm:w-28 text-xs sm:text-sm">Date of Birth</span>
-                        <span class="text-gray-800 font-medium text-xs sm:text-sm" th:text="${#temporals.format(bioData.dateOfBirth, 'dd MMM yyyy')}">DOB</span>
+                <div class="space-y-3 px-0 sm:px-2">
+                    <div th:if="${bioData.dateOfBirth != null}" class="grid grid-cols-2 sm:grid-cols-[180px_1fr] gap-2 text-sm sm:text-base">
+                        <div style="color: #FFFFFF;">Date of Birth</div>
+                        <div style="color: #FFFFFF;" th:text="${#temporals.format(bioData.dateOfBirth, 'dd MMMM yyyy')}">20 November 1994</div>
                     </div>
-                    <div th:if="${!#strings.isEmpty(bioData.birthTime)}" class="flex">
-                        <span class="text-gray-500 w-24 sm:w-28 text-xs sm:text-sm">Time of Birth</span>
-                        <span class="text-gray-800 font-medium text-xs sm:text-sm" th:text="${bioData.birthTime}">Time</span>
+                    <div th:if="${!#strings.isEmpty(bioData.birthTime)}" class="grid grid-cols-2 sm:grid-cols-[180px_1fr] gap-2 text-sm sm:text-base">
+                        <div style="color: #FFFFFF;">Time of Birth</div>
+                        <div style="color: #FFFFFF;" th:text="${bioData.birthTime}">7:20 PM</div>
                     </div>
-                    <div th:if="${!#strings.isEmpty(bioData.birthPlace)}" class="flex">
-                        <span class="text-gray-500 w-24 sm:w-28 text-xs sm:text-sm">Place of Birth</span>
-                        <span class="text-gray-800 font-medium text-xs sm:text-sm" th:text="${bioData.birthPlace}">Place</span>
+                    <div th:if="${!#strings.isEmpty(bioData.birthPlace)}" class="grid grid-cols-2 sm:grid-cols-[180px_1fr] gap-2 text-sm sm:text-base">
+                        <div style="color: #FFFFFF;">Place of Birth</div>
+                        <div style="color: #FFFFFF;" th:text="${bioData.birthPlace}">New Delhi</div>
                     </div>
-                    <div th:if="${!#strings.isEmpty(bioData.height)}" class="flex">
-                        <span class="text-gray-500 w-24 sm:w-28 text-xs sm:text-sm">Height</span>
-                        <span class="text-gray-800 font-medium text-xs sm:text-sm" th:text="${bioData.height}">Height</span>
+                    <div th:if="${!#strings.isEmpty(bioData.rashi)}" class="grid grid-cols-2 sm:grid-cols-[180px_1fr] gap-2 text-sm sm:text-base">
+                        <div style="color: #FFFFFF;">Rashi</div>
+                        <div style="color: #FFFFFF;" th:text="${bioData.rashi}">Tula (Libra)</div>
                     </div>
-                    <div th:if="${!#strings.isEmpty(bioData.complexion)}" class="flex">
-                        <span class="text-gray-500 w-24 sm:w-28 text-xs sm:text-sm">Complexion</span>
-                        <span class="text-gray-800 font-medium text-xs sm:text-sm" th:text="${bioData.complexion}">Complexion</span>
+                    <div th:if="${!#strings.isEmpty(bioData.nakshatra)}" class="grid grid-cols-2 sm:grid-cols-[180px_1fr] gap-2 text-sm sm:text-base">
+                        <div style="color: #FFFFFF;">Nakshatra</div>
+                        <div style="color: #FFFFFF;" th:text="${bioData.nakshatra}">Aswini</div>
                     </div>
-                    <div th:if="${!#strings.isEmpty(bioData.bloodGroup)}" class="flex">
-                        <span class="text-gray-500 w-24 sm:w-28 text-xs sm:text-sm">Blood Group</span>
-                        <span class="text-gray-800 font-medium text-xs sm:text-sm" th:text="${bioData.bloodGroup}">Blood Group</span>
+                    <div th:if="${!#strings.isEmpty(bioData.complexion)}" class="grid grid-cols-2 sm:grid-cols-[180px_1fr] gap-2 text-sm sm:text-base">
+                        <div style="color: #FFFFFF;">Complexion</div>
+                        <div style="color: #FFFFFF;" th:text="${bioData.complexion}">Fair</div>
                     </div>
-                    <div th:if="${!#strings.isEmpty(bioData.gotra)}" class="flex">
-                        <span class="text-gray-500 w-24 sm:w-28 text-xs sm:text-sm">Gotra</span>
-                        <span class="text-gray-800 font-medium text-xs sm:text-sm" th:text="${bioData.gotra}">Gotra</span>
+                    <div th:if="${!#strings.isEmpty(bioData.height)}" class="grid grid-cols-2 sm:grid-cols-[180px_1fr] gap-2 text-sm sm:text-base">
+                        <div style="color: #FFFFFF;">Height</div>
+                        <div style="color: #FFFFFF;" th:text="${bioData.height}">5 feet 9 inches</div>
                     </div>
-                    <div th:if="${!#strings.isEmpty(bioData.highestQualification)}" class="flex">
-                        <span class="text-gray-500 w-24 sm:w-28 text-xs sm:text-sm">Education</span>
-                        <span class="text-gray-800 font-medium text-xs sm:text-sm" th:text="${bioData.highestQualification}">Education</span>
+                    <div th:if="${!#strings.isEmpty(bioData.gotra)}" class="grid grid-cols-2 sm:grid-cols-[180px_1fr] gap-2 text-sm sm:text-base">
+                        <div style="color: #FFFFFF;">Gotra</div>
+                        <div style="color: #FFFFFF;" th:text="${bioData.gotra}">Singh</div>
                     </div>
-                    <div th:if="${!#strings.isEmpty(bioData.occupation)}" class="flex">
-                        <span class="text-gray-500 w-24 sm:w-28 text-xs sm:text-sm">Work</span>
-                        <span class="text-gray-800 font-medium text-xs sm:text-sm" th:text="${bioData.occupation}">Occupation</span>
+                    <div th:if="${!#strings.isEmpty(bioData.bloodGroup)}" class="grid grid-cols-2 sm:grid-cols-[180px_1fr] gap-2 text-sm sm:text-base">
+                        <div style="color: #FFFFFF;">Blood Group</div>
+                        <div style="color: #FFFFFF;" th:text="${bioData.bloodGroup}">A+</div>
                     </div>
-                    <div th:if="${bioData.maritalStatus != null}" class="flex">
-                        <span class="text-gray-500 w-24 sm:w-28 text-xs sm:text-sm">Marital Status</span>
-                        <span class="text-gray-800 font-medium text-xs sm:text-sm" th:text="${#strings.capitalizeWords(#strings.toLowerCase(#strings.replace(bioData.maritalStatus, '_', ' ')))}">Status</span>
+                    <div th:if="${!#strings.isEmpty(bioData.maritalStatus)}" class="grid grid-cols-2 sm:grid-cols-[180px_1fr] gap-2 text-sm sm:text-base">
+                        <div style="color: #FFFFFF;">Marital Status</div>
+                        <div style="color: #FFFFFF;" th:text="${#strings.capitalizeWords(#strings.toLowerCase(#strings.replace(bioData.maritalStatus, '_', ' ')))}">Never Married</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Family Details Card -->
-            <div th:if="${!#strings.isEmpty(bioData.fatherName) or !#strings.isEmpty(bioData.motherName) or bioData.numberOfBrothers != null or bioData.numberOfSisters != null or !#strings.isEmpty(bioData.familyType)}" class="rounded-lg overflow-hidden mb-4 shadow-lg" style="background: rgba(255,255,255,0.95);">
-                <div class="px-3 py-2 sm:px-4 sm:py-2" style="background: linear-gradient(90deg, #2D3748, #4A5568);">
-                    <h3 class="text-white font-bold text-xs sm:text-sm uppercase tracking-wide">👨‍👩‍👧 Family Details</h3>
+            <!-- Education Details Section -->
+            <div th:if="${!#strings.isEmpty(bioData.highestQualification) or !#strings.isEmpty(bioData.educationDetails) or !#strings.isEmpty(bioData.collegeName) or !#strings.isEmpty(bioData.universityName) or !#strings.isEmpty(bioData.specialization) or bioData.passingYear != null}" class="mb-8">
+                <div class="text-center mb-6">
+                    <div class="inline-block px-6 sm:px-8 py-2 rounded-full shadow-md"
+                         style="background: #CBD5E1; color: #1F2937;">
+                        <span class="text-xs sm:text-sm font-bold tracking-widest uppercase">Education Details</span>
+                    </div>
                 </div>
-                <div class="p-3 sm:p-4 grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    <div th:if="${!#strings.isEmpty(bioData.fatherName)}" class="flex">
-                        <span class="text-gray-500 w-24 sm:w-28 text-xs sm:text-sm">Father's Name</span>
-                        <span class="text-gray-800 font-medium text-xs sm:text-sm" th:text="${bioData.fatherName}">Father</span>
+                <div class="space-y-3 px-0 sm:px-2">
+                    <div th:if="${!#strings.isEmpty(bioData.highestQualification)}" class="grid grid-cols-2 sm:grid-cols-[180px_1fr] gap-2 text-sm sm:text-base">
+                        <div style="color: #FFFFFF;">Highest Qualification</div>
+                        <div style="color: #FFFFFF;" th:text="${bioData.highestQualification}">B.Tech</div>
                     </div>
-                    <div th:if="${!#strings.isEmpty(bioData.fatherOccupation)}" class="flex">
-                        <span class="text-gray-500 w-24 sm:w-28 text-xs sm:text-sm">Father's Occupation</span>
-                        <span class="text-gray-800 font-medium text-xs sm:text-sm" th:text="${bioData.fatherOccupation}">Occupation</span>
+                    <div th:if="${!#strings.isEmpty(bioData.collegeName)}" class="grid grid-cols-2 sm:grid-cols-[180px_1fr] gap-2 text-sm sm:text-base">
+                        <div style="color: #FFFFFF;">College/School</div>
+                        <div style="color: #FFFFFF;" th:text="${bioData.collegeName}">College Name</div>
                     </div>
-                    <div th:if="${!#strings.isEmpty(bioData.motherName)}" class="flex">
-                        <span class="text-gray-500 w-24 sm:w-28 text-xs sm:text-sm">Mother's Name</span>
-                        <span class="text-gray-800 font-medium text-xs sm:text-sm" th:text="${bioData.motherName}">Mother</span>
+                    <div th:if="${!#strings.isEmpty(bioData.universityName)}" class="grid grid-cols-2 sm:grid-cols-[180px_1fr] gap-2 text-sm sm:text-base">
+                        <div style="color: #FFFFFF;">University</div>
+                        <div style="color: #FFFFFF;" th:text="${bioData.universityName}">University</div>
                     </div>
-                    <div th:if="${!#strings.isEmpty(bioData.motherOccupation)}" class="flex">
-                        <span class="text-gray-500 w-24 sm:w-28 text-xs sm:text-sm">Mother's Occupation</span>
-                        <span class="text-gray-800 font-medium text-xs sm:text-sm" th:text="${bioData.motherOccupation}">Occupation</span>
+                    <div th:if="${!#strings.isEmpty(bioData.specialization)}" class="grid grid-cols-2 sm:grid-cols-[180px_1fr] gap-2 text-sm sm:text-base">
+                        <div style="color: #FFFFFF;">Specialization</div>
+                        <div style="color: #FFFFFF;" th:text="${bioData.specialization}">Specialization</div>
                     </div>
-                    <div th:if="${bioData.numberOfBrothers != null or bioData.numberOfSisters != null}" class="flex">
-                        <span class="text-gray-500 w-24 sm:w-28 text-xs sm:text-sm">Siblings</span>
-                        <span class="text-gray-800 font-medium text-xs sm:text-sm">
+                    <div th:if="${bioData.passingYear != null}" class="grid grid-cols-2 sm:grid-cols-[180px_1fr] gap-2 text-sm sm:text-base">
+                        <div style="color: #FFFFFF;">Passing Year</div>
+                        <div style="color: #FFFFFF;" th:text="${bioData.passingYear}">2020</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Career Details Section -->
+            <div th:if="${!#strings.isEmpty(bioData.occupation) or !#strings.isEmpty(bioData.companyName) or !#strings.isEmpty(bioData.designation) or !#strings.isEmpty(bioData.annualIncome)}" class="mb-8">
+                <div class="text-center mb-6">
+                    <div class="inline-block px-6 sm:px-8 py-2 rounded-full shadow-md"
+                         style="background: #CBD5E1; color: #1F2937;">
+                        <span class="text-xs sm:text-sm font-bold tracking-widest uppercase">Career Details</span>
+                    </div>
+                </div>
+                <div class="space-y-3 px-0 sm:px-2">
+                    <div th:if="${!#strings.isEmpty(bioData.occupation)}" class="grid grid-cols-2 sm:grid-cols-[180px_1fr] gap-2 text-sm sm:text-base">
+                        <div style="color: #FFFFFF;">Occupation</div>
+                        <div style="color: #FFFFFF;" th:text="${bioData.occupation}">Software Engineer</div>
+                    </div>
+                    <div th:if="${!#strings.isEmpty(bioData.companyName)}" class="grid grid-cols-2 sm:grid-cols-[180px_1fr] gap-2 text-sm sm:text-base">
+                        <div style="color: #FFFFFF;">Company</div>
+                        <div style="color: #FFFFFF;" th:text="${bioData.companyName}">Company</div>
+                    </div>
+                    <div th:if="${!#strings.isEmpty(bioData.designation)}" class="grid grid-cols-2 sm:grid-cols-[180px_1fr] gap-2 text-sm sm:text-base">
+                        <div style="color: #FFFFFF;">Designation</div>
+                        <div style="color: #FFFFFF;" th:text="${bioData.designation}">Designation</div>
+                    </div>
+                    <div th:if="${!#strings.isEmpty(bioData.annualIncome)}" class="grid grid-cols-2 sm:grid-cols-[180px_1fr] gap-2 text-sm sm:text-base">
+                        <div style="color: #FFFFFF;">Annual Income</div>
+                        <div style="color: #FFFFFF;" th:text="${bioData.annualIncome}">Income</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Family Details Section -->
+            <div th:if="${!#strings.isEmpty(bioData.fatherName) or !#strings.isEmpty(bioData.motherName) or bioData.numberOfBrothers != null or bioData.numberOfSisters != null or !#strings.isEmpty(bioData.familyType)}" class="mb-8">
+                <div class="text-center mb-6">
+                    <div class="inline-block px-6 sm:px-8 py-2 rounded-full shadow-md"
+                         style="background: #CBD5E1; color: #1F2937;">
+                        <span class="text-xs sm:text-sm font-bold tracking-widest uppercase">Family Details</span>
+                    </div>
+                </div>
+                <div class="space-y-3 px-0 sm:px-2">
+                    <div th:if="${!#strings.isEmpty(bioData.fatherName)}" class="grid grid-cols-2 sm:grid-cols-[180px_1fr] gap-2 text-sm sm:text-base">
+                        <div style="color: #FFFFFF;">Father's Name</div>
+                        <div style="color: #FFFFFF;" th:text="${bioData.fatherName}">Father</div>
+                    </div>
+                    <div th:if="${!#strings.isEmpty(bioData.fatherOccupation)}" class="grid grid-cols-2 sm:grid-cols-[180px_1fr] gap-2 text-sm sm:text-base">
+                        <div style="color: #FFFFFF;">Father's Occupation</div>
+                        <div style="color: #FFFFFF;" th:text="${bioData.fatherOccupation}">Occupation</div>
+                    </div>
+                    <div th:if="${!#strings.isEmpty(bioData.motherName)}" class="grid grid-cols-2 sm:grid-cols-[180px_1fr] gap-2 text-sm sm:text-base">
+                        <div style="color: #FFFFFF;">Mother's Name</div>
+                        <div style="color: #FFFFFF;" th:text="${bioData.motherName}">Mother</div>
+                    </div>
+                    <div th:if="${!#strings.isEmpty(bioData.motherOccupation)}" class="grid grid-cols-2 sm:grid-cols-[180px_1fr] gap-2 text-sm sm:text-base">
+                        <div style="color: #FFFFFF;">Mother's Occupation</div>
+                        <div style="color: #FFFFFF;" th:text="${bioData.motherOccupation}">Occupation</div>
+                    </div>
+                    <div th:if="${bioData.numberOfBrothers != null or bioData.numberOfSisters != null}" class="grid grid-cols-2 sm:grid-cols-[180px_1fr] gap-2 text-sm sm:text-base">
+                        <div style="color: #FFFFFF;">Siblings</div>
+                        <div style="color: #FFFFFF;">
                             <span th:if="${bioData.numberOfBrothers != null}" th:text="${bioData.numberOfBrothers + ' Brother(s)'}"></span>
                             <span th:if="${bioData.numberOfBrothers != null and bioData.numberOfSisters != null}">, </span>
                             <span th:if="${bioData.numberOfSisters != null}" th:text="${bioData.numberOfSisters + ' Sister(s)'}"></span>
-                        </span>
+                        </div>
                     </div>
-                    <div th:if="${!#strings.isEmpty(bioData.familyType)}" class="flex">
-                        <span class="text-gray-500 w-24 sm:w-28 text-xs sm:text-sm">Family Type</span>
-                        <span class="text-gray-800 font-medium text-xs sm:text-sm" th:text="${bioData.familyType}">Type</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Contact Details Card -->
-            <div th:if="${!#strings.isEmpty(bioData.contactNumber) or !#strings.isEmpty(bioData.emailAddress) or !#strings.isEmpty(bioData.currentAddress)}" class="rounded-lg overflow-hidden mb-4 shadow-lg" style="background: rgba(255,255,255,0.95);">
-                <div class="px-3 py-2 sm:px-4 sm:py-2" style="background: linear-gradient(90deg, #2D3748, #4A5568);">
-                    <h3 class="text-white font-bold text-xs sm:text-sm uppercase tracking-wide">📞 Contact Information</h3>
-                </div>
-                <div class="p-3 sm:p-4 space-y-2">
-                    <div th:if="${!#strings.isEmpty(bioData.contactNumber)}" class="flex items-center">
-                        <span class="text-gray-500 w-24 sm:w-28 text-xs sm:text-sm">Phone</span>
-                        <span class="text-gray-800 font-medium text-xs sm:text-sm" th:text="${'+91 ' + bioData.contactNumber}">Phone</span>
-                    </div>
-                    <div th:if="${!#strings.isEmpty(bioData.emailAddress)}" class="flex items-center">
-                        <span class="text-gray-500 w-24 sm:w-28 text-xs sm:text-sm">Email</span>
-                        <span class="text-gray-800 font-medium text-xs sm:text-sm break-all" th:text="${bioData.emailAddress}">Email</span>
-                    </div>
-                    <div th:if="${!#strings.isEmpty(bioData.currentAddress)}" class="flex items-start">
-                        <span class="text-gray-500 w-24 sm:w-28 text-xs sm:text-sm flex-shrink-0">Address</span>
-                        <span class="text-gray-800 font-medium text-xs sm:text-sm" th:text="${bioData.currentAddress}">Address</span>
+                    <div th:if="${!#strings.isEmpty(bioData.familyType)}" class="grid grid-cols-2 sm:grid-cols-[180px_1fr] gap-2 text-sm sm:text-base">
+                        <div style="color: #FFFFFF;">Family Type</div>
+                        <div style="color: #FFFFFF;" th:text="${bioData.familyType}">Type</div>
                     </div>
                 </div>
             </div>
 
-            <!-- About Me Card -->
-            <div th:if="${!#strings.isEmpty(bioData.aboutMe)}" class="rounded-lg overflow-hidden shadow-lg" style="background: rgba(255,255,255,0.95);">
-                <div class="px-3 py-2 sm:px-4 sm:py-2" style="background: linear-gradient(90deg, #2D3748, #4A5568);">
-                    <h3 class="text-white font-bold text-xs sm:text-sm uppercase tracking-wide">💫 About Me</h3>
+            <!-- Contact Details Section -->
+            <div th:if="${!#strings.isEmpty(bioData.contactNumber) or !#strings.isEmpty(bioData.emailAddress) or !#strings.isEmpty(bioData.currentAddress)}" class="mb-8">
+                <div class="text-center mb-6">
+                    <div class="inline-block px-6 sm:px-8 py-2 rounded-full shadow-md"
+                         style="background: #CBD5E1; color: #1F2937;">
+                        <span class="text-xs sm:text-sm font-bold tracking-widest uppercase">Contact Information</span>
+                    </div>
                 </div>
-                <div class="p-3 sm:p-4">
-                    <p class="text-gray-700 text-xs sm:text-sm leading-relaxed" th:text="${bioData.aboutMe}">About me...</p>
+                <div class="space-y-3 px-0 sm:px-2">
+                    <div th:if="${!#strings.isEmpty(bioData.contactNumber)}" class="grid grid-cols-2 sm:grid-cols-[180px_1fr] gap-2 text-sm sm:text-base">
+                        <div style="color: #FFFFFF;">Contact Number</div>
+                        <div style="color: #FFFFFF;" th:text="${'+91 ' + bioData.contactNumber}">Phone</div>
+                    </div>
+                    <div th:if="${!#strings.isEmpty(bioData.emailAddress)}" class="grid grid-cols-2 sm:grid-cols-[180px_1fr] gap-2 text-sm sm:text-base">
+                        <div style="color: #FFFFFF;">Email Address</div>
+                        <div style="color: #FFFFFF;" th:text="${bioData.emailAddress}">Email</div>
+                    </div>
+                    <div th:if="${!#strings.isEmpty(bioData.currentAddress)}" class="grid grid-cols-2 sm:grid-cols-[180px_1fr] gap-2 text-sm sm:text-base">
+                        <div style="color: #FFFFFF;">Residential Address</div>
+                        <div style="color: #FFFFFF;" th:text="${bioData.currentAddress}">Address</div>
+                    </div>
                 </div>
             </div>
 
         </div>
 
         <!-- Silver decorative bottom border -->
-        <div class="h-2 sm:h-3" style="background: linear-gradient(90deg, #909090, #C0C0C0, #A8A8A8, #C0C0C0, #909090);"></div>
+        <div class="absolute bottom-0 left-0 right-0 h-3"
+             style="background: linear-gradient(90deg, transparent 0%, #CBD5E1 10%, #E2E8F0 30%, #CBD5E1 50%, #E2E8F0 70%, #CBD5E1 90%, transparent 100%);"></div>
     </div>
 </div>
 
