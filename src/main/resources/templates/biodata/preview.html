@@ -100,6 +100,60 @@
         </div>
     </main>
 
+    <!-- Toast Notifications -->
+    <div th:replace="~{fragments/toast/download-process-toast :: download-process-toast}"></div>
+    <div th:replace="~{fragments/toast/success-toast :: success-toast}"></div>
+    <div th:replace="~{fragments/toast/error-toast :: error-toast}"></div>
+
+    <script>
+        function showToast(id) {
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+        function hideToast(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        function showToastFor(id, duration) {
+            showToast(id);
+            setTimeout(function() { hideToast(id); }, duration);
+        }
+
+        function downloadPdf(url) {
+            showToast('loadingToast');
+
+            fetch(url)
+                .then(function(response) {
+                    if (!response.ok) throw new Error('Download failed');
+                    return response.blob();
+                })
+                .then(function(blob) {
+                    var blobUrl = window.URL.createObjectURL(blob);
+                    var a = document.createElement('a');
+                    a.href = blobUrl;
+                    a.download = 'biodata.pdf';
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    window.URL.revokeObjectURL(blobUrl);
+
+                    hideToast('loadingToast');
+                    showToastFor('successToast', 3000);
+                })
+                .catch(function() {
+                    hideToast('loadingToast');
+                    showToastFor('errorToast', 4000);
+                });
+        }
+
+        document.querySelectorAll('a[href*="/biodata/download/"]').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                downloadPdf(this.href);
+            });
+        });
+    </script>
+
     <!-- Footer -->
     <footer th:replace="~{fragments/layout :: footer}"></footer>
 

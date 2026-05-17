@@ -41,7 +41,6 @@ Deployed on Render. Set the following environment variables:
 
 | Variable | Value |
 |----------|-------|
-| `PDF_SERVICE_URL` | `https://pdfservice-adw0.onrender.com` |
 | `DATABASE_URL` | PostgreSQL connection URL |
 | `DATABASE_USERNAME` | DB username |
 | `DATABASE_PASSWORD` | DB password |
@@ -49,6 +48,7 @@ Deployed on Render. Set the following environment variables:
 | `GOOGLE_CLIENT_SECRET` | OAuth2 client secret |
 | `UPLOAD_PATH` | File upload directory (default: `./uploads`) |
 | `UPI_ID` | UPI ID for payment QR |
+| `PDF_SERVICE_URL` | (Optional) PDF service URL. Defaults to `https://pdfservice-adw0.onrender.com` |
 
 The Spring Boot app is containerized via the root `Dockerfile`.
 

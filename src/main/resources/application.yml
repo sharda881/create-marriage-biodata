@@ -140,6 +140,12 @@ spring:
 server:
   port: ${PORT:8080}
 
+# PDF Service
+app:
+  pdf:
+    service:
+      url: ${PDF_SERVICE_URL:https://pdfservice-adw0.onrender.com}
+
 # Production Logging
 logging:
   level:

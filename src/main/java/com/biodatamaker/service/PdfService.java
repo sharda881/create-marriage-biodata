@@ -118,7 +118,7 @@ public class PdfService {
                 .bodyValue(html)
                 .retrieve()
                 .bodyToMono(byte[].class)
-                .timeout(Duration.ofSeconds(30)) // Add a timeout for safety
+                .timeout(Duration.ofSeconds(60))
                 .block();
     }
 
