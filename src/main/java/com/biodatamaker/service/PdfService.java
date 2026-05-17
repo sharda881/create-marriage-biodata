@@ -6,18 +6,19 @@ import com.biodatamaker.template.BioDataTemplate;
 import com.biodatamaker.template.BioDataTemplateFactory;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.microsoft.playwright.BrowserContext;
-import com.microsoft.playwright.Page;
-import com.microsoft.playwright.options.WaitUntilState;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
@@ -26,21 +27,34 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * Service for generating PDFs by using a shared, embedded Playwright instance.
- * This service renders HTML using Thymeleaf and then uses an in-process browser
- * engine, managed by PlaywrightService, to convert the HTML to a PDF document.
+ * Service for generating PDFs by calling an external Node.js service.
+ * This service renders HTML using Thymeleaf and then sends it to a Puppeteer-based
+ * external service to convert the HTML to a PDF document.
  */
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class PdfService {
 
     private final TemplateEngine templateEngine;
     private final BioDataTemplateFactory templateFactory;
     private final BioDataService bioDataService;
-    private final PlaywrightService playwrightService; // Inject the shared service
+    private final WebClient webClient;
+    private final String uploadPath;
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd MMMM yyyy", Locale.ENGLISH);
+
+    public PdfService(TemplateEngine templateEngine,
+                      BioDataTemplateFactory templateFactory,
+                      BioDataService bioDataService,
+                      WebClient.Builder webClientBuilder,
+                      @Value("${app.pdf.service.url}") String pdfServiceUrl,
+                      @Value("${app.upload.path}") String uploadPath) {
+        this.templateEngine = templateEngine;
+        this.templateFactory = templateFactory;
+        this.bioDataService = bioDataService;
+        this.webClient = webClientBuilder.baseUrl(pdfServiceUrl).build();
+        this.uploadPath = uploadPath;
+    }
 
     /**
      * Generates a PDF for a given bio-data ID.
@@ -62,12 +76,12 @@ public class PdfService {
 
     /**
      * Generates a PDF from a BioData entity.
-     * This method orchestrates the process of rendering HTML and calling the internal
-     * PDF conversion logic. It also increments the download count for the bio-data.
+     * This method orchestrates the process of rendering HTML and calling the external
+     * PDF generation service. It also increments the download count for the bio-data.
      *
      * @param bioData The BioData entity to generate the PDF from.
      * @return A byte array containing the generated PDF.
-     * @throws IOException if the PDF generation fails.
+     * @throws IOException if the PDF generation service fails.
      */
     public byte[] generatePdfFromBioData(BioData bioData) throws IOException {
         // Get template
@@ -77,36 +91,32 @@ public class PdfService {
         String html = renderBioDataHtml(bioData, template);
 
         try {
-            byte[] pdf = convertHtmlToPdf(html);
+            byte[] pdf = generatePdfFromHtml(html);
             bioDataService.incrementDownloadCount(bioData.getId());
             log.info("Successfully generated PDF for bio-data {} using template {}", bioData.getId(), template.getTemplateId());
             return pdf;
         } catch (Exception e) {
-            log.error("Failed to generate PDF using Playwright for bio-data ID: {}", bioData.getId(), e);
-            throw new IOException("PDF generation failed.", e);
+            log.error("Failed to generate PDF from Node.js service for bio-data ID: {}", bioData.getId(), e);
+            throw new IOException("PDF generation service failed.", e);
         }
     }
 
     /**
-     * Converts an HTML string to a PDF using the shared Playwright/Chromium instance.
+     * Calls the external Node.js service to convert an HTML string to a PDF.
      *
      * @param html The HTML content as a string.
      * @return A byte array of the generated PDF.
      */
-    private byte[] convertHtmlToPdf(String html) {
-        log.debug("Generating PDF from HTML using shared Playwright instance...");
-
-        try (BrowserContext context = playwrightService.getBrowser().newContext();
-             Page page = context.newPage()) {
-
-            page.setContent(html, new Page.SetContentOptions()
-                    .setWaitUntil(WaitUntilState.LOAD));
-
-            return page.pdf(new Page.PdfOptions()
-                    .setFormat("A4")
-                    .setPrintBackground(true)
-                    .setScale(1));
-        }
+    private byte[] generatePdfFromHtml(String html) {
+        log.debug("Sending HTML to PDF generation service...");
+        return webClient.post()
+                .uri("/generate-pdf")
+                .contentType(MediaType.TEXT_PLAIN)
+                .bodyValue(html)
+                .retrieve()
+                .bodyToMono(byte[].class)
+                .timeout(Duration.ofSeconds(60))
+                .block();
     }
 
     /**
@@ -163,32 +173,13 @@ public class PdfService {
      * @param bioData The bio-data entity containing the photo path.
      */
     private void populatePhotoForTemplate(Context context, BioData bioData) {
-        String photoAsBase64 = null;
-        if (bioData.getPhotoPath() != null && !bioData.getPhotoPath().isBlank()) {
-            photoAsBase64 = encodeImageAsBase64("." + bioData.getPhotoPath());
-        }
-        context.setVariable("photoAsBase64", photoAsBase64);
-        context.setVariable("hasPhoto", photoAsBase64 != null);
-    }
+        // Add helper booleans
+        context.setVariable("hasPhoto", bioData.getPhotoPath() != null && !bioData.getPhotoPath().isBlank());
 
-    /**
-     * Reads an image file from the given path and encodes it into a Base64 Data URL.
-     *
-     * @param imagePath The file system path to the image.
-     * @return A string representing the Base64 Data URL, or null if the file cannot be read.
-     */
-    private String encodeImageAsBase64(String imagePath) {
-        try {
-            byte[] imageBytes = Files.readAllBytes(Paths.get(imagePath));
-            String base64String = Base64.getEncoder().encodeToString(imageBytes);
-            String mimeType = "image/png"; // Default
-            if (imagePath.toLowerCase().endsWith(".jpg") || imagePath.toLowerCase().endsWith(".jpeg")) {
-                mimeType = "image/jpeg";
-            }
-            return "data:" + mimeType + ";base64," + base64String;
-        } catch (IOException e) {
-            log.warn("Could not read image file for Base64 encoding: {}", imagePath, e);
-            return null;
+        // Encode photo as base64 data URI for PDF rendering (external service can't access local files)
+        if (bioData.getPhotoPath() != null && !bioData.getPhotoPath().isBlank()) {
+            String photoBase64 = encodePhotoToBase64(bioData.getPhotoPath());
+            context.setVariable("photoBase64DataUri", photoBase64);
         }
     }
 
@@ -214,6 +205,35 @@ public class PdfService {
     private String formatDate(LocalDate date) {
         if (date == null) return "";
         return date.format(DATE_FORMATTER);
+    }
+
+    /**
+     * Reads the photo file and encodes it as a base64 data URI.
+     * photoPath is stored as "/uploads/photos/filename.jpg"
+     */
+    private String encodePhotoToBase64(String photoPath) {
+        try {
+            // photoPath is stored as "/uploads/photos/filename.jpg", resolve relative to working directory
+            Path filePath = Paths.get("." + photoPath);
+            if (!Files.exists(filePath)) {
+                // Fallback: try resolving against configured upload path
+                String filename = Paths.get(photoPath).getFileName().toString();
+                filePath = Paths.get(uploadPath, "photos", filename);
+            }
+            if (Files.exists(filePath)) {
+                byte[] fileBytes = Files.readAllBytes(filePath);
+                String base64 = Base64.getEncoder().encodeToString(fileBytes);
+                String mimeType = Files.probeContentType(filePath);
+                if (mimeType == null) {
+                    mimeType = "image/jpeg";
+                }
+                return "data:" + mimeType + ";base64," + base64;
+            }
+            log.warn("Photo file not found: {}", filePath);
+        } catch (IOException e) {
+            log.warn("Failed to encode photo to base64: {}", e.getMessage());
+        }
+        return null;
     }
 
     // Helper methods to check if sections have data

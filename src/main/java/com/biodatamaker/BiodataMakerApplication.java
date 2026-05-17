@@ -11,7 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * - Thymeleaf + Tailwind CSS frontend
  * - Spring Security with OAuth2 and Form Login
  * - JPA with H2 (dev) / PostgreSQL (prod)
- * - OpenHTMLtoPDF for PDF generation
+ * - External Puppeteer service for PDF generation
  */
 @SpringBootApplication
 public class BiodataMakerApplication {
