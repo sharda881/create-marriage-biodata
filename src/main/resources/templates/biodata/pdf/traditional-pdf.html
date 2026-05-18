@@ -253,7 +253,7 @@
                 </div>
                 <div class="photo-container">
                     <div class="photo-box">
-                        <img th:if="${hasPhoto}" th:src="${photoAsBase64}" alt="Photo"/>
+                        <img th:if="${hasPhoto}" th:src="${photoBase64DataUri}" alt="Photo"/>
                         <div th:unless="${hasPhoto}" class="photo-placeholder">Photo</div>
                     </div>
                 </div>

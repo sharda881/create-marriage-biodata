@@ -15,7 +15,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -42,7 +45,8 @@ public class BioDataService {
     private final SystemConfigService configService;
 
     private static final String UPLOAD_DIR = "./uploads/photos";
-    private static final int MAX_IMAGE_WIDTH = 1024;
+    private static final int MAX_IMAGE_DIMENSION = 600; // 600px
+    private static final float JPEG_QUALITY = 0.75f; // Reduce image quality to 75%
 
     /**
      * Create a new bio-data draft
@@ -280,17 +284,23 @@ public class BioDataService {
             throw new IOException("Could not read image file.");
         }
 
-        // Resize the image only if it's wider than the max width
+        // Resize if either dimension exceeds the max
         BufferedImage resizedImage = originalImage;
-        if (originalImage.getWidth() > MAX_IMAGE_WIDTH) {
-            resizedImage = Scalr.resize(originalImage, Scalr.Method.QUALITY, Scalr.Mode.FIT_TO_WIDTH, MAX_IMAGE_WIDTH);
+        if (originalImage.getWidth() > MAX_IMAGE_DIMENSION || originalImage.getHeight() > MAX_IMAGE_DIMENSION) {
+            resizedImage = Scalr.resize(originalImage, Scalr.Method.QUALITY, Scalr.Mode.AUTOMATIC, MAX_IMAGE_DIMENSION);
         }
 
-        // Convert the resized image back to a byte array
+        // Always save as JPEG with compression (strips metadata, reduces file size)
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        String formatName = extension.startsWith(".") ? extension.substring(1) : extension;
-        ImageIO.write(resizedImage, formatName, outputStream);
-        byte[] resizedImageBytes = outputStream.toByteArray();
+        ImageWriter jpegWriter = ImageIO.getImageWritersByFormatName("jpg").next();
+        ImageWriteParam writeParam = jpegWriter.getDefaultWriteParam();
+        writeParam.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+        writeParam.setCompressionQuality(JPEG_QUALITY);
+
+        jpegWriter.setOutput(ImageIO.createImageOutputStream(outputStream));
+        jpegWriter.write(null, new IIOImage(resizedImage, null, null), writeParam);
+        jpegWriter.dispose();
+        byte[] compressedBytes = outputStream.toByteArray();
 
         // Create upload directory if it doesn't exist
         Path uploadPath = Paths.get(UPLOAD_DIR);
@@ -298,10 +308,10 @@ public class BioDataService {
             Files.createDirectories(uploadPath);
         }
 
-        // Generate a unique filename and save the file
-        String filename = "photo_" + bioData.getId() + "_" + UUID.randomUUID() + extension;
+        // Always use .jpg extension since we're converting to JPEG
+        String filename = "photo_" + bioData.getId() + "_" + UUID.randomUUID() + ".jpg";
         Path filePath = uploadPath.resolve(filename);
-        Files.write(filePath, resizedImageBytes);
+        Files.write(filePath, compressedBytes);
 
         // Update the bio-data with the new photo path
         String relativePath = "/uploads/photos/" + filename;
