@@ -105,7 +105,7 @@ spring:
       hibernate:
         format_sql: true
 
-# Dev Server Configuration
+# Dev Server Configuration (Docker/Render override the port via -Dserver.port=$PORT)
 server:
   port: 8081
 
