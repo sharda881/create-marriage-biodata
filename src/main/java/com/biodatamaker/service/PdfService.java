@@ -60,16 +60,28 @@ public class PdfService {
         }
     }
 
+    /** Usable A4 height in mm (297 minus a safety margin so we never spill to a 2nd page). */
+    private static final double PAGE_MM = 286.0;
+
+    /** Measure the actual flow height of the document in mm. */
+    private static final String MEASURE_SCRIPT =
+            "() => document.querySelector('.page').getBoundingClientRect().height / (96 / 25.4)";
+
     private byte[] convertHtmlToPdf(String html) {
         try (BrowserContext context = playwrightService.getBrowser().newContext();
              Page page = context.newPage()) {
-            // NETWORKIDLE so the Google Fonts @import resolves before printing
+            // NETWORKIDLE so the Google Fonts @import resolves before we measure / print
             // (falls back to system serif/sans when offline via font-display: swap).
             page.setContent(html, new Page.SetContentOptions().setWaitUntil(WaitUntilState.NETWORKIDLE));
+
+            double heightMm = ((Number) page.evaluate(MEASURE_SCRIPT)).doubleValue();
+            // Shrink the whole render (frame included) so it fits one page; never below 0.5.
+            double scale = Math.max(0.5, Math.min(1.0, PAGE_MM / heightMm));
+
             return page.pdf(new Page.PdfOptions()
                     .setFormat("A4")
                     .setPrintBackground(true)
-                    .setScale(1));
+                    .setScale(scale));
         }
     }
 
