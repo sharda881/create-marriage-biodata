@@ -1,28 +1,46 @@
-# --- Stage 1: Build Stage ---
-FROM maven:3.9.6-eclipse-temurin-21-alpine AS build
+# syntax=docker/dockerfile:1
+
+# --- Stage 1: build the jar ---
+# NOT alpine: Playwright's bundled Node/driver is a glibc binary and won't
+# exec on musl. Use the Debian (jammy) based Maven image.
+FROM maven:3.9.6-eclipse-temurin-21 AS build
 WORKDIR /app
 
-# 1. Copy only the pom.xml first to cache dependencies
 COPY pom.xml .
-RUN mvn dependency:go-offline -B
+RUN mvn -B -q dependency:go-offline
 
-# 2. Copy the source code and build the application
 COPY src ./src
-RUN mvn clean package -DskipTests
+RUN mvn -B -q clean package -DskipTests
 
-# --- Stage 2: Run Stage ---
-FROM eclipse-temurin:21-jre-alpine
+# Download the exact Chromium build Playwright needs into an image path we copy later.
+ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
+RUN mvn -B -q org.codehaus.mojo:exec-maven-plugin:3.1.1:java \
+      -Dexec.mainClass=com.microsoft.playwright.CLI \
+      -Dexec.classpathScope=runtime \
+      -Dexec.args="install chromium"
+
+# --- Stage 2: runtime ---
+FROM eclipse-temurin:21-jre-jammy
 WORKDIR /app
 
-# 3. Create the uploads folder so the app doesn't crash when saving photos
-RUN mkdir -p uploads/photos
+# Runs the default (dev) profile: H2 file DB + seed admin/demo users, works with
+# zero setup. Set SPRING_PROFILES_ACTIVE=prod + DATABASE_URL for PostgreSQL.
+ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
 
-# 4. Copy the built jar file from the build stage
+# System libraries headless Chromium needs on Ubuntu 22.04, plus fonts for the PDF/cards.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      libnss3 libnspr4 libdbus-1-3 libglib2.0-0 libatk1.0-0 libatk-bridge2.0-0 \
+      libatspi2.0-0 libcups2 libdrm2 libgbm1 libxkbcommon0 libxcomposite1 \
+      libxdamage1 libxfixes3 libxrandr2 libx11-6 libxcb1 libxext6 \
+      libpango-1.0-0 libcairo2 libasound2 \
+      fonts-liberation fonts-noto-cjk fonts-noto-color-emoji fonts-unifont \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN mkdir -p uploads/photos data
+
+COPY --from=build /ms-playwright /ms-playwright
 COPY --from=build /app/target/*.jar app.jar
 
-# 5. Render uses a dynamic port. This command tells Spring Boot to listen
-# to the port Render assigns, or default to 8080.
-ENV PORT=8080
 EXPOSE 8080
-
-ENTRYPOINT ["java", "-Dserver.port=${PORT}", "-jar", "app.jar"]
+# shell form so ${PORT} (set by Render) is expanded; prod profile also reads it.
+ENTRYPOINT ["sh", "-c", "java -Dserver.port=${PORT:-8080} -jar app.jar"]
