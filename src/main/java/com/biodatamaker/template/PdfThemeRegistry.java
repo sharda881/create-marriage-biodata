@@ -44,7 +44,11 @@ public class PdfThemeRegistry {
                     "#D4AF37", "#D4AF37", SERIF, "pill", "ॐ", "✦")),
             Map.entry("ornate", new PdfTheme(
                     "#6f594e", "#927668", "#f6efe9", "#e3d3c7", "#dec2b1", "#4a3a30",
-                    "#dec2b1", "#dec2b1", SERIF, "bar", "❦", "❧"))
+                    "#dec2b1", "#dec2b1", SERIF, "bar", "❦", "❧")),
+            Map.entry("gold", new PdfTheme(
+                    "#F4ECDD", "#FFFFFF", "#33291d", "#7a6a54", "#9A5B2E", "#ffffff",
+                    "#C9922F", "#B87333", SERIF, "plain", null, null,
+                    "floral", "ganesha", true))
     );
 
     public PdfTheme themeFor(String templateId) {

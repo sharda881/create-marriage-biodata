@@ -89,6 +89,19 @@
         .row.wide { grid-column: 1 / -1; }
         .lbl { color: var(--muted); font-size: 8.5pt; }
         .val { color: var(--text); font-weight: 600; font-size: 8.5pt; overflow-wrap: break-word; }
+        body.colon-rows .row { grid-template-columns: 42mm 1fr; }
+        body.colon-rows .lbl { position: relative; }
+        body.colon-rows .lbl::after { content: ":"; position: absolute; right: 4mm; color: var(--muted); }
+
+        /* Ganesha / ornate header */
+        .ganesha { text-align: center; margin-bottom: 4mm; }
+        .ganesha svg { width: 26mm; height: 26mm; color: var(--accent); }
+        .ganesha .mantra {
+            margin-top: 1mm; color: var(--accent); font-weight: 600;
+            font-size: 10pt; letter-spacing: 1px;
+        }
+        /* floral corner ornaments */
+        .deco .corner.floral { width: 30mm; height: 30mm; }
 
         .prose { font-size: 8.5pt; line-height: 1.55; color: var(--text); }
 
@@ -98,32 +111,17 @@
         }
     </style>
 </head>
-<body th:style="'--pageBg:' + ${theme.pageBg} + ';--surfaceBg:' + ${theme.surfaceBg} + ';--text:' + ${theme.text} + ';--muted:' + ${theme.muted} + ';--accent:' + ${theme.accent} + ';--onAccent:' + ${theme.onAccent} + ';--border:' + ${theme.border} + ';--deco:' + ${theme.deco} + ';--font:' + ${theme.fontFamily} + ';'">
+<body th:classappend="${theme.colonRows} ? 'colon-rows' : ''"
+      th:style="'--pageBg:' + ${theme.pageBg} + ';--surfaceBg:' + ${theme.surfaceBg} + ';--text:' + ${theme.text} + ';--muted:' + ${theme.muted} + ';--accent:' + ${theme.accent} + ';--onAccent:' + ${theme.onAccent} + ';--border:' + ${theme.border} + ';--deco:' + ${theme.deco} + ';--font:' + ${theme.fontFamily} + ';'">
 
 <div class="page">
 
-    <div class="deco">
+    <!-- ===== decorative corner frame ===== -->
+    <div class="deco" th:if="${theme.cornerStyle != 'floral'}">
         <div class="rule-outer"></div>
         <div class="rule-inner"></div>
-        <svg class="corner c-tl" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-            <g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="square">
-                <path d="M8 94 L8 8 L94 8"/><path d="M22 80 L22 22 L80 22"/><path d="M22 48 L48 48 L48 22"/>
-            </g>
-            <circle cx="12" cy="12" r="5" fill="currentColor"/><circle cx="12" cy="12" r="2.2" fill="#ffffff"/>
-        </svg>
-        <svg class="corner c-tr" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-            <g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="square">
-                <path d="M8 94 L8 8 L94 8"/><path d="M22 80 L22 22 L80 22"/><path d="M22 48 L48 48 L48 22"/>
-            </g>
-            <circle cx="12" cy="12" r="5" fill="currentColor"/><circle cx="12" cy="12" r="2.2" fill="#ffffff"/>
-        </svg>
-        <svg class="corner c-bl" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-            <g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="square">
-                <path d="M8 94 L8 8 L94 8"/><path d="M22 80 L22 22 L80 22"/><path d="M22 48 L48 48 L48 22"/>
-            </g>
-            <circle cx="12" cy="12" r="5" fill="currentColor"/><circle cx="12" cy="12" r="2.2" fill="#ffffff"/>
-        </svg>
-        <svg class="corner c-br" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <svg th:each="pos : ${ {'c-tl','c-tr','c-bl','c-br'} }" th:classappend="${pos}" class="corner"
+             viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
             <g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="square">
                 <path d="M8 94 L8 8 L94 8"/><path d="M22 80 L22 22 L80 22"/><path d="M22 48 L48 48 L48 22"/>
             </g>
@@ -131,9 +129,47 @@
         </svg>
     </div>
 
+    <div class="deco" th:if="${theme.cornerStyle == 'floral'}">
+        <div class="rule-outer"></div>
+        <svg th:each="pos : ${ {'c-tl','c-tr','c-bl','c-br'} }" th:classappend="${pos}" class="corner floral"
+             viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+            <g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+                <path d="M6 114 L6 30 Q6 6 30 6 L114 6"/>
+                <path d="M16 96 L16 40 Q16 16 40 16 L96 16"/>
+                <path d="M16 58 Q40 56 52 38 Q58 26 78 20"/>
+                <path d="M30 30 Q44 34 44 50 Q30 48 30 30 Z"/>
+                <path d="M50 22 Q58 30 52 44 Q44 34 50 22 Z"/>
+                <path d="M16 74 Q28 76 30 90 Q20 86 16 74 Z"/>
+                <path d="M70 16 Q80 22 78 34 Q70 28 70 16 Z"/>
+            </g>
+            <circle cx="9" cy="9" r="3.4" fill="currentColor"/>
+            <circle cx="44" cy="50" r="2.4" fill="currentColor"/>
+            <circle cx="52" cy="44" r="2.4" fill="currentColor"/>
+        </svg>
+    </div>
+
     <div class="content">
 
-        <div class="flourish" th:if="${theme.flourish != null}" th:text="${theme.flourish}">&#2384;</div>
+        <!-- ===== invocation header ===== -->
+        <div class="ganesha" th:if="${theme.headerMotif == 'ganesha'}">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M50 14 Q40 14 40 24 Q40 30 44 33"/>
+                    <path d="M50 14 Q60 14 60 24 Q60 30 56 33"/>
+                    <path d="M45 12 L50 6 L55 12"/>
+                    <ellipse cx="50" cy="48" rx="17" ry="18"/>
+                    <path d="M33 40 Q18 34 14 46 Q12 56 24 58 Q33 58 34 50"/>
+                    <path d="M67 40 Q82 34 86 46 Q88 56 76 58 Q67 58 66 50"/>
+                    <path d="M50 60 Q49 74 40 82 Q34 88 40 92 Q46 94 48 86"/>
+                    <circle cx="43" cy="46" r="2.2" fill="currentColor"/>
+                    <circle cx="57" cy="46" r="2.2" fill="currentColor"/>
+                    <path d="M30 70 Q50 84 70 70"/>
+                </g>
+            </svg>
+            <div class="mantra">&#2384; &#2358;&#2381;&#2352;&#2368; &#2327;&#2339;&#2375;&#2358;&#2366;&#2351; &#2344;&#2350;&#2307;</div>
+        </div>
+
+        <div class="flourish" th:if="${theme.headerMotif != 'ganesha' and theme.flourish != null}" th:text="${theme.flourish}">&#2384;</div>
 
         <!-- ============ header ============ -->
         <div class="header">
