@@ -13,11 +13,13 @@ COPY src ./src
 RUN mvn -B -q clean package -DskipTests
 
 # Download the exact Chromium build Playwright needs into an image path we copy later.
+# Non-fatal: if it fails here, Playwright downloads it on first use at runtime.
 ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
-RUN mvn -B -q org.codehaus.mojo:exec-maven-plugin:3.1.1:java \
+RUN mkdir -p /ms-playwright && \
+    mvn -B -q org.codehaus.mojo:exec-maven-plugin:3.1.1:java \
       -Dexec.mainClass=com.microsoft.playwright.CLI \
       -Dexec.classpathScope=runtime \
-      -Dexec.args="install chromium"
+      -Dexec.args="install chromium" || echo "browser preinstall skipped"
 
 # --- Stage 2: runtime ---
 FROM eclipse-temurin:21-jre-jammy
