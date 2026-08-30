@@ -1,25 +1,36 @@
 package com.biodatamaker.config;
 
 import com.biodatamaker.config.OAuth2AvailabilityConfig.OAuth2Availability;
+import com.biodatamaker.security.JwtAuthenticationFilter;
 import com.biodatamaker.service.CustomUserDetailsService;
 import com.biodatamaker.service.OAuth2UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 /**
- * Security configuration for the application.
- * Supports both Form Login (Email/Password) and OAuth2 (Google).
- * OAuth2 is only enabled when valid credentials are configured.
+ * Stateless security configuration for the REST API.
+ * Authentication is via JWT bearer tokens (see {@link JwtAuthenticationFilter}).
+ * Google OAuth2 login is still handled server-side and hands a freshly minted JWT
+ * back to the SPA (see {@code OAuth2AuthenticationSuccessHandler}).
  */
 @Configuration
 @EnableWebSecurity
@@ -32,100 +43,106 @@ public class SecurityConfig {
     private final OAuth2AuthenticationSuccessHandler oAuth2SuccessHandler;
     private final PasswordEncoder passwordEncoder;
     private final OAuth2Availability oAuth2Availability;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    @Value("${app.frontend-url}")
+    private String frontendUrl;
 
     public SecurityConfig(
             @Lazy CustomUserDetailsService userDetailsService,
             @Lazy OAuth2UserService oAuth2UserService,
             OAuth2AuthenticationSuccessHandler oAuth2SuccessHandler,
             PasswordEncoder passwordEncoder,
-            OAuth2Availability oAuth2Availability) {
+            OAuth2Availability oAuth2Availability,
+            JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.userDetailsService = userDetailsService;
         this.oAuth2UserService = oAuth2UserService;
         this.oAuth2SuccessHandler = oAuth2SuccessHandler;
         this.passwordEncoder = passwordEncoder;
         this.oAuth2Availability = oAuth2Availability;
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // CSRF configuration
-                .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/h2-console/**")
-                )
-                // Frame options for H2 console
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .csrf(csrf -> csrf.disable())
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .headers(headers -> headers
-                        .frameOptions(frame -> frame.sameOrigin())
-                )
-                // Authorization rules
+                        .frameOptions(frame -> frame.sameOrigin()))
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint((request, response, e) ->
+                                response.sendError(jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED))
+                        .accessDeniedHandler((request, response, e) ->
+                                response.sendError(jakarta.servlet.http.HttpServletResponse.SC_FORBIDDEN)))
                 .authorizeHttpRequests(auth -> auth
-                        // Public endpoints
+                        // Public API endpoints
                         .requestMatchers(
-                                "/",
-                                "/login",
-                                "/register",
-                                "/templates",
-                                "/biodata/create",
-                                "/biodata/save",
-                                "/biodata/edit/**",
-                                "/biodata/preview/**",
-                                "/biodata/download/**",
-                                "/biodata/*/upload-photo",
-                                "/biodata/*/template",
-                                "/invitation-card",
-                                "/invitation-card/**",
+                                "/api/auth/**",
+                                "/api/templates/**",
+                                "/api/invitation-card/**",
+                                "/oauth2/**",
+                                "/login/oauth2/**",
                                 "/uploads/**",
-                                "/auth/**",
-                                "/error",
-                                "/css/**",
-                                "/js/**",
                                 "/images/**",
-                                "/webjars/**",
-                                "/h2-console/**",
-                                "/favicon.ico"
+                                "/favicon.svg",
+                                "/error",
+                                "/h2-console/**"
                         ).permitAll()
+                        // Anonymous bio-data flow (create / edit / preview / download without login)
+                        .requestMatchers(HttpMethod.POST, "/api/biodata").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/biodata/*").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/biodata/*").permitAll()
+                        .requestMatchers(HttpMethod.POST,
+                                "/api/biodata/*/photo",
+                                "/api/biodata/*/complete").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/biodata/*/template").permitAll()
+                        .requestMatchers(HttpMethod.GET,
+                                "/api/biodata/*/preview-data",
+                                "/api/biodata/*/needs-payment",
+                                "/api/biodata/*/download").permitAll()
                         // Admin endpoints
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-                        // All other requests require authentication
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        // Everything else needs a valid token
                         .anyRequest().authenticated()
                 )
-                // Form Login configuration
-                .formLogin(form -> form
-                        .loginPage("/login")
-                        .loginProcessingUrl("/login")
-                        .defaultSuccessUrl("/dashboard", true)
-                        .failureUrl("/login?error=true")
-                        .usernameParameter("email")
-                        .passwordParameter("password")
-                        .permitAll()
-                )
-                // Logout configuration
-                .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login?logout=true")
-                        .invalidateHttpSession(true)
-                        .deleteCookies("JSESSIONID")
-                        .permitAll()
-                )
-                // Authentication provider
-                .authenticationProvider(authenticationProvider());
+                .authenticationProvider(authenticationProvider())
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
-        // Only configure OAuth2 if valid credentials are available
         if (oAuth2Availability.googleEnabled()) {
             log.info("Configuring OAuth2 login with Google");
             http.oauth2Login(oauth2 -> oauth2
-                    .loginPage("/login")
-                    .userInfoEndpoint(userInfo -> userInfo
-                            .userService(oAuth2UserService)
-                    )
+                    .userInfoEndpoint(userInfo -> userInfo.userService(oAuth2UserService))
                     .successHandler(oAuth2SuccessHandler)
-                    .failureUrl("/login?error=oauth")
+                    .failureHandler((request, response, exception) ->
+                            response.sendRedirect(frontendUrl + "/login?error=oauth"))
             );
         } else {
             log.info("OAuth2 login is disabled - no valid credentials configured");
         }
 
         return http.build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        // The configured SPA origin, plus any localhost port for local dev
+        // (Vite bumps to 5174/5175 when a port is taken; 127.0.0.1 vs localhost).
+        config.setAllowedOriginPatterns(List.of(
+                frontendUrl,
+                "http://localhost:*",
+                "http://127.0.0.1:*"
+        ));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept"));
+        config.setExposedHeaders(List.of("Location"));
+        config.setMaxAge(3600L);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
     }
 
     @Bean

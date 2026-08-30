@@ -184,6 +184,13 @@ public class BioDataDTO {
 
     private Boolean isPaid;
 
+    private Integer downloadCount;
+
+    // ================== Timestamps (read-only) ==================
+    private java.time.LocalDateTime createdAt;
+
+    private java.time.LocalDateTime updatedAt;
+
     /**
      * Convert DTO to Entity
      */
@@ -339,6 +346,9 @@ public class BioDataDTO {
                 .selectedTemplateId(entity.getSelectedTemplateId())
                 .status(entity.getStatus())
                 .isPaid(entity.getIsPaid())
+                .downloadCount(entity.getDownloadCount())
+                .createdAt(entity.getCreatedAt())
+                .updatedAt(entity.getUpdatedAt())
                 .build();
     }
 }

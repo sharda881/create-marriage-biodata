@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<!--
+  Shared fragments for biodata/pdf/document.html.
+  `theme` is resolved from the calling context.
+-->
+<th:block th:fragment="sectionHeader(title)" th:switch="${theme.headerStyle}">
+    <div th:case="'pill'" class="sh-wrap"><span class="sh-pill" th:text="${title}">Section</span></div>
+    <div th:case="'bar'"><span class="sh-bar" th:text="${title}">Section</span></div>
+    <span th:case="'underline'" class="sh-underline" th:text="${title}">Section</span>
+    <span th:case="*" class="sh-plain" th:text="${title}">Section</span>
+</th:block>
+</body>
+</html>

@@ -47,6 +47,15 @@ server:
 app:
   name: Marriage Bio-Data Maker
   version: 1.0.0
+  # Base URL of this API (used to build absolute URLs for uploaded photos / QR image)
+  base-url: ${APP_BASE_URL:http://localhost:8081}
+  # URL of the React SPA (used for CORS and the OAuth2 login redirect)
+  frontend-url: ${FRONTEND_URL:http://localhost:5173}
+  jwt:
+    # Base64 or plain secret, min 32 bytes for HS256. MUST be overridden in production.
+    secret: ${JWT_SECRET:change-me-in-production-this-needs-to-be-at-least-32-bytes-long}
+    # Access token lifetime in milliseconds (default 7 days)
+    expiration: ${JWT_EXPIRATION:604800000}
   upload:
     path: ${UPLOAD_PATH:./uploads}
   payment:
@@ -71,6 +80,8 @@ spring:
 
   # H2 Database Configuration
   datasource:
+    # NOTE: H2 file DB allows only ONE process at a time. If you see
+    # "Database may be already in use", kill the other Spring Boot / IDE run.
     url: jdbc:h2:file:./data/biodata_dev;DB_CLOSE_ON_EXIT=FALSE;AUTO_RECONNECT=TRUE
     driver-class-name: org.h2.Driver
     username: sa

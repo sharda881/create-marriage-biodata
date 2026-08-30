@@ -1,92 +1,75 @@
 package com.biodatamaker.controller;
 
 import com.biodatamaker.dto.BioDataDTO;
+import com.biodatamaker.dto.ProfileUpdateRequest;
+import com.biodatamaker.dto.UserDTO;
+import com.biodatamaker.entity.BioData;
 import com.biodatamaker.entity.User;
 import com.biodatamaker.service.BioDataService;
 import com.biodatamaker.service.SystemConfigService;
 import com.biodatamaker.service.UserService;
-import com.biodatamaker.template.BioDataTemplateFactory;
 import com.biodatamaker.util.SecurityUtils;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Map;
 
 /**
- * Controller for dashboard operations.
+ * Dashboard summary and user profile endpoints.
  */
-@Controller
+@RestController
+@RequestMapping("/api")
 @RequiredArgsConstructor
-@Slf4j
 public class DashboardController {
 
     private final BioDataService bioDataService;
     private final UserService userService;
-    private final BioDataTemplateFactory templateFactory;
     private final SystemConfigService configService;
 
-    /**
-     * Main dashboard page
-     */
     @GetMapping("/dashboard")
-    public String dashboard(Model model) {
-        User currentUser = SecurityUtils.getCurrentUser()
-                .orElseThrow(() -> new IllegalStateException("User not authenticated"));
+    public Map<String, Object> dashboard() {
+        User user = requireUser();
+        List<BioDataDTO> bioDatas = bioDataService.getUserBioDataList(user);
 
-        // Get user's bio-data list
-        List<BioDataDTO> bioDatas = bioDataService.getUserBioDataList(currentUser);
+        long completed = bioDatas.stream()
+                .filter(b -> b.getStatus() == BioData.BioDataStatus.COMPLETED).count();
+        long draft = bioDatas.stream()
+                .filter(b -> b.getStatus() == BioData.BioDataStatus.DRAFT).count();
 
-        // Calculate stats
-        long totalBioData = bioDatas.size();
-        long completedBioData = bioDatas.stream()
-                .filter(b -> b.getStatus() == com.biodatamaker.entity.BioData.BioDataStatus.COMPLETED)
-                .count();
-        long draftBioData = bioDatas.stream()
-                .filter(b -> b.getStatus() == com.biodatamaker.entity.BioData.BioDataStatus.DRAFT)
-                .count();
-
-        // Free downloads info
         int freeLimit = configService.getFreeLimitCount();
         long downloadedCount = bioDatas.stream()
-                .filter(b -> b.getIsPaid() != null && b.getIsPaid())
-                .count();
+                .filter(b -> Boolean.TRUE.equals(b.getIsPaid())).count();
         int freeRemaining = Math.max(0, freeLimit - (int) downloadedCount);
 
-        model.addAttribute("user", currentUser);
-        model.addAttribute("bioDatas", bioDatas);
-        model.addAttribute("totalBioData", totalBioData);
-        model.addAttribute("completedBioData", completedBioData);
-        model.addAttribute("draftBioData", draftBioData);
-        model.addAttribute("freeLimit", freeLimit);
-        model.addAttribute("freeRemaining", freeRemaining);
-        model.addAttribute("templates", templateFactory.getAllTemplates());
-
-        return "dashboard";
+        return Map.of(
+                "user", userService.getUserDTO(user.getId()),
+                "bioDatas", bioDatas,
+                "totalBioData", bioDatas.size(),
+                "completedBioData", completed,
+                "draftBioData", draft,
+                "freeLimit", freeLimit,
+                "freeRemaining", freeRemaining
+        );
     }
 
-    /**
-     * Template gallery page
-     */
-    @GetMapping("/templates")
-    public String templateGallery(Model model) {
-        model.addAttribute("templates", templateFactory.getAllTemplates());
-        model.addAttribute("freeTemplates", templateFactory.getFreeTemplates());
-        model.addAttribute("premiumTemplates", templateFactory.getPremiumTemplates());
-        return "templates";
-    }
-
-    /**
-     * Profile page
-     */
     @GetMapping("/profile")
-    public String profile(Model model) {
-        User currentUser = SecurityUtils.getCurrentUser()
-                .orElseThrow(() -> new IllegalStateException("User not authenticated"));
+    public UserDTO profile() {
+        return userService.getUserDTO(requireUser().getId());
+    }
 
-        model.addAttribute("user", currentUser);
-        return "profile";
+    @PutMapping("/profile")
+    public UserDTO updateProfile(@Valid @RequestBody ProfileUpdateRequest request) {
+        User user = requireUser();
+        User updated = userService.updateProfile(user.getId(), request.name(), request.phone());
+        return UserDTO.fromEntity(updated);
+    }
+
+    private User requireUser() {
+        return SecurityUtils.getCurrentUser()
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Not authenticated"));
     }
 }

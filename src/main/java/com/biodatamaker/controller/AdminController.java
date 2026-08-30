@@ -1,6 +1,7 @@
 package com.biodatamaker.controller;
 
 import com.biodatamaker.dto.PaymentDTO;
+import com.biodatamaker.dto.UserDTO;
 import com.biodatamaker.entity.PaymentTransaction;
 import com.biodatamaker.entity.User;
 import com.biodatamaker.service.BioDataService;
@@ -10,20 +11,19 @@ import com.biodatamaker.service.UserService;
 import com.biodatamaker.util.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 /**
- * Controller for admin operations including payment verification.
+ * Admin API: dashboard stats, payment verification, user list and system config.
  */
-@Controller
-@RequestMapping("/admin")
+@RestController
+@RequestMapping("/api/admin")
 @PreAuthorize("hasRole('ADMIN')")
 @RequiredArgsConstructor
 @Slf4j
@@ -34,147 +34,85 @@ public class AdminController {
     private final BioDataService bioDataService;
     private final SystemConfigService configService;
 
-    /**
-     * Admin dashboard
-     */
-    @GetMapping
-    public String dashboard(Model model) {
-        // Stats
-        long totalUsers = userService.countUsers();
-        long pendingPayments = paymentService.countPendingPayments();
-        BigDecimal totalRevenue = paymentService.getTotalApprovedAmount();
-
-        model.addAttribute("totalUsers", totalUsers);
-        model.addAttribute("pendingPayments", pendingPayments);
-        model.addAttribute("totalRevenue", totalRevenue);
-
-        // Recent pending payments
-        List<PaymentDTO> recentPending = paymentService.getPendingPayments();
-        model.addAttribute("recentPending", recentPending.stream().limit(5).toList());
-
-        return "admin/dashboard";
+    @GetMapping("/dashboard")
+    public Map<String, Object> dashboard() {
+        List<PaymentDTO> pending = paymentService.getPendingPayments();
+        return Map.of(
+                "totalUsers", userService.countUsers(),
+                "pendingPayments", paymentService.countPendingPayments(),
+                "totalRevenue", paymentService.getTotalApprovedAmount(),
+                "recentPending", pending.stream().limit(5).toList()
+        );
     }
 
-    /**
-     * Payment management page - list all pending payments
-     */
     @GetMapping("/payments")
-    public String payments(@RequestParam(defaultValue = "PENDING") String status, Model model) {
+    public Map<String, Object> payments(@RequestParam(defaultValue = "PENDING") String status) {
         PaymentTransaction.PaymentStatus paymentStatus;
         try {
-            paymentStatus = PaymentTransaction.PaymentStatus.valueOf(status);
+            paymentStatus = PaymentTransaction.PaymentStatus.valueOf(status.toUpperCase());
         } catch (IllegalArgumentException e) {
             paymentStatus = PaymentTransaction.PaymentStatus.PENDING;
         }
-
-        List<PaymentDTO> payments = paymentService.getPaymentsByStatus(paymentStatus);
-        model.addAttribute("payments", payments);
-        model.addAttribute("currentStatus", paymentStatus);
-        model.addAttribute("pendingCount", paymentService.countPendingPayments());
-
-        return "admin/payments";
+        return Map.of(
+                "payments", paymentService.getPaymentsByStatus(paymentStatus),
+                "currentStatus", paymentStatus.name(),
+                "pendingCount", paymentService.countPendingPayments()
+        );
     }
 
-    /**
-     * View payment details
-     */
     @GetMapping("/payments/{id}")
-    public String paymentDetails(@PathVariable Long id, Model model) {
+    public Map<String, Object> paymentDetails(@PathVariable Long id) {
         PaymentTransaction payment = paymentService.getPaymentById(id);
-        model.addAttribute("payment", PaymentDTO.fromEntity(payment));
-        model.addAttribute("bioData", payment.getBioData());
-        model.addAttribute("user", payment.getUser());
-
-        return "admin/payment-details";
+        return Map.of(
+                "payment", PaymentDTO.fromEntity(payment),
+                "bioData", com.biodatamaker.dto.BioDataDTO.fromEntity(payment.getBioData()),
+                "user", UserDTO.fromEntity(payment.getUser())
+        );
     }
 
-    /**
-     * Approve a payment
-     */
     @PostMapping("/payments/{id}/approve")
-    public String approvePayment(@PathVariable Long id,
-                                  @RequestParam(required = false) String notes,
-                                  RedirectAttributes redirectAttributes) {
-        User admin = getCurrentAdmin();
-
-        try {
-            paymentService.approvePayment(id, admin, notes);
-            redirectAttributes.addFlashAttribute("success", "Payment approved successfully!");
-            log.info("Payment {} approved by admin {}", id, admin.getId());
-        } catch (Exception e) {
-            log.error("Error approving payment {}", id, e);
-            redirectAttributes.addFlashAttribute("error", "Error approving payment: " + e.getMessage());
-        }
-
-        return "redirect:/admin/payments";
+    public PaymentDTO approve(@PathVariable Long id, @RequestBody(required = false) Map<String, String> body) {
+        String notes = body != null ? body.get("notes") : null;
+        return PaymentDTO.fromEntity(paymentService.approvePayment(id, currentAdmin(), notes));
     }
 
-    /**
-     * Reject a payment
-     */
     @PostMapping("/payments/{id}/reject")
-    public String rejectPayment(@PathVariable Long id,
-                                 @RequestParam String reason,
-                                 RedirectAttributes redirectAttributes) {
-        User admin = getCurrentAdmin();
-
+    public PaymentDTO reject(@PathVariable Long id, @RequestBody Map<String, String> body) {
+        String reason = body != null ? body.get("reason") : null;
         if (reason == null || reason.trim().isEmpty()) {
-            redirectAttributes.addFlashAttribute("error", "Rejection reason is required");
-            return "redirect:/admin/payments/" + id;
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Rejection reason is required");
         }
-
-        try {
-            paymentService.rejectPayment(id, admin, reason);
-            redirectAttributes.addFlashAttribute("success", "Payment rejected.");
-            log.info("Payment {} rejected by admin {}: {}", id, admin.getId(), reason);
-        } catch (Exception e) {
-            log.error("Error rejecting payment {}", id, e);
-            redirectAttributes.addFlashAttribute("error", "Error rejecting payment: " + e.getMessage());
-        }
-
-        return "redirect:/admin/payments";
+        return PaymentDTO.fromEntity(paymentService.rejectPayment(id, currentAdmin(), reason));
     }
 
-    /**
-     * User management page
-     */
     @GetMapping("/users")
-    public String users(Model model) {
-        model.addAttribute("users", userService.getAllUsers());
-        return "admin/users";
+    public List<UserDTO> users() {
+        return userService.getAllUsers();
     }
 
-    /**
-     * System configuration page
-     */
     @GetMapping("/config")
-    public String config(Model model) {
-        model.addAttribute("configs", configService.getAllActiveConfigs());
-        model.addAttribute("freeLimit", configService.getFreeLimitCount());
-        model.addAttribute("downloadPrice", configService.getDownloadPrice());
-        model.addAttribute("paywallEnabled", configService.isPaywallEnabled());
-        return "admin/config";
+    public Map<String, Object> config() {
+        return Map.of(
+                "configs", configService.getAllActiveConfigs(),
+                "freeLimit", configService.getFreeLimitCount(),
+                "downloadPrice", configService.getDownloadPrice(),
+                "paywallEnabled", configService.isPaywallEnabled()
+        );
     }
 
-    /**
-     * Update system configuration
-     */
-    @PostMapping("/config/update")
-    public String updateConfig(@RequestParam String key,
-                               @RequestParam String value,
-                               RedirectAttributes redirectAttributes) {
-        try {
-            configService.saveConfig(key, value, null, null);
-            redirectAttributes.addFlashAttribute("success", "Configuration updated!");
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Error updating configuration: " + e.getMessage());
+    @PostMapping("/config")
+    public Map<String, Object> updateConfig(@RequestBody Map<String, String> body) {
+        String key = body.get("key");
+        String value = body.get("value");
+        if (key == null || key.isBlank() || value == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "key and value are required");
         }
-        return "redirect:/admin/config";
+        configService.saveConfig(key, value, null, null);
+        return config();
     }
 
-    // Helper method
-    private User getCurrentAdmin() {
+    private User currentAdmin() {
         return SecurityUtils.getCurrentUser()
-                .orElseThrow(() -> new IllegalStateException("Admin not authenticated"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Admin not authenticated"));
     }
 }

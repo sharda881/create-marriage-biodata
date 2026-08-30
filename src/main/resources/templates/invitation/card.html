@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cormorant+Garamond:wght@500;600;700&family=EB+Garamond:wght@400;500;600&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { background: transparent; }
+
+        .page {
+            padding: 26px;
+            background: var(--pageBg);
+            display: inline-block;
+        }
+        .card {
+            position: relative;
+            width: 600px;
+            height: 840px;
+            background: var(--panelBg);
+            overflow: hidden;
+            font-family: 'EB Garamond', 'Cormorant Garamond', Georgia, serif;
+            color: var(--ink);
+        }
+        .wood::before {
+            content: "";
+            position: absolute; inset: 0;
+            background:
+                repeating-linear-gradient(90deg, rgba(0,0,0,0.10) 0 2px, transparent 2px 46px),
+                repeating-linear-gradient(90deg, rgba(255,255,255,0.04) 0 1px, transparent 1px 46px);
+            opacity: 0.9;
+        }
+
+        .frame { position: absolute; inset: 16px; border: 2px solid var(--border); }
+        .frame.inner { inset: 22px; border: 1px solid var(--border); opacity: 0.55; }
+
+        .corner { position: absolute; width: 118px; height: 118px; color: var(--border); }
+        .corner.tl { top: 6px; left: 6px; }
+        .corner.tr { top: 6px; right: 6px; transform: scaleX(-1); }
+        .corner.bl { bottom: 6px; left: 6px; transform: scaleY(-1); }
+        .corner.br { bottom: 6px; right: 6px; transform: scale(-1, -1); }
+
+        .content {
+            position: relative; z-index: 3;
+            padding: 54px 56px 46px;
+            text-align: center;
+            height: 100%;
+            display: flex; flex-direction: column; align-items: center;
+        }
+        .ganesha { width: 62px; height: 62px; color: var(--accent); margin-bottom: 8px; }
+        .invocation {
+            font-size: 15px; letter-spacing: 1.5px; color: var(--accent);
+            margin-bottom: 22px; text-transform: none;
+        }
+        .invite-line {
+            font-size: 20px; line-height: 1.5; color: var(--ink);
+            margin-bottom: 6px; white-space: pre-line;
+        }
+        .names {
+            font-family: 'Great Vibes', cursive;
+            color: var(--script);
+            line-height: 1.05;
+            margin: 10px 0 4px;
+        }
+        .names .n { font-size: 52px; display: block; }
+        .names .amp { font-size: 34px; display: block; margin: 2px 0; }
+
+        .datebox {
+            margin: 22px 0 8px;
+            border: 1px solid var(--accent);
+            padding: 9px 22px;
+            display: inline-flex; align-items: center; gap: 14px;
+            font-size: 21px; letter-spacing: 1px; color: var(--ink);
+        }
+        .datebox .sep { color: var(--accent); }
+        .time { font-size: 18px; color: var(--ink); margin-bottom: 24px; }
+
+        .venue-name { font-size: 21px; font-weight: 700; color: var(--ink); }
+        .venue-addr { font-size: 16px; line-height: 1.5; color: var(--ink); margin-top: 2px; white-space: pre-line; }
+
+        .events { font-size: 15px; line-height: 1.5; margin-top: 14px; white-space: pre-line; color: var(--ink); }
+
+        .regards {
+            margin-top: auto;
+            padding-top: 18px;
+        }
+        .regards .lbl {
+            font-size: 15px; letter-spacing: 2px; color: var(--accent);
+            margin-bottom: 4px;
+        }
+        .regards .lbl::before, .regards .lbl::after { content: "·:· "; }
+        .regards .lbl::after { content: " ·:·"; }
+        .hosts { font-size: 16px; line-height: 1.5; color: var(--ink); white-space: pre-line; }
+    </style>
+</head>
+<body th:style="'--panelBg:' + ${theme.panelBg} + ';--pageBg:' + ${theme.pageBg} + ';--ink:' + ${theme.ink} + ';--accent:' + ${theme.accent} + ';--script:' + ${theme.script} + ';--border:' + ${theme.border} + ';'">
+<div class="page">
+    <div class="card" th:classappend="${theme.woodTexture} ? 'wood' : ''">
+
+        <div class="frame"></div>
+        <div class="frame inner"></div>
+
+        <svg th:each="pos : ${ {'tl','tr','bl','br'} }" th:classappend="${pos}" class="corner"
+             viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+            <g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M8 116 L8 34 Q8 8 34 8 L116 8"/>
+                <path d="M18 100 L18 44 Q18 18 44 18 L100 18"/>
+                <path d="M18 60 Q44 58 56 40 Q62 28 84 22"/>
+                <path d="M32 32 Q46 36 46 52 Q32 50 32 32 Z"/>
+                <path d="M52 24 Q60 32 54 46 Q46 36 52 24 Z"/>
+                <path d="M18 76 Q30 78 32 92 Q22 88 18 76 Z"/>
+                <path d="M72 18 Q82 24 80 36 Q72 30 72 18 Z"/>
+            </g>
+            <circle cx="11" cy="11" r="3.2" fill="currentColor"/>
+        </svg>
+
+        <div class="content">
+            <svg class="ganesha" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M50 14 Q40 14 40 24 Q40 30 44 33"/>
+                    <path d="M50 14 Q60 14 60 24 Q60 30 56 33"/>
+                    <path d="M45 12 L50 6 L55 12"/>
+                    <ellipse cx="50" cy="48" rx="17" ry="18"/>
+                    <path d="M33 40 Q18 34 14 46 Q12 56 24 58 Q33 58 34 50"/>
+                    <path d="M67 40 Q82 34 86 46 Q88 56 76 58 Q67 58 66 50"/>
+                    <path d="M50 60 Q49 74 40 82 Q34 88 40 92 Q46 94 48 86"/>
+                    <circle cx="43" cy="46" r="2.2" fill="currentColor"/>
+                    <circle cx="57" cy="46" r="2.2" fill="currentColor"/>
+                    <path d="M30 70 Q50 84 70 70"/>
+                </g>
+            </svg>
+
+            <div class="invocation" th:if="${!#strings.isEmpty(card.invocation)}" th:text="${card.invocation}">|| Shree Ganeshaya Namaha ||</div>
+
+            <div class="invite-line" th:if="${!#strings.isEmpty(card.inviteLine)}" th:text="${card.inviteLine}">You are invited to the wedding of</div>
+
+            <div class="names">
+                <span class="n" th:text="${card.groomName}">Groom Name</span>
+                <span class="amp">&amp;</span>
+                <span class="n" th:text="${card.brideName}">Bride Name</span>
+            </div>
+
+            <div class="datebox" th:if="${!#strings.isEmpty(dateMonth)}">
+                <span th:text="${dateMonth}">December</span>
+                <span class="sep">|</span>
+                <span th:text="${dateDay}">30</span>
+                <span class="sep">|</span>
+                <span th:text="${dateYear}">2023</span>
+            </div>
+            <div class="time" th:if="${!#strings.isEmpty(card.weddingTime)}" th:text="'at ' + ${card.weddingTime}">at 12:30 pm onwards</div>
+
+            <div class="venue-name" th:if="${!#strings.isEmpty(card.venueName)}" th:text="${card.venueName}">Venue Name</div>
+            <div class="venue-addr" th:if="${!#strings.isEmpty(card.venueAddress)}" th:text="${card.venueAddress}">Venue address</div>
+
+            <div class="events" th:if="${!#strings.isEmpty(card.extraEvents)}" th:text="${card.extraEvents}"></div>
+
+            <div class="regards">
+                <div class="lbl" th:text="${#strings.isEmpty(card.regardsLabel)} ? 'Regards' : ${card.regardsLabel}">Regards</div>
+                <div class="hosts" th:if="${!#strings.isEmpty(card.hostedBy)}" th:text="${card.hostedBy}">Host Family</div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
