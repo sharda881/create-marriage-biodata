@@ -5,8 +5,10 @@ import com.biodatamaker.dto.BioDataPreviewDTO;
 import com.biodatamaker.dto.TemplateDTO;
 import com.biodatamaker.entity.BioData;
 import com.biodatamaker.template.BioDataTemplate;
+import com.biodatamaker.template.PdfThemeRegistry;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -28,12 +30,14 @@ import java.util.Map;
  */
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class BioDataViewModel {
 
     private static final DateTimeFormatter DATE_FORMATTER =
             DateTimeFormatter.ofPattern("dd MMMM yyyy", Locale.ENGLISH);
 
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private final PdfThemeRegistry pdfThemeRegistry;
 
     @Value("${app.base-url}")
     private String baseUrl;
@@ -45,6 +49,7 @@ public class BioDataViewModel {
         Map<String, Object> vars = new LinkedHashMap<>();
         vars.put("bioData", bioData);
         vars.put("template", template);
+        vars.put("theme", pdfThemeRegistry.themeFor(template.getTemplateId()));
         vars.put("formattedDob", formatDate(bioData.getDateOfBirth()));
         vars.put("age", bioData.getAge());
         vars.put("currentYear", LocalDate.now().getYear());

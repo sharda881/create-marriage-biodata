@@ -63,7 +63,9 @@ public class PdfService {
     private byte[] convertHtmlToPdf(String html) {
         try (BrowserContext context = playwrightService.getBrowser().newContext();
              Page page = context.newPage()) {
-            page.setContent(html, new Page.SetContentOptions().setWaitUntil(WaitUntilState.LOAD));
+            // NETWORKIDLE so the Google Fonts @import resolves before printing
+            // (falls back to system serif/sans when offline via font-display: swap).
+            page.setContent(html, new Page.SetContentOptions().setWaitUntil(WaitUntilState.NETWORKIDLE));
             return page.pdf(new Page.PdfOptions()
                     .setFormat("A4")
                     .setPrintBackground(true)
@@ -71,32 +73,15 @@ public class PdfService {
         }
     }
 
+    /**
+     * All templates render through one shared, themed layout so the downloaded PDF
+     * matches the on-screen React preview exactly.
+     */
     private String renderBioDataHtml(BioData bioData, BioDataTemplate template) {
         Context context = new Context(Locale.ENGLISH);
         context.setVariables(viewModel.buildPdfContext(bioData, template));
-        String templatePath = getTemplateSpecificPdfPath(template.getTemplateId());
-        log.info("PDF Generation - BioData ID: {}, Template ID: {}, PDF Path: {}",
-                bioData.getId(), template.getTemplateId(), templatePath);
-        return templateEngine.process(templatePath, context);
-    }
-
-    /**
-     * Each template id maps to its own PDF design so the downloaded PDF matches the
-     * template the user selected in the preview. Falls back to traditional.
-     */
-    private String getTemplateSpecificPdfPath(String templateId) {
-        return switch (templateId.toLowerCase(Locale.ROOT)) {
-            case "royal" -> "biodata/pdf/royal-pdf";
-            case "modern" -> "biodata/pdf/modern-pdf";
-            case "elegant" -> "biodata/pdf/elegant-pdf";
-            case "floral" -> "biodata/pdf/floral-pdf";
-            case "simple" -> "biodata/pdf/simple-pdf";
-            case "ornate" -> "biodata/pdf/ornate-pdf";
-            case "premium-green" -> "biodata/pdf/premium-green-pdf";
-            case "premium-silver" -> "biodata/pdf/premium-silver-pdf";
-            case "premium" -> "biodata/pdf/premium-pdf";
-            case "traditional" -> "biodata/pdf/traditional-pdf";
-            default -> "biodata/pdf/traditional-pdf";
-        };
+        log.info("PDF Generation - BioData ID: {}, Template ID: {}",
+                bioData.getId(), template.getTemplateId());
+        return templateEngine.process("biodata/pdf/document", context);
     }
 }
