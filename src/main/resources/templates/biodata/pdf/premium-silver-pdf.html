@@ -260,7 +260,7 @@
             </div>
 
             <!-- Career Details Section -->
-            <div th:if="${!#strings.isEmpty(bioData.occupation) or !#strings.isEmpty(bioData.companyName) or !#strings.isEmpty(bioData.designation) or !#strings.isEmpty(bioData.annualIncome)}" class="section">
+            <div th:if="${!#strings.isEmpty(bioData.occupation) or !#strings.isEmpty(bioData.employerName) or !#strings.isEmpty(bioData.designation) or !#strings.isEmpty(bioData.annualIncome)}" class="section">
                 <div class="section-title-wrap">
                     <span class="section-title">Career Details</span>
                 </div>
@@ -269,9 +269,9 @@
                         <div class="detail-label">Occupation</div>
                         <div class="detail-value" th:text="${bioData.occupation}">Software Engineer</div>
                     </div>
-                    <div th:if="${!#strings.isEmpty(bioData.companyName)}" class="detail-row">
-                        <div class="detail-label">Company</div>
-                        <div class="detail-value" th:text="${bioData.companyName}">Company</div>
+                    <div th:if="${!#strings.isEmpty(bioData.employerName)}" class="detail-row">
+                        <div class="detail-label">Employer</div>
+                        <div class="detail-value" th:text="${bioData.employerName}">Employer</div>
                     </div>
                     <div th:if="${!#strings.isEmpty(bioData.designation)}" class="detail-row">
                         <div class="detail-label">Designation</div>
