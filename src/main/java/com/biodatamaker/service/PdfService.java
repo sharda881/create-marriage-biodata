@@ -81,7 +81,8 @@ public class PdfService {
     }
 
     /**
-     * Each template has its own PDF design; fall back to traditional.
+     * Each template id maps to its own PDF design so the downloaded PDF matches the
+     * template the user selected in the preview. Falls back to traditional.
      */
     private String getTemplateSpecificPdfPath(String templateId) {
         return switch (templateId.toLowerCase(Locale.ROOT)) {
@@ -90,6 +91,11 @@ public class PdfService {
             case "elegant" -> "biodata/pdf/elegant-pdf";
             case "floral" -> "biodata/pdf/floral-pdf";
             case "simple" -> "biodata/pdf/simple-pdf";
+            case "ornate" -> "biodata/pdf/ornate-pdf";
+            case "premium-green" -> "biodata/pdf/premium-green-pdf";
+            case "premium-silver" -> "biodata/pdf/premium-silver-pdf";
+            case "premium" -> "biodata/pdf/premium-pdf";
+            case "traditional" -> "biodata/pdf/traditional-pdf";
             default -> "biodata/pdf/traditional-pdf";
         };
     }
