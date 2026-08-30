@@ -129,12 +129,13 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        // The configured SPA origin, plus any localhost port for local dev
-        // (Vite bumps to 5174/5175 when a port is taken; 127.0.0.1 vs localhost).
+        // The configured SPA origin, any localhost port for local dev, and any
+        // *.vercel.app deployment (production + preview builds).
         config.setAllowedOriginPatterns(List.of(
                 frontendUrl,
                 "http://localhost:*",
-                "http://127.0.0.1:*"
+                "http://127.0.0.1:*",
+                "https://*.vercel.app"
         ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept"));
