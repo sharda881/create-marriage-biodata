@@ -80,6 +80,8 @@ spring:
 
   # H2 Database Configuration
   datasource:
+    # NOTE: H2 file DB allows only ONE process at a time. If you see
+    # "Database may be already in use", kill the other Spring Boot / IDE run.
     url: jdbc:h2:file:./data/biodata_dev;DB_CLOSE_ON_EXIT=FALSE;AUTO_RECONNECT=TRUE
     driver-class-name: org.h2.Driver
     username: sa
