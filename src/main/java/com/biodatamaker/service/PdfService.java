@@ -4,6 +4,7 @@ import com.biodatamaker.entity.BioData;
 import com.biodatamaker.entity.User;
 import com.biodatamaker.template.BioDataTemplate;
 import com.biodatamaker.template.BioDataTemplateFactory;
+import com.biodatamaker.template.PdfTheme;
 import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.WaitUntilState;
@@ -15,6 +16,7 @@ import org.thymeleaf.context.Context;
 
 import java.io.IOException;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Service for generating PDFs by using a shared, embedded Playwright instance.
@@ -88,10 +90,16 @@ public class PdfService {
      * matches the on-screen React preview exactly.
      */
     private String renderBioDataHtml(BioData bioData, BioDataTemplate template) {
+        Map<String, Object> vars = viewModel.buildPdfContext(bioData, template);
         Context context = new Context(Locale.ENGLISH);
-        context.setVariables(viewModel.buildPdfContext(bioData, template));
+        context.setVariables(vars);
         log.info("PDF Generation - BioData ID: {}, Template ID: {}",
                 bioData.getId(), template.getTemplateId());
-        return templateEngine.process("biodata/pdf/document", context);
+
+        PdfTheme theme = (PdfTheme) vars.get("theme");
+        String documentTemplate = "split".equals(theme.layout())
+                ? "biodata/pdf/document-split"
+                : "biodata/pdf/document";
+        return templateEngine.process(documentTemplate, context);
     }
 }

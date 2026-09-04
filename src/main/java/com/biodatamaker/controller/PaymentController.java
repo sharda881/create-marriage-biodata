@@ -40,7 +40,8 @@ public class PaymentController {
                 currentUserOrNull(),
                 body.get("name"),
                 body.get("email"),
-                body.get("phone"));
+                body.get("phone"),
+                Boolean.parseBoolean(body.get("deliverByEmail")));
     }
 
     /** Razorpay server-to-server webhook. Must stay public + signature-verified. */

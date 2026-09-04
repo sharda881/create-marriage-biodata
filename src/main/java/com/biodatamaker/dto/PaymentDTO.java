@@ -22,7 +22,9 @@ public record PaymentDTO(
         String razorpayOrderId,
         String razorpayPaymentId,
         LocalDateTime paidAt,
-        LocalDateTime createdAt
+        LocalDateTime createdAt,
+        boolean deliverByEmail,
+        LocalDateTime pdfEmailedAt
 ) {
     public static PaymentDTO fromEntity(BioData b) {
         return new PaymentDTO(
@@ -38,7 +40,9 @@ public record PaymentDTO(
                 b.getRazorpayOrderId(),
                 b.getRazorpayPaymentId(),
                 b.getPaidAt(),
-                b.getCreatedAt()
+                b.getCreatedAt(),
+                Boolean.TRUE.equals(b.getDeliverByEmail()),
+                b.getPdfEmailedAt()
         );
     }
 }

@@ -8,6 +8,7 @@ import com.biodatamaker.entity.User;
 import com.biodatamaker.service.BioDataService;
 import com.biodatamaker.service.PaymentService;
 import com.biodatamaker.service.SystemConfigService;
+import com.biodatamaker.service.TemplatePricingService;
 import com.biodatamaker.service.UserService;
 import com.biodatamaker.util.SecurityUtils;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -34,6 +36,7 @@ public class AdminController {
     private final UserService userService;
     private final BioDataService bioDataService;
     private final SystemConfigService configService;
+    private final TemplatePricingService templatePricingService;
 
     @GetMapping("/dashboard")
     public Map<String, Object> dashboard() {
@@ -75,6 +78,33 @@ public class AdminController {
     @PostMapping("/payments/{bioDataId}/mark-paid")
     public PaymentDTO markPaid(@PathVariable Long bioDataId) {
         return paymentService.markPaidManually(bioDataId, currentAdmin());
+    }
+
+    /** Effective price for every template (admin override or computed default). */
+    @GetMapping("/template-pricing")
+    public List<Map<String, Object>> templatePricing() {
+        return templatePricingService.listing();
+    }
+
+    /** Set a template's price. Body: {@code {"price": "49"}}. */
+    @PutMapping("/template-pricing/{templateId}")
+    public List<Map<String, Object>> setTemplatePrice(@PathVariable String templateId,
+                                                        @RequestBody Map<String, String> body) {
+        BigDecimal price;
+        try {
+            price = new BigDecimal(body.getOrDefault("price", "").trim());
+        } catch (NumberFormatException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "price must be a number");
+        }
+        templatePricingService.setPrice(templateId, price);
+        return templatePricingService.listing();
+    }
+
+    /** Clears the admin override so the template falls back to its computed default price. */
+    @DeleteMapping("/template-pricing/{templateId}")
+    public List<Map<String, Object>> resetTemplatePrice(@PathVariable String templateId) {
+        templatePricingService.resetPrice(templateId);
+        return templatePricingService.listing();
     }
 
     @GetMapping("/users")

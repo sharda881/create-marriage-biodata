@@ -2,6 +2,7 @@ package com.biodatamaker;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 /**
  * Main Spring Boot Application class for Marriage Bio-Data Maker.
@@ -14,6 +15,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * - OpenHTMLtoPDF for PDF generation
  */
 @SpringBootApplication
+@EnableAsync
 public class BiodataMakerApplication {
 
     public static void main(String[] args) {

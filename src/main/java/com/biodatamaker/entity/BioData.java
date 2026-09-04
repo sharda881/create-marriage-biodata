@@ -218,6 +218,15 @@ public class BioData {
 
     private LocalDateTime paidAt;
 
+    // ================== PDF delivery ==================
+    /** Whether the buyer asked to have the PDF emailed once payment clears. */
+    @Column(nullable = false)
+    @Builder.Default
+    private Boolean deliverByEmail = false;
+
+    /** Set once the post-payment email has actually gone out (idempotency guard). */
+    private LocalDateTime pdfEmailedAt;
+
     // ================== Timestamps ==================
     @Column(nullable = false, updatable = false)
     @Builder.Default

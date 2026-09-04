@@ -48,7 +48,17 @@ public class PdfThemeRegistry {
             Map.entry("gold", new PdfTheme(
                     "#F4ECDD", "#FFFFFF", "#33291d", "#7a6a54", "#9A5B2E", "#ffffff",
                     "#C9922F", "#B87333", SERIF, "plain", null, null,
-                    "floral", "ganesha", true))
+                    "floral", "ganesha", true)),
+            Map.entry("divine", new PdfTheme(
+                    "#3D0E1F", "#3D0E1F", "#F5E6C8", "#C9A66B", "#D4A24E", "#3D0E1F",
+                    "#C9922F", "#D4AF6A", SERIF, "plain", null, "✦",
+                    "floral", "ganesha", true)),
+            // Split (sidebar) layout — colours are consumed by document-split.html, not
+            // document.html, so headerStyle/cornerStyle/etc. below are unused placeholders.
+            Map.entry("executive", new PdfTheme(
+                    "#FFFFFF", "#1A1A1A", "#1f2937", "#6b7280", "#111111", "#ffffff",
+                    "#d1d5db", "#d1d5db", SANS, "underline", null, null,
+                    "key", "flourish", false, "split"))
     );
 
     public PdfTheme themeFor(String templateId) {
