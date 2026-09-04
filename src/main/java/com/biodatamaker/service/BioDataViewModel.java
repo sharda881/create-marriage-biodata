@@ -11,7 +11,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StreamUtils;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -38,6 +40,9 @@ public class BioDataViewModel {
     private static final DateTimeFormatter DATE_FORMATTER =
             DateTimeFormatter.ofPattern("dd MMMM yyyy", Locale.ENGLISH);
 
+    /** Bundled brand mark, shown top-center on every PDF template regardless of theme. */
+    private static final String GANESHA_LOGO_BASE64 = loadGaneshaLogoBase64();
+
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final PdfThemeRegistry pdfThemeRegistry;
     private final TemplatePricingService templatePricingService;
@@ -63,6 +68,7 @@ public class BioDataViewModel {
         }
         vars.put("photoAsBase64", photoAsBase64);
         vars.put("hasPhoto", photoAsBase64 != null);
+        vars.put("ganeshaLogoBase64", GANESHA_LOGO_BASE64);
 
         vars.put("hasEducation", hasEducation(bioData));
         vars.put("hasProfession", hasProfession(bioData));
@@ -166,6 +172,17 @@ public class BioDataViewModel {
         } catch (Exception e) {
             log.warn("Failed to parse custom fields JSON: {}", e.getMessage());
             return new LinkedHashMap<>();
+        }
+    }
+
+    private static String loadGaneshaLogoBase64() {
+        try {
+            byte[] bytes = StreamUtils.copyToByteArray(
+                    new ClassPathResource("static/images/ganesha-logo.png").getInputStream());
+            return "data:image/png;base64," + Base64.getEncoder().encodeToString(bytes);
+        } catch (IOException e) {
+            log.warn("Could not load bundled Ganesha logo for PDF branding", e);
+            return null;
         }
     }
 
