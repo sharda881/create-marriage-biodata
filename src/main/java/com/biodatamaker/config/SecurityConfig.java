@@ -103,6 +103,13 @@ public class SecurityConfig {
                                 "/api/biodata/*/preview-data",
                                 "/api/biodata/*/needs-payment",
                                 "/api/biodata/*/download").permitAll()
+                        // Payment flow (anonymous checkout + Razorpay webhook)
+                        .requestMatchers(HttpMethod.GET,
+                                "/api/payments/quote/*",
+                                "/api/payments/status/*").permitAll()
+                        .requestMatchers(HttpMethod.POST,
+                                "/api/payments/checkout",
+                                "/api/payments/webhook").permitAll()
                         // Admin endpoints
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         // Everything else needs a valid token

@@ -40,6 +40,7 @@ public class BioDataService {
     private final BioDataRepository bioDataRepository;
     private final BioDataTemplateFactory templateFactory;
     private final SystemConfigService configService;
+    private final PaywallService paywallService;
 
     private static final String UPLOAD_DIR = "./uploads/photos";
     private static final int MAX_IMAGE_WIDTH = 1024;
@@ -170,25 +171,14 @@ public class BioDataService {
     }
 
     /**
-     * Check if user has exceeded free limit and needs to pay
+     * Whether this bio-data's PDF download must be paid for. Works for anonymous
+     * users ({@code user} may be null) — the paywall is keyed off the bio-data.
      */
     public boolean needsPayment(User user, Long bioDataId) {
-        if (!configService.isPaywallEnabled()) {
-            return false;
-        }
-
-        BioData bioData = getBioDataForUser(bioDataId, user);
-
-        // Already paid
-        if (bioData.getIsPaid()) {
-            return false;
-        }
-
-        int freeLimit = configService.getFreeLimitCount();
-        long downloadedCount = bioDataRepository.countDownloadedByUser(user);
-
-        // User has free downloads remaining
-        return downloadedCount >= freeLimit;
+        BioData bioData = (user != null)
+                ? bioDataRepository.findByIdAndUser(bioDataId, user).orElseGet(() -> getBioDataById(bioDataId))
+                : getBioDataById(bioDataId);
+        return paywallService.needsPayment(bioData, user);
     }
 
     /**
@@ -217,7 +207,7 @@ public class BioDataService {
     @Transactional
     public void markAsPaid(Long bioDataId) {
         BioData bioData = getBioDataById(bioDataId);
-        bioData.setIsPaid(true);
+        bioData.markPaid(bioData.getRazorpayPaymentId());
         bioDataRepository.save(bioData);
         log.info("Bio-data {} marked as paid", bioDataId);
     }

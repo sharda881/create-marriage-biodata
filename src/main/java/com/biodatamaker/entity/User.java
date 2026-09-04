@@ -69,11 +69,6 @@ public class User {
     @Builder.Default
     private List<BioData> bioDatas = new ArrayList<>();
 
-    // Relationship with PaymentTransactions
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private List<PaymentTransaction> paymentTransactions = new ArrayList<>();
-
     @PreUpdate
     public void preUpdate() {
         this.updatedAt = LocalDateTime.now();

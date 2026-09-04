@@ -37,9 +37,7 @@ public class PdfService {
      * (paywall) is validated first. {@code user} may be null for anonymous downloads.
      */
     public byte[] generatePdf(Long bioDataId, User user) throws IOException {
-        if (user != null) {
-            bioDataService.validateDownloadAccess(user, bioDataId);
-        }
+        bioDataService.validateDownloadAccess(user, bioDataId);
         return generatePdfFromBioData(bioDataService.getBioDataById(bioDataId));
     }
 

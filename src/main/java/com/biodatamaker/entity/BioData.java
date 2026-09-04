@@ -2,6 +2,7 @@ package com.biodatamaker.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -195,6 +196,28 @@ public class BioData {
     @Builder.Default
     private Integer downloadCount = 0;
 
+    // ================== Payment (Razorpay) ==================
+    // Denormalised onto bio_data so anonymous purchases work without a user row.
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private PaymentStatus paymentStatus = PaymentStatus.UNPAID;
+
+    @Column(precision = 10, scale = 2)
+    private BigDecimal paymentAmount;
+
+    private String payerName;
+
+    private String payerEmail;
+
+    private String payerPhone;
+
+    @Column(unique = true)
+    private String razorpayOrderId;
+
+    private String razorpayPaymentId;
+
+    private LocalDateTime paidAt;
+
     // ================== Timestamps ==================
     @Column(nullable = false, updatable = false)
     @Builder.Default
@@ -237,6 +260,24 @@ public class BioData {
         DRAFT,
         COMPLETED,
         PUBLISHED
+    }
+
+    /**
+     * Payment status for this bio-data's PDF download.
+     */
+    public enum PaymentStatus {
+        UNPAID,   // no payment started
+        PENDING,  // Razorpay order created, awaiting capture
+        PAID,     // captured — PDF unlocked
+        FAILED    // last attempt failed / dropped
+    }
+
+    /** Mark this bio-data as paid (idempotent). */
+    public void markPaid(String razorpayPaymentId) {
+        this.paymentStatus = PaymentStatus.PAID;
+        this.isPaid = true;
+        this.razorpayPaymentId = razorpayPaymentId;
+        this.paidAt = LocalDateTime.now();
     }
 
     /**
