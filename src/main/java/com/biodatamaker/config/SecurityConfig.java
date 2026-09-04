@@ -136,13 +136,15 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        // The configured SPA origin, any localhost port for local dev, and any
-        // *.vercel.app deployment (production + preview builds).
+        // The configured SPA origin, any localhost port for local dev, any *.vercel.app
+        // deployment (production + preview builds), and the production custom domain.
         config.setAllowedOriginPatterns(List.of(
                 frontendUrl,
                 "http://localhost:*",
                 "http://127.0.0.1:*",
-                "https://*.vercel.app"
+                "https://*.vercel.app",
+                "https://biodatabnalo.in",
+                "https://www.biodatabnalo.in"
         ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept"));
