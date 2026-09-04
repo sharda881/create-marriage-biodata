@@ -17,6 +17,7 @@ import java.math.BigDecimal;
  *
  * <ol>
  *   <li>Paywall globally disabled -> free.</li>
+ *   <li>Requesting user is an ADMIN -> free.</li>
  *   <li>Already PAID -> free.</li>
  *   <li>Template price is 0 -> free.</li>
  *   <li>Otherwise -> must pay.</li>
@@ -30,9 +31,11 @@ public class PaywallService {
     private final SystemConfigService configService;
     private final TemplatePricingService templatePricingService;
 
-    /** {@code user} is accepted for API symmetry with callers but no longer changes the outcome. */
     public boolean needsPayment(BioData bioData, User user) {
         if (!configService.isPaywallEnabled()) {
+            return false;
+        }
+        if (user != null && user.getRole() == User.Role.ADMIN) {
             return false;
         }
         if (bioData.getPaymentStatus() == BioData.PaymentStatus.PAID || Boolean.TRUE.equals(bioData.getIsPaid())) {

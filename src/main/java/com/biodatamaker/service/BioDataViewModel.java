@@ -15,6 +15,8 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StreamUtils;
 
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -114,10 +116,32 @@ public class BioDataViewModel {
     }
 
     /**
+     * The rest of the detail fields, in section order. About half of whichever of these
+     * are actually filled in get locked below, on top of the hard redactions, so a
+     * screenshot of an unpaid preview is missing too much to substitute for the paid PDF.
+     * Excludes identity fields (name, gender, photo) and the contact/address/exact-birth
+     * fields, which are always redacted outright above.
+     */
+    private static final List<String> BLUR_ELIGIBLE_FIELDS = List.of(
+            "religion", "caste", "subCaste", "gotra", "rashi", "nakshatra", "manglikStatus",
+            "bloodGroup", "complexion", "height", "weight", "maritalStatus", "physicalStatus",
+            "motherTongue", "knownLanguages", "diet", "smokingHabit", "drinkingHabit",
+            "highestQualification", "educationDetails", "collegeName", "universityName", "specialization", "passingYear",
+            "occupation", "employerName", "designation", "workingCity", "annualIncome",
+            "fatherName", "fatherOccupation", "motherName", "motherOccupation",
+            "numberOfBrothers", "numberOfSisters", "brothersMarried", "sistersMarried",
+            "familyType", "familyStatus", "familyValues", "nativePlace", "familyDetails",
+            "city", "state", "country",
+            "preferredAgeRange", "preferredHeightRange", "preferredEducation", "preferredOccupation",
+            "preferredLocation", "preferredMaritalStatus", "otherPreferences",
+            "aboutMe", "hobbiesAndInterests"
+    );
+
+    /**
      * Strip contact / address / exact-birth details from an unpaid preview so a
-     * screenshot can't be used in place of the paid PDF. Age is kept; the exact
-     * date of birth is not. Returns the list of fields that were locked so the
-     * SPA can additionally blur/overlay them.
+     * screenshot can't be used in place of the paid PDF, then additionally lock about
+     * half of every other filled-in field. Age is kept; the exact date of birth is not.
+     * Returns the list of fields that were locked so the SPA can additionally blur/overlay them.
      */
     private List<String> redactForPreview(BioDataDTO dto) {
         List<String> locked = new ArrayList<>();
@@ -132,7 +156,37 @@ public class BioDataViewModel {
         if (isSet(dto.getBirthTime()))       { dto.setBirthTime(null); locked.add("birthTime"); }
         if (isSet(dto.getBirthPlace()))      { dto.setBirthPlace(null); locked.add("birthPlace"); }
 
+        List<String> populated = BLUR_ELIGIBLE_FIELDS.stream()
+                .filter(field -> isPropertySet(dto, field))
+                .toList();
+        for (int i = 0; i < populated.size(); i += 2) {
+            clearProperty(dto, populated.get(i));
+            locked.add(populated.get(i));
+        }
+
         return locked;
+    }
+
+    private boolean isPropertySet(BioDataDTO dto, String property) {
+        Object value = readProperty(dto, property);
+        return value != null && !(value instanceof String s && s.isBlank());
+    }
+
+    private Object readProperty(BioDataDTO dto, String property) {
+        try {
+            return new PropertyDescriptor(property, BioDataDTO.class).getReadMethod().invoke(dto);
+        } catch (ReflectiveOperationException | IntrospectionException e) {
+            log.warn("Could not read preview field '{}': {}", property, e.getMessage());
+            return null;
+        }
+    }
+
+    private void clearProperty(BioDataDTO dto, String property) {
+        try {
+            new PropertyDescriptor(property, BioDataDTO.class).getWriteMethod().invoke(dto, (Object) null);
+        } catch (ReflectiveOperationException | IntrospectionException e) {
+            log.warn("Could not lock preview field '{}': {}", property, e.getMessage());
+        }
     }
 
     private static boolean isSet(String s) {
