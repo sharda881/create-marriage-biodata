@@ -94,7 +94,10 @@ public class BioDataViewModel {
 
         BioDataDTO dto = BioDataDTO.fromEntity(bioData);
         List<String> lockedFields = needsPayment ? redactForPreview(dto) : List.of();
-        String formattedDob = needsPayment ? "" : formatDate(bioData.getDateOfBirth());
+        String formattedDob = needsPayment ? BLUR_PLACEHOLDER : formatDate(bioData.getDateOfBirth());
+        String unlockMessage = needsPayment
+                ? "Some details are blurred in this preview. Download the full biodata to see everything — payment is required for this template."
+                : null;
 
         return new BioDataPreviewDTO(
                 dto,
@@ -111,9 +114,14 @@ public class BioDataViewModel {
                 hasPreferences(bioData),
                 parseCustomFields(bioData.getCustomFields()),
                 needsPayment,
-                lockedFields
+                lockedFields,
+                unlockMessage
         );
     }
+
+    /** Shown in place of a locked field's value: keeps the label visible so the SPA can
+     *  render it as a blurred / struck-through placeholder instead of an empty field. */
+    private static final String BLUR_PLACEHOLDER = "▬▬▬▬▬▬▬▬";
 
     /**
      * The rest of the detail fields, in section order. About half of whichever of these
@@ -138,29 +146,30 @@ public class BioDataViewModel {
     );
 
     /**
-     * Strip contact / address / exact-birth details from an unpaid preview so a
-     * screenshot can't be used in place of the paid PDF, then additionally lock about
-     * half of every other filled-in field. Age is kept; the exact date of birth is not.
-     * Returns the list of fields that were locked so the SPA can additionally blur/overlay them.
+     * Replace contact / address / exact-birth values in an unpaid preview with the blur
+     * placeholder (label stays visible, value doesn't) so a screenshot can't be used in
+     * place of the paid PDF, then additionally lock about half of every other filled-in
+     * field. Age is kept; the exact date of birth is not. Returns the list of fields that
+     * were locked so the SPA can render them blurred / struck-through with an unlock CTA.
      */
     private List<String> redactForPreview(BioDataDTO dto) {
         List<String> locked = new ArrayList<>();
 
-        if (isSet(dto.getContactNumber()))   { dto.setContactNumber(maskPhone(dto.getContactNumber())); locked.add("contactNumber"); }
-        if (isSet(dto.getAlternateNumber())) { dto.setAlternateNumber(maskPhone(dto.getAlternateNumber())); locked.add("alternateNumber"); }
-        if (isSet(dto.getEmailAddress()))    { dto.setEmailAddress(maskEmail(dto.getEmailAddress())); locked.add("emailAddress"); }
-        if (isSet(dto.getCurrentAddress()))  { dto.setCurrentAddress(null); locked.add("currentAddress"); }
-        if (isSet(dto.getPermanentAddress())){ dto.setPermanentAddress(null); locked.add("permanentAddress"); }
-        if (isSet(dto.getPincode()))         { dto.setPincode(null); locked.add("pincode"); }
+        if (isSet(dto.getContactNumber()))   { dto.setContactNumber(BLUR_PLACEHOLDER); locked.add("contactNumber"); }
+        if (isSet(dto.getAlternateNumber())) { dto.setAlternateNumber(BLUR_PLACEHOLDER); locked.add("alternateNumber"); }
+        if (isSet(dto.getEmailAddress()))    { dto.setEmailAddress(BLUR_PLACEHOLDER); locked.add("emailAddress"); }
+        if (isSet(dto.getCurrentAddress()))  { dto.setCurrentAddress(BLUR_PLACEHOLDER); locked.add("currentAddress"); }
+        if (isSet(dto.getPermanentAddress())){ dto.setPermanentAddress(BLUR_PLACEHOLDER); locked.add("permanentAddress"); }
+        if (isSet(dto.getPincode()))         { dto.setPincode(BLUR_PLACEHOLDER); locked.add("pincode"); }
         if (dto.getDateOfBirth() != null)    { dto.setDateOfBirth(null); locked.add("dateOfBirth"); }
-        if (isSet(dto.getBirthTime()))       { dto.setBirthTime(null); locked.add("birthTime"); }
-        if (isSet(dto.getBirthPlace()))      { dto.setBirthPlace(null); locked.add("birthPlace"); }
+        if (isSet(dto.getBirthTime()))       { dto.setBirthTime(BLUR_PLACEHOLDER); locked.add("birthTime"); }
+        if (isSet(dto.getBirthPlace()))      { dto.setBirthPlace(BLUR_PLACEHOLDER); locked.add("birthPlace"); }
 
         List<String> populated = BLUR_ELIGIBLE_FIELDS.stream()
                 .filter(field -> isPropertySet(dto, field))
                 .toList();
         for (int i = 0; i < populated.size(); i += 2) {
-            clearProperty(dto, populated.get(i));
+            lockProperty(dto, populated.get(i));
             locked.add(populated.get(i));
         }
 
@@ -181,9 +190,13 @@ public class BioDataViewModel {
         }
     }
 
-    private void clearProperty(BioDataDTO dto, String property) {
+    /** Locks a property: strings get the blur placeholder (label stays, value doesn't);
+     *  non-string types (numbers, enums, dates) can only be cleared to null. */
+    private void lockProperty(BioDataDTO dto, String property) {
         try {
-            new PropertyDescriptor(property, BioDataDTO.class).getWriteMethod().invoke(dto, (Object) null);
+            PropertyDescriptor descriptor = new PropertyDescriptor(property, BioDataDTO.class);
+            Object placeholder = descriptor.getPropertyType() == String.class ? BLUR_PLACEHOLDER : null;
+            descriptor.getWriteMethod().invoke(dto, placeholder);
         } catch (ReflectiveOperationException | IntrospectionException e) {
             log.warn("Could not lock preview field '{}': {}", property, e.getMessage());
         }
@@ -191,26 +204,6 @@ public class BioDataViewModel {
 
     private static boolean isSet(String s) {
         return s != null && !s.isBlank();
-    }
-
-    private static String maskPhone(String value) {
-        String digits = value.replaceAll("\\D", "");
-        if (digits.length() < 4) {
-            return "••••";
-        }
-        String last2 = digits.substring(digits.length() - 2);
-        return "•".repeat(Math.max(2, digits.length() - 2)) + last2;
-    }
-
-    private static String maskEmail(String value) {
-        int at = value.indexOf('@');
-        if (at <= 0) {
-            return "••••";
-        }
-        String name = value.substring(0, at);
-        String domain = value.substring(at);
-        String head = name.length() <= 2 ? name.substring(0, 1) : name.substring(0, 2);
-        return head + "•••" + domain;
     }
 
     public String formatDate(LocalDate date) {
