@@ -138,10 +138,11 @@ spring:
     username: ${DATABASE_USERNAME:postgres}
     password: ${DATABASE_PASSWORD:postgres}
 
-  # Flyway owns the schema in production. baseline-on-migrate lets it adopt an
-  # existing Hibernate-created database (everything up to V1 is assumed present).
+  # Hibernate builds/updates the schema from the entities (same as dev). Flyway is
+  # disabled until there is a full baseline migration to hand it a fresh DB — the
+  # ALTER-only V1 script cannot bootstrap an empty database.
   flyway:
-    enabled: true
+    enabled: ${FLYWAY_ENABLED:false}
     baseline-on-migrate: true
     baseline-version: 0
 
@@ -154,7 +155,9 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: validate
+      # `update` so an empty database is bootstrapped and new entity columns are
+      # added automatically. Override with DDL_AUTO=validate once Flyway owns it.
+      ddl-auto: ${DDL_AUTO:update}
     show-sql: false
     properties:
       hibernate:

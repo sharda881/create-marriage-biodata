@@ -11,7 +11,14 @@ ALTER TABLE bio_data ADD COLUMN IF NOT EXISTS razorpay_payment_id VARCHAR(64);
 ALTER TABLE bio_data ADD COLUMN IF NOT EXISTS paid_at             TIMESTAMP;
 
 -- One Razorpay order per bio-data; retries overwrite the previous (abandoned) order.
-ALTER TABLE bio_data ADD CONSTRAINT uk_bio_data_razorpay_order UNIQUE (razorpay_order_id);
+-- Guarded so the whole script stays idempotent (safe to run by hand before deploy).
+DO $$
+BEGIN
+    ALTER TABLE bio_data ADD CONSTRAINT uk_bio_data_razorpay_order UNIQUE (razorpay_order_id);
+EXCEPTION
+    WHEN duplicate_table THEN NULL;   -- constraint already exists
+    WHEN duplicate_object THEN NULL;
+END $$;
 
 -- Carry over anything already flagged paid under the old manual flow.
 UPDATE bio_data SET payment_status = 'PAID' WHERE is_paid = TRUE;
