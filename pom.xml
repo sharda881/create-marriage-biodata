@@ -65,6 +65,20 @@
             <version>1.43.0</version>
         </dependency>
 
+        <!-- Razorpay payment gateway -->
+        <dependency>
+            <groupId>com.razorpay</groupId>
+            <artifactId>razorpay-java</artifactId>
+            <version>1.4.10</version>
+        </dependency>
+
+        <!-- Flyway database migrations (prod / PostgreSQL). Spring Boot 3.2 ships
+             Flyway 9.x where PostgreSQL support is bundled in flyway-core. -->
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+        </dependency>
+
         <!-- JWT (stateless auth for the SPA) -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>

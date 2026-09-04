@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -89,4 +90,15 @@ public interface BioDataRepository extends JpaRepository<BioData, Long> {
      */
     @Query("SELECT b FROM BioData b WHERE LOWER(b.fullName) LIKE LOWER(CONCAT('%', :searchTerm, '%'))")
     List<BioData> searchByFullName(@Param("searchTerm") String searchTerm);
+
+    // ================== Payment ==================
+
+    Optional<BioData> findByRazorpayOrderId(String razorpayOrderId);
+
+    List<BioData> findByPaymentStatusOrderByUpdatedAtDesc(BioData.PaymentStatus status);
+
+    long countByPaymentStatus(BioData.PaymentStatus status);
+
+    @Query("SELECT COALESCE(SUM(b.paymentAmount), 0) FROM BioData b WHERE b.paymentStatus = :status")
+    BigDecimal sumPaymentAmountByStatus(@Param("status") BioData.PaymentStatus status);
 }

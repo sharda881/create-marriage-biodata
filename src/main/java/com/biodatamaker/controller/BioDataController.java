@@ -129,7 +129,7 @@ public class BioDataController {
         BioData bioData = user != null
                 ? bioDataService.getBioDataForUser(id, user)
                 : bioDataService.getBioDataById(id);
-        boolean needsPayment = user != null && bioDataService.needsPayment(user, id);
+        boolean needsPayment = bioDataService.needsPayment(user, id);
         return viewModel.buildPreview(bioData, bioDataService.getTemplateForBioData(bioData), needsPayment);
     }
 
@@ -137,7 +137,7 @@ public class BioDataController {
     @GetMapping("/{id}/needs-payment")
     public Map<String, Boolean> needsPayment(@PathVariable Long id) {
         User user = currentUserOrNull();
-        boolean needs = user != null && bioDataService.needsPayment(user, id);
+        boolean needs = bioDataService.needsPayment(user, id);
         return Map.of("needsPayment", needs);
     }
 
@@ -145,7 +145,7 @@ public class BioDataController {
     @GetMapping("/{id}/download")
     public ResponseEntity<byte[]> download(@PathVariable Long id) {
         User user = currentUserOrNull();
-        if (user != null && bioDataService.needsPayment(user, id)) {
+        if (bioDataService.needsPayment(user, id)) {
             return ResponseEntity.status(HttpStatus.PAYMENT_REQUIRED)
                     .header(HttpHeaders.LOCATION, "/payment/checkout/" + id)
                     .build();

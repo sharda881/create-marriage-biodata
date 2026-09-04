@@ -24,6 +24,10 @@ spring:
       max-file-size: 10MB
       max-request-size: 50MB
 
+  # Flyway is only used by the prod (PostgreSQL) profile; dev relies on H2 + Hibernate DDL.
+  flyway:
+    enabled: false
+
 # Server Configuration (for Tomcat connector maxPostSize)
 server:
   tomcat:
@@ -61,6 +65,15 @@ app:
   payment:
     qr-code-path: /images/payment_qr.png
     upi-id: ${UPI_ID:example@upi}
+
+# Razorpay payment gateway. All three values come from the Razorpay dashboard and
+# MUST be supplied via environment variables in every real deployment.
+razorpay:
+  key-id: ${RAZORPAY_KEY_ID:}
+  key-secret: ${RAZORPAY_KEY_SECRET:}
+  # The secret you type into Dashboard -> Webhooks (separate from key-secret).
+  webhook-secret: ${RAZORPAY_WEBHOOK_SECRET:}
+  currency: INR
 
 # Logging Configuration
 logging:
@@ -124,6 +137,13 @@ spring:
     driver-class-name: org.postgresql.Driver
     username: ${DATABASE_USERNAME:postgres}
     password: ${DATABASE_PASSWORD:postgres}
+
+  # Flyway owns the schema in production. baseline-on-migrate lets it adopt an
+  # existing Hibernate-created database (everything up to V1 is assumed present).
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    baseline-version: 0
 
   # H2 Console disabled in production
   h2:

@@ -1,8 +1,9 @@
 package com.biodatamaker.controller;
 
+import com.biodatamaker.dto.BioDataDTO;
 import com.biodatamaker.dto.PaymentDTO;
 import com.biodatamaker.dto.UserDTO;
-import com.biodatamaker.entity.PaymentTransaction;
+import com.biodatamaker.entity.BioData;
 import com.biodatamaker.entity.User;
 import com.biodatamaker.service.BioDataService;
 import com.biodatamaker.service.PaymentService;
@@ -36,53 +37,44 @@ public class AdminController {
 
     @GetMapping("/dashboard")
     public Map<String, Object> dashboard() {
-        List<PaymentDTO> pending = paymentService.getPendingPayments();
+        List<PaymentDTO> pending = paymentService.listByStatus(BioData.PaymentStatus.PENDING);
         return Map.of(
                 "totalUsers", userService.countUsers(),
-                "pendingPayments", paymentService.countPendingPayments(),
-                "totalRevenue", paymentService.getTotalApprovedAmount(),
+                "pendingPayments", paymentService.countByStatus(BioData.PaymentStatus.PENDING),
+                "totalRevenue", paymentService.totalRevenue(),
                 "recentPending", pending.stream().limit(5).toList()
         );
     }
 
     @GetMapping("/payments")
-    public Map<String, Object> payments(@RequestParam(defaultValue = "PENDING") String status) {
-        PaymentTransaction.PaymentStatus paymentStatus;
+    public Map<String, Object> payments(@RequestParam(defaultValue = "PAID") String status) {
+        BioData.PaymentStatus paymentStatus;
         try {
-            paymentStatus = PaymentTransaction.PaymentStatus.valueOf(status.toUpperCase());
+            paymentStatus = BioData.PaymentStatus.valueOf(status.toUpperCase());
         } catch (IllegalArgumentException e) {
-            paymentStatus = PaymentTransaction.PaymentStatus.PENDING;
+            paymentStatus = BioData.PaymentStatus.PAID;
         }
         return Map.of(
-                "payments", paymentService.getPaymentsByStatus(paymentStatus),
+                "payments", paymentService.listByStatus(paymentStatus),
                 "currentStatus", paymentStatus.name(),
-                "pendingCount", paymentService.countPendingPayments()
+                "pendingCount", paymentService.countByStatus(BioData.PaymentStatus.PENDING)
         );
     }
 
-    @GetMapping("/payments/{id}")
-    public Map<String, Object> paymentDetails(@PathVariable Long id) {
-        PaymentTransaction payment = paymentService.getPaymentById(id);
-        return Map.of(
-                "payment", PaymentDTO.fromEntity(payment),
-                "bioData", com.biodatamaker.dto.BioDataDTO.fromEntity(payment.getBioData()),
-                "user", UserDTO.fromEntity(payment.getUser())
-        );
+    @GetMapping("/payments/{bioDataId}")
+    public Map<String, Object> paymentDetails(@PathVariable Long bioDataId) {
+        BioData bioData = bioDataService.getBioDataById(bioDataId);
+        Map<String, Object> out = new java.util.HashMap<>();
+        out.put("payment", PaymentDTO.fromEntity(bioData));
+        out.put("bioData", BioDataDTO.fromEntity(bioData));
+        out.put("user", bioData.getUser() != null ? UserDTO.fromEntity(bioData.getUser()) : null);
+        return out;
     }
 
-    @PostMapping("/payments/{id}/approve")
-    public PaymentDTO approve(@PathVariable Long id, @RequestBody(required = false) Map<String, String> body) {
-        String notes = body != null ? body.get("notes") : null;
-        return PaymentDTO.fromEntity(paymentService.approvePayment(id, currentAdmin(), notes));
-    }
-
-    @PostMapping("/payments/{id}/reject")
-    public PaymentDTO reject(@PathVariable Long id, @RequestBody Map<String, String> body) {
-        String reason = body != null ? body.get("reason") : null;
-        if (reason == null || reason.trim().isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Rejection reason is required");
-        }
-        return PaymentDTO.fromEntity(paymentService.rejectPayment(id, currentAdmin(), reason));
+    /** Admin override — force a bio-data to PAID (e.g. paid out-of-band via UPI). */
+    @PostMapping("/payments/{bioDataId}/mark-paid")
+    public PaymentDTO markPaid(@PathVariable Long bioDataId) {
+        return paymentService.markPaidManually(bioDataId, currentAdmin());
     }
 
     @GetMapping("/users")

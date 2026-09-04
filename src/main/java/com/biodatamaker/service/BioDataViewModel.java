@@ -18,8 +18,10 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -80,10 +82,15 @@ public class BioDataViewModel {
                     ? bioData.getPhotoPath()
                     : baseUrl + bioData.getPhotoPath();
         }
+
+        BioDataDTO dto = BioDataDTO.fromEntity(bioData);
+        List<String> lockedFields = needsPayment ? redactForPreview(dto) : List.of();
+        String formattedDob = needsPayment ? "" : formatDate(bioData.getDateOfBirth());
+
         return new BioDataPreviewDTO(
-                BioDataDTO.fromEntity(bioData),
+                dto,
                 TemplateDTO.fromTemplate(template),
-                formatDate(bioData.getDateOfBirth()),
+                formattedDob,
                 bioData.getAge(),
                 LocalDate.now().getYear(),
                 photoUrl,
@@ -94,8 +101,55 @@ public class BioDataViewModel {
                 hasContact(bioData),
                 hasPreferences(bioData),
                 parseCustomFields(bioData.getCustomFields()),
-                needsPayment
+                needsPayment,
+                lockedFields
         );
+    }
+
+    /**
+     * Strip contact / address / exact-birth details from an unpaid preview so a
+     * screenshot can't be used in place of the paid PDF. Age is kept; the exact
+     * date of birth is not. Returns the list of fields that were locked so the
+     * SPA can additionally blur/overlay them.
+     */
+    private List<String> redactForPreview(BioDataDTO dto) {
+        List<String> locked = new ArrayList<>();
+
+        if (isSet(dto.getContactNumber()))   { dto.setContactNumber(maskPhone(dto.getContactNumber())); locked.add("contactNumber"); }
+        if (isSet(dto.getAlternateNumber())) { dto.setAlternateNumber(maskPhone(dto.getAlternateNumber())); locked.add("alternateNumber"); }
+        if (isSet(dto.getEmailAddress()))    { dto.setEmailAddress(maskEmail(dto.getEmailAddress())); locked.add("emailAddress"); }
+        if (isSet(dto.getCurrentAddress()))  { dto.setCurrentAddress(null); locked.add("currentAddress"); }
+        if (isSet(dto.getPermanentAddress())){ dto.setPermanentAddress(null); locked.add("permanentAddress"); }
+        if (isSet(dto.getPincode()))         { dto.setPincode(null); locked.add("pincode"); }
+        if (dto.getDateOfBirth() != null)    { dto.setDateOfBirth(null); locked.add("dateOfBirth"); }
+        if (isSet(dto.getBirthTime()))       { dto.setBirthTime(null); locked.add("birthTime"); }
+        if (isSet(dto.getBirthPlace()))      { dto.setBirthPlace(null); locked.add("birthPlace"); }
+
+        return locked;
+    }
+
+    private static boolean isSet(String s) {
+        return s != null && !s.isBlank();
+    }
+
+    private static String maskPhone(String value) {
+        String digits = value.replaceAll("\\D", "");
+        if (digits.length() < 4) {
+            return "••••";
+        }
+        String last2 = digits.substring(digits.length() - 2);
+        return "•".repeat(Math.max(2, digits.length() - 2)) + last2;
+    }
+
+    private static String maskEmail(String value) {
+        int at = value.indexOf('@');
+        if (at <= 0) {
+            return "••••";
+        }
+        String name = value.substring(0, at);
+        String domain = value.substring(at);
+        String head = name.length() <= 2 ? name.substring(0, 1) : name.substring(0, 2);
+        return head + "•••" + domain;
     }
 
     public String formatDate(LocalDate date) {
