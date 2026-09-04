@@ -9,8 +9,10 @@ import java.util.Map;
  * preview and the generated PDF stay in sync.
  *
  * <p>When {@code needsPayment} is true, sensitive values in {@link #bioData} are
- * redacted server-side (so a screenshot of the preview is useless) and
- * {@code lockedFields} lists which fields the SPA should visually blur / overlay.
+ * replaced server-side with a blur placeholder (so a screenshot of the preview is
+ * useless) while their labels stay visible; {@code lockedFields} lists which fields
+ * the SPA should render blurred / struck-through, and {@code unlockMessage} is the
+ * CTA text ("download to see everything, payment required") to show alongside them.
  */
 public record BioDataPreviewDTO(
         BioDataDTO bioData,
@@ -27,6 +29,7 @@ public record BioDataPreviewDTO(
         boolean hasPreferences,
         Map<String, String> customFields,
         boolean needsPayment,
-        List<String> lockedFields
+        List<String> lockedFields,
+        String unlockMessage
 ) {
 }
