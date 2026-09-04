@@ -93,10 +93,10 @@
         body.colon-rows .lbl { position: relative; }
         body.colon-rows .lbl::after { content: ":"; position: absolute; right: 4mm; color: var(--muted); }
 
-        /* Ganesha / ornate header */
-        .ganesha { text-align: center; margin-bottom: 4mm; }
-        .ganesha svg { width: 26mm; height: 26mm; color: var(--accent); }
-        .ganesha .mantra {
+        /* brand mark shown top-center on every template */
+        .brand-logo { text-align: center; margin-bottom: 3mm; }
+        .brand-logo img { height: 20mm; width: auto; }
+        .brand-logo .mantra {
             margin-top: 1mm; color: var(--accent); font-weight: 600;
             font-size: 10pt; letter-spacing: 1px;
         }
@@ -150,23 +150,10 @@
 
     <div class="content">
 
-        <!-- ===== invocation header ===== -->
-        <div class="ganesha" th:if="${theme.headerMotif == 'ganesha'}">
-            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                <g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M50 14 Q40 14 40 24 Q40 30 44 33"/>
-                    <path d="M50 14 Q60 14 60 24 Q60 30 56 33"/>
-                    <path d="M45 12 L50 6 L55 12"/>
-                    <ellipse cx="50" cy="48" rx="17" ry="18"/>
-                    <path d="M33 40 Q18 34 14 46 Q12 56 24 58 Q33 58 34 50"/>
-                    <path d="M67 40 Q82 34 86 46 Q88 56 76 58 Q67 58 66 50"/>
-                    <path d="M50 60 Q49 74 40 82 Q34 88 40 92 Q46 94 48 86"/>
-                    <circle cx="43" cy="46" r="2.2" fill="currentColor"/>
-                    <circle cx="57" cy="46" r="2.2" fill="currentColor"/>
-                    <path d="M30 70 Q50 84 70 70"/>
-                </g>
-            </svg>
-            <div class="mantra">&#2384; &#2358;&#2381;&#2352;&#2368; &#2327;&#2339;&#2375;&#2358;&#2366;&#2351; &#2344;&#2350;&#2307;</div>
+        <!-- ===== brand mark: shown top-center on every template ===== -->
+        <div class="brand-logo">
+            <img th:if="${ganeshaLogoBase64 != null}" th:src="${ganeshaLogoBase64}" alt="Shree Ganesha"/>
+            <div class="mantra" th:if="${theme.headerMotif == 'ganesha'}">&#2384; &#2358;&#2381;&#2352;&#2368; &#2327;&#2339;&#2375;&#2358;&#2366;&#2351; &#2344;&#2350;&#2307;</div>
         </div>
 
         <div class="flourish" th:if="${theme.headerMotif != 'ganesha' and theme.flourish != null}" th:text="${theme.flourish}">&#2384;</div>

@@ -19,7 +19,12 @@
             print-color-adjust: exact;
         }
 
-        .page { width: 210mm; min-height: 297mm; display: flex; align-items: stretch; }
+        .page { width: 210mm; min-height: 297mm; display: flex; flex-direction: column; }
+        .body-row { display: flex; align-items: stretch; flex: 1 1 auto; }
+
+        /* brand mark shown top-center on every template */
+        .brand-logo { text-align: center; padding: 6mm 0 1mm; background: var(--pageBg); }
+        .brand-logo img { height: 16mm; width: auto; }
 
         /* ---------- sidebar ---------- */
         .sidebar {
@@ -69,6 +74,13 @@
 <body th:style="'--pageBg:' + ${theme.pageBg} + ';--surfaceBg:' + ${theme.surfaceBg} + ';--text:' + ${theme.text} + ';--muted:' + ${theme.muted} + ';--accent:' + ${theme.accent} + ';--onAccent:' + ${theme.onAccent} + ';--border:' + ${theme.border} + ';--font:' + ${theme.fontFamily} + ';'">
 
 <div class="page">
+
+    <!-- ===== brand mark: shown top-center on every template ===== -->
+    <div class="brand-logo">
+        <img th:if="${ganeshaLogoBase64 != null}" th:src="${ganeshaLogoBase64}" alt="Shree Ganesha"/>
+    </div>
+
+    <div class="body-row">
 
     <!-- ===== sidebar: photo + name + personal info ===== -->
     <aside class="sidebar">
@@ -158,6 +170,7 @@
             </div>
         </div>
 
+    </div>
     </div>
 </div>
 </body>
