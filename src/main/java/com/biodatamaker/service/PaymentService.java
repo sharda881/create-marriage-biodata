@@ -3,10 +3,12 @@ package com.biodatamaker.service;
 import com.biodatamaker.dto.PaymentDTO;
 import com.biodatamaker.entity.BioData;
 import com.biodatamaker.entity.User;
+import com.biodatamaker.event.BioDataPaidEvent;
 import com.biodatamaker.repository.BioDataRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +35,7 @@ public class PaymentService {
     private final BioDataService bioDataService;
     private final RazorpayService razorpay;
     private final PaywallService paywallService;
+    private final ApplicationEventPublisher events;
 
     // ---------------------------------------------------------------- checkout
 
@@ -45,7 +48,7 @@ public class PaymentService {
         out.put("bioDataId", bioDataId);
         out.put("needsPayment", needsPayment);
         out.put("alreadyPaid", bioData.getPaymentStatus() == BioData.PaymentStatus.PAID);
-        out.put("price", paywallService.price());
+        out.put("price", paywallService.priceFor(bioData));
         out.put("currency", razorpay.getCurrency());
         out.put("keyId", razorpay.getKeyId());
         return out;
@@ -56,7 +59,8 @@ public class PaymentService {
      * the Razorpay Checkout widget needs.
      */
     @Transactional
-    public Map<String, Object> createCheckout(Long bioDataId, User user, String name, String email, String phone) {
+    public Map<String, Object> createCheckout(Long bioDataId, User user, String name, String email, String phone,
+                                               boolean deliverByEmail) {
         BioData bioData = bioDataService.getBioDataById(bioDataId);
 
         if (bioData.getPaymentStatus() == BioData.PaymentStatus.PAID) {
@@ -65,8 +69,11 @@ public class PaymentService {
         if (!paywallService.needsPayment(bioData, user)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No payment is required for this download");
         }
+        if (deliverByEmail && blankToNull(email) == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email is required to send the PDF");
+        }
 
-        BigDecimal amount = paywallService.price();
+        BigDecimal amount = paywallService.priceFor(bioData);
         String orderId = razorpay.createOrder(
                 amount,
                 "biodata_" + bioDataId,
@@ -79,6 +86,8 @@ public class PaymentService {
         bioData.setPayerName(blankToNull(name));
         bioData.setPayerEmail(blankToNull(email));
         bioData.setPayerPhone(blankToNull(phone));
+        bioData.setDeliverByEmail(deliverByEmail);
+        bioData.setPdfEmailedAt(null);
         bioDataRepository.save(bioData);
 
         Map<String, Object> out = new LinkedHashMap<>();
@@ -171,11 +180,12 @@ public class PaymentService {
         if (bioData.getPaymentStatus() != BioData.PaymentStatus.PAID) {
             bioData.markPaid(bioData.getRazorpayPaymentId());
             if (bioData.getPaymentAmount() == null) {
-                bioData.setPaymentAmount(paywallService.price());
+                bioData.setPaymentAmount(paywallService.priceFor(bioData));
             }
             bioDataRepository.save(bioData);
             log.info("Bio-data {} marked PAID manually by admin {}", bioDataId,
                     admin != null ? admin.getId() : "?");
+            events.publishEvent(new BioDataPaidEvent(bioDataId));
         }
         return PaymentDTO.fromEntity(bioData);
     }
@@ -190,6 +200,7 @@ public class PaymentService {
             bioData.markPaid(paymentId);
             bioDataRepository.save(bioData);
             log.info("Bio-data {} marked PAID (order {}, payment {})", bioData.getId(), orderId, paymentId);
+            events.publishEvent(new BioDataPaidEvent(bioData.getId()));
         }, () -> log.warn("Razorpay order {} does not match any bio-data", orderId));
     }
 

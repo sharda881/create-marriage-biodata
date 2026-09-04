@@ -40,6 +40,7 @@ public class BioDataViewModel {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final PdfThemeRegistry pdfThemeRegistry;
+    private final TemplatePricingService templatePricingService;
 
     @Value("${app.base-url}")
     private String baseUrl;
@@ -89,7 +90,7 @@ public class BioDataViewModel {
 
         return new BioDataPreviewDTO(
                 dto,
-                TemplateDTO.fromTemplate(template),
+                TemplateDTO.fromTemplate(template, templatePricingService.priceFor(template.getTemplateId())),
                 formattedDob,
                 bioData.getAge(),
                 LocalDate.now().getYear(),

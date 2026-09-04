@@ -1,6 +1,7 @@
 package com.biodatamaker.controller;
 
 import com.biodatamaker.dto.TemplateDTO;
+import com.biodatamaker.service.TemplatePricingService;
 import com.biodatamaker.template.BioDataTemplateFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -18,11 +19,12 @@ import java.util.Map;
 public class TemplateController {
 
     private final BioDataTemplateFactory templateFactory;
+    private final TemplatePricingService pricingService;
 
     @GetMapping
     public Map<String, List<TemplateDTO>> all() {
         List<TemplateDTO> templates = templateFactory.getAllTemplates().stream()
-                .map(TemplateDTO::fromTemplate)
+                .map(t -> TemplateDTO.fromTemplate(t, pricingService.priceFor(t.getTemplateId())))
                 .sorted(Comparator.comparing(TemplateDTO::premium).thenComparing(TemplateDTO::name))
                 .toList();
         return Map.of(
@@ -34,6 +36,6 @@ public class TemplateController {
 
     @GetMapping("/{id}")
     public TemplateDTO one(@PathVariable String id) {
-        return TemplateDTO.fromTemplate(templateFactory.getTemplate(id));
+        return TemplateDTO.fromTemplate(templateFactory.getTemplate(id), pricingService.priceFor(id));
     }
 }

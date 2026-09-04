@@ -58,6 +58,12 @@
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
 
+        <!-- Emails the generated PDF to buyers who opt in at checkout -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+
         <!-- Playwright for PDF Generation -->
         <dependency>
             <groupId>com.microsoft.playwright</groupId>
